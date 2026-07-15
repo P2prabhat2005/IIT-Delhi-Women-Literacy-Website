@@ -5,6 +5,7 @@ import RouteLoadingState from './components/RouteLoadingState.jsx';
 
 const About = lazy(() => import('./pages/About.jsx'));
 const Activities = lazy(() => import('./pages/Activities.jsx'));
+const AdminLogin = lazy(() => import('./pages/AdminLogin.jsx'));
 const Contact = lazy(() => import('./pages/Contact.jsx'));
 const Home = lazy(() => import('./pages/Home.jsx'));
 const NotFound = lazy(() => import('./pages/NotFound.jsx'));
@@ -60,6 +61,14 @@ export default function App() {
           element={
             <Suspense fallback={<RouteLoadingState />}>
               <Contact />
+            </Suspense>
+          }
+        />
+        <Route
+          path="admin/login"
+          element={
+            <Suspense fallback={<RouteLoadingState />}>
+              <AdminLogin />
             </Suspense>
           }
         />

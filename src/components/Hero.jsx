@@ -1,8 +1,13 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, ShieldCheck } from 'lucide-react';
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { heroContent } from '../data/homepage.js';
+import EditableDocumentControl from './EditableDocumentControl.jsx';
+import { useEditableDocumentMap } from '../hooks/useEditableDocumentMap.js';
+import { labelToDocumentKey } from '../utils/editableMediaStorage.js';
+
+const HERO_CAPABILITY_DOCUMENTS_NAMESPACE = 'hero-capability-documents';
 
 const logoAssets = import.meta.glob('../assets/logos/*.{png,jpg,jpeg,svg,webp}', {
   eager: true,
@@ -28,13 +33,25 @@ function firstAsset(assets) {
 
 const iitDelhiLogo = findAsset(logoAssets, ['iit']) || findAsset(logoAssets, ['delhi']);
 const exlLogo = findAsset(logoAssets, ['exl']);
+const heroArtworkImage = findAsset(heroBackgroundAssets, ['artwork']);
 const heroBackgroundImage =
-  findAsset(heroBackgroundAssets, ['hero']) ||
   findAsset(heroBackgroundAssets, ['background']) ||
-  firstAsset(heroBackgroundAssets);
+  (heroArtworkImage ? null : findAsset(heroBackgroundAssets, ['hero'])) ||
+  (heroArtworkImage ? null : firstAsset(heroBackgroundAssets));
 
 export default function Hero() {
   const sectionRef = useRef(null);
+  const capabilityDocumentKeys = useMemo(
+    () => heroContent.pillars.map(({ label }) => labelToDocumentKey(label)),
+    [],
+  );
+  const {
+    validationMessage,
+    getDocument,
+    openDocument,
+    attachDocument,
+    removeDocument,
+  } = useEditableDocumentMap(HERO_CAPABILITY_DOCUMENTS_NAMESPACE, capabilityDocumentKeys);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start start', 'end start'],
@@ -142,46 +159,94 @@ export default function Hero() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7, delay: 0.15, ease: 'easeOut' }}
           style={{ y: visualY }}
-          className="relative"
+          className="relative flex min-h-[calc(100vh-88px)] w-full self-stretch items-center justify-center overflow-hidden"
           aria-label="Project Bharti research focus summary"
         >
-          <div className="rounded-[2rem] border border-slate-200 bg-white/90 p-5 shadow-2xl shadow-slate-200/70 backdrop-blur">
-            <div className="rounded-[1.5rem] bg-slate-950 p-6 text-white shadow-inner shadow-white/5">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-sm font-medium text-red-200">{heroContent.visual.eyebrow}</p>
-                  <h2 className="mt-2 max-w-sm text-2xl font-semibold">
-                    {heroContent.visual.title}
-                  </h2>
-                </div>
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-red-900">
-                  <ShieldCheck size={24} aria-hidden="true" />
-                </div>
-              </div>
+          {heroArtworkImage ? (
+            <>
+              <img
+                src={heroArtworkImage}
+                alt=""
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 z-0 h-full w-full scale-125 object-cover object-center opacity-[0.33] blur-3xl"
+              />
+              <img
+                src={heroArtworkImage}
+                alt=""
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover object-center opacity-[0.33]"
+              />
+            </>
+          ) : null}
 
-              <div className="mt-8 grid gap-4">
-                {heroContent.pillars.map(({ Icon, label }, index) => (
-                  <motion.div
-                    key={label}
-                    initial={{ opacity: 0, x: 16 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.45, delay: 0.28 + index * 0.08 }}
-                    className="group flex items-center gap-4 rounded-2xl bg-white/10 p-4 transition hover:bg-white/[0.16]"
-                  >
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-red-900 transition group-hover:scale-105">
-                      <Icon size={20} aria-hidden="true" />
-                    </span>
-                    <span className="font-medium">{label}</span>
-                  </motion.div>
-                ))}
+          <div className="relative z-10">
+            <div className="rounded-[2rem] border border-slate-200 bg-white/90 p-5 shadow-2xl shadow-slate-200/70 backdrop-blur">
+              <div className="rounded-[1.5rem] bg-slate-950 p-6 text-white shadow-inner shadow-white/5">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-sm font-medium text-red-200">{heroContent.visual.eyebrow}</p>
+                    <h2 className="mt-2 max-w-sm text-2xl font-semibold">
+                      {heroContent.visual.title}
+                    </h2>
+                  </div>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-red-900">
+                    <ShieldCheck size={24} aria-hidden="true" />
+                  </div>
+                </div>
+
+                <div className="mt-8 grid gap-4">
+                  {heroContent.pillars.map(({ Icon, label }, index) => {
+                    const documentKey = labelToDocumentKey(label);
+                    const documentEntry = getDocument(documentKey);
+                    const hasDocument = Boolean(documentEntry?.url);
+
+                    return (
+                      <motion.div
+                        key={label}
+                        initial={{ opacity: 0, x: 16 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.45, delay: 0.28 + index * 0.08 }}
+                        role={hasDocument ? 'button' : undefined}
+                        tabIndex={hasDocument ? 0 : undefined}
+                        onClick={() => {
+                          if (hasDocument) openDocument(documentKey);
+                        }}
+                        onKeyDown={(event) => {
+                          if (!hasDocument) return;
+                          if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault();
+                            openDocument(documentKey);
+                          }
+                        }}
+                        className={`group flex items-center gap-4 rounded-2xl bg-white/10 p-4 transition hover:bg-white/[0.16]${hasDocument ? ' cursor-pointer' : ''}`}
+                      >
+                        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-red-900 transition group-hover:scale-105">
+                          <Icon size={20} aria-hidden="true" />
+                        </span>
+                        <span className="font-medium">{label}</span>
+                        <EditableDocumentControl
+                          documentEntry={documentEntry}
+                          label={label}
+                          onAttach={(file) => attachDocument(documentKey, file)}
+                          onRemove={() => removeDocument(documentKey)}
+                        />
+                      </motion.div>
+                    );
+                  })}
+                </div>
+                {validationMessage ? (
+                  <p role="alert" className="mt-3 text-xs font-medium text-red-200">
+                    {validationMessage}
+                  </p>
+                ) : null}
               </div>
             </div>
-          </div>
 
-          <div className="absolute -bottom-6 -left-5 hidden rounded-2xl border border-emerald-200 bg-white p-4 shadow-xl shadow-slate-200/80 md:block">
-            <div className="flex items-center gap-3">
-              <ShieldCheck className="text-emerald-600" size={24} aria-hidden="true" />
-              <p className="text-sm font-semibold text-slate-800">{heroContent.visual.footerNote}</p>
+            <div className="absolute -bottom-6 -left-5 hidden rounded-2xl border border-emerald-200 bg-white p-4 shadow-xl shadow-slate-200/80 md:block">
+              <div className="flex items-center gap-3">
+                <ShieldCheck className="text-emerald-600" size={24} aria-hidden="true" />
+                <p className="text-sm font-semibold text-slate-800">{heroContent.visual.footerNote}</p>
+              </div>
             </div>
           </div>
         </motion.div>

@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Handshake, Network, Sparkles } from 'lucide-react';
 import { aboutProjectContent } from '../data/homepage.js';
-import EditableImageSlot from './EditableImageSlot.jsx';
+import PersistentImageSlot from './PersistentImageSlot.jsx';
 import SectionTitle from './SectionTitle.jsx';
 
 function CollageTile({ index }) {
@@ -19,7 +19,8 @@ function CollageTile({ index }) {
       transition={{ duration: 0.5, delay: index * 0.08 }}
       className={`absolute ${positions[index]}`}
     >
-      <EditableImageSlot
+      <PersistentImageSlot
+        ownerId={`about-collage-${index}`}
         title="Official Project Photograph"
         alt={`Research to field impact photograph ${index + 1}`}
         wrapperClassName="h-full w-full"
@@ -102,7 +103,8 @@ export default function AboutPreview() {
                 {aboutProjectContent.overview.eyebrow}
               </div>
               <h3 className="mt-5 text-3xl font-semibold">{aboutProjectContent.overview.title}</h3>
-              <EditableImageSlot
+              <PersistentImageSlot
+                ownerId="about-overview"
                 title="Official Project Photograph"
                 alt="Women participating in a Project Bharti activity"
                 aspectRatio="aspect-[4/5] lg:aspect-auto"

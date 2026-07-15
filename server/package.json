@@ -1,0 +1,22 @@
+﻿{
+  "name": "project-bharti-server",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Project Bharti backend API (Express + SQLite) powering the editable resources, documents, and media system.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "migrate": "node database/migrate.js",
+    "seed": "node database/seed.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^2.0.1"
+  }
+}

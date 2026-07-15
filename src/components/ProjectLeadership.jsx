@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
-import EditableImageSlot from './EditableImageSlot.jsx';
+import { labelToDocumentKey } from '../utils/editableMediaStorage.js';
+import PersistentImageSlot from './PersistentImageSlot.jsx';
 import SectionTitle from './SectionTitle.jsx';
 
 const leadership = [
@@ -40,7 +41,8 @@ export default function ProjectLeadership() {
               transition={{ duration: 0.45, delay: index * 0.08 }}
               className="rounded-[1.75rem] border border-slate-200 bg-white p-7 shadow-xl shadow-slate-200/60 transition duration-300 hover:-translate-y-1 hover:border-red-100 hover:shadow-2xl"
             >
-              <EditableImageSlot
+              <PersistentImageSlot
+                ownerId={`leadership-${labelToDocumentKey(name)}`}
                 title="Official Project Photograph"
                 alt={`${name} profile photograph`}
                 aspectRatio="aspect-[4/3]"
@@ -71,7 +73,8 @@ export default function ProjectLeadership() {
             </p>
           </div>
 
-          <EditableImageSlot
+          <PersistentImageSlot
+            ownerId="dev-team-group"
             title="Official Project Photograph"
             alt="Development team group photograph"
             aspectRatio="aspect-[16/7]"
@@ -90,7 +93,8 @@ export default function ProjectLeadership() {
                 transition={{ duration: 0.45, delay: index * 0.08 }}
                 className="rounded-[1.5rem] border border-white/10 bg-white/[0.07] p-5 transition duration-300 hover:bg-white/[0.11]"
               >
-                <EditableImageSlot
+                <PersistentImageSlot
+                  ownerId={`dev-team-${labelToDocumentKey(name)}`}
                   title="Official Project Photograph"
                   alt={`${name} profile photograph`}
                   aspectRatio="aspect-[4/3]"

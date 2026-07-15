@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import EditableImageSlot from './EditableImageSlot.jsx';
+import { labelToDocumentKey } from '../utils/editableMediaStorage.js';
+import PersistentImageSlot from './PersistentImageSlot.jsx';
 
 export default function ActivityCard({ description, Icon, image, items, title }) {
   return (
@@ -10,7 +11,8 @@ export default function ActivityCard({ description, Icon, image, items, title })
       transition={{ duration: 0.45 }}
       className="group overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm shadow-slate-200/60 transition duration-300 hover:-translate-y-1 hover:shadow-xl"
     >
-      <EditableImageSlot
+      <PersistentImageSlot
+        ownerId={`activity-card-${labelToDocumentKey(title)}`}
         image={image}
         title="Official Project Photograph"
         alt={`${title} activity photograph`}

@@ -1,13 +1,13 @@
 import { ImageUp, LoaderCircle, Pencil, Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { DEV_IMAGE_EDITOR } from '../config/development.js';
+import { useAuth } from '../context/AuthContext.jsx';
 
 const acceptedTypes = new Set(['image/jpeg', 'image/png', 'image/webp']);
 const maxFileSize = 10 * 1024 * 1024;
 
 export default function EditableImageSlot({
-  allowRemove = DEV_IMAGE_EDITOR,
-  allowUpload = DEV_IMAGE_EDITOR,
+  allowRemove,
+  allowUpload,
   alt = '',
   aspectRatio = '',
   className = '',
@@ -19,6 +19,7 @@ export default function EditableImageSlot({
   title = 'Official Project Photograph',
   wrapperClassName = '',
 }) {
+  const { isAdmin } = useAuth();
   const inputRef = useRef(null);
   const objectUrlRef = useRef(null);
   const dragDepthRef = useRef(0);
@@ -27,7 +28,8 @@ export default function EditableImageSlot({
   const [isLoading, setIsLoading] = useState(false);
   const [isPreviewVisible, setIsPreviewVisible] = useState(Boolean(image));
   const [validationMessage, setValidationMessage] = useState('');
-  const isEditable = DEV_IMAGE_EDITOR && allowUpload;
+  const canRemove = allowRemove ?? isAdmin;
+  const isEditable = allowUpload ?? isAdmin;
 
   useEffect(() => {
     if (image === undefined) return;
@@ -212,7 +214,7 @@ export default function EditableImageSlot({
               <Pencil size={13} aria-hidden="true" />
               Change Image
             </button>
-            {allowRemove ? (
+            {canRemove ? (
               <button
                 type="button"
                 onClick={removeImage}
@@ -236,7 +238,7 @@ export default function EditableImageSlot({
             <Pencil size={13} aria-hidden="true" />
             Change Image
           </button>
-          {allowRemove ? (
+          {canRemove ? (
             <button
               type="button"
               onClick={removeImage}

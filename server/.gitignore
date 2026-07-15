@@ -1,0 +1,10 @@
+node_modules/
+.env
+data/*.sqlite
+data/*.sqlite-*
+uploads/images/*
+uploads/thumbnails/*
+uploads/pdfs/*
+uploads/videos/*
+uploads/documents/*
+!uploads/**/.gitkeep

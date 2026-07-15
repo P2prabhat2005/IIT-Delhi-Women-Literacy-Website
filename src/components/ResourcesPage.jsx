@@ -1,75 +1,46 @@
-import { useMemo, useState } from 'react';
-import { ArrowUpRight, FileText, PlayCircle, Search, Sparkles, X } from 'lucide-react';
+import { useMemo, useRef, useState } from 'react';
+import { FileText, Plus, PlayCircle, Search, X } from 'lucide-react';
+import { useAuth } from '../context/AuthContext.jsx';
 import { resourceCategoryOptions, resourceCollections } from '../data/resources.js';
+import { useResourceLibrary } from '../hooks/useResourceLibrary.js';
 import AccessibleModal from './AccessibleModal.jsx';
+import ResourceCard from './ResourceCard.jsx';
+import ResourceEditModal from './ResourceEditModal.jsx';
 
-function ResourceItem({ collection, item, onOpenModal }) {
-  const isPlaceholderAction = item.kind === 'pdf' || item.kind === 'video';
+const DEFAULT_KIND_BY_COLLECTION = {
+  'downloadable-pdfs': 'pdf',
+  videos: 'video',
+  'government-schemes': 'scheme',
+  'training-material': 'pdf',
+  'financial-literacy': 'pdf',
+  'digital-literacy': 'pdf',
+};
 
-  return (
-    <div className="group flex h-full flex-col rounded-[1.35rem] border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/70 transition duration-300 hover:-translate-y-1 hover:shadow-xl">
-      <div className="overflow-hidden rounded-[1.2rem] border border-slate-200 bg-gradient-to-br from-slate-50 via-white to-red-50 p-4">
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-red-900 shadow-sm">
-            <collection.Icon size={20} aria-hidden="true" />
-          </div>
-          <span className="rounded-full bg-white/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-600">
-            {item.kind === 'pdf' ? 'PDF' : item.kind === 'video' ? 'Video' : item.kind === 'scheme' ? 'Scheme' : 'Resource'}
-          </span>
-        </div>
-        <div className="mt-4 rounded-2xl border border-slate-200 bg-white/85 p-4">
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
-            <Sparkles size={14} aria-hidden="true" />
-            Professional preview
-          </div>
-          <div className="mt-3 flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-red-900 shadow-sm">
-              {item.kind === 'video' ? <PlayCircle size={18} aria-hidden="true" /> : <FileText size={18} aria-hidden="true" />}
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-slate-800">
-                {item.kind === 'video' ? 'Video thumbnail preview' : 'Document thumbnail preview'}
-              </p>
-              <p className="text-xs text-slate-500">Final media will be uploaded by the Project Bharti Team.</p>
-            </div>
-          </div>
-        </div>
-      </div>
+function ResourceSection({ collection, editorState, isAdminMode, library, onOpenModal, onOpenVideo, resources }) {
+  const { Icon, accent, description, id, title } = collection;
+  const dragState = useRef(null);
 
-      <div className="mt-5 flex-1">
-        <p className="text-xs font-bold uppercase tracking-[0.16em] text-red-800">{item.meta}</p>
-        <h3 className="mt-2 text-lg font-semibold text-slate-950">{item.title}</h3>
-        <p className="mt-4 text-sm leading-7 text-slate-600">{item.description}</p>
-      </div>
+  const handleDragStart = (event, resource) => {
+    dragState.current = resource.id;
+    event.dataTransfer.effectAllowed = 'move';
+  };
 
-      <div className="mt-5 flex flex-wrap gap-2">
-        {item.tags.map((tag) => (
-          <span key={tag} className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
-            {tag}
-          </span>
-        ))}
-      </div>
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
 
-      {isPlaceholderAction ? (
-        <button
-          type="button"
-          onClick={() => onOpenModal(item)}
-          className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-red-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-red-800"
-        >
-          Preview coming soon
-          <ArrowUpRight size={16} aria-hidden="true" />
-        </button>
-      ) : (
-        <div className="mt-6 inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">
-          Official resources will be added by the Project Bharti Team.
-        </div>
-      )}
-    </div>
-  );
-}
+  const handleDrop = (event, targetResource) => {
+    event.preventDefault();
+    const draggedId = dragState.current;
+    if (!draggedId || draggedId === targetResource.id) return;
+    const fallbackOrder = resources.map((item) => item.id);
+    library.moveBefore(id, draggedId, targetResource.id, fallbackOrder);
+    dragState.current = null;
+  };
 
-function ResourceSection({ collection, onOpenModal }) {
-  const { Icon, accent, description, id, items, title } = collection;
+  const handleDragEnd = () => {
+    dragState.current = null;
+  };
 
   return (
     <section id={id} className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/70 md:p-8">
@@ -82,10 +53,32 @@ function ResourceSection({ collection, onOpenModal }) {
           <h2 className="mt-4 text-2xl font-semibold text-slate-950">{title}</h2>
           <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">{description}</p>
         </div>
+        {isAdminMode ? (
+          <button
+            type="button"
+            onClick={() => editorState.openCreate(collection)}
+            className="inline-flex shrink-0 items-center gap-2 rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+          >
+            <Plus size={16} aria-hidden="true" />
+            Add Resource
+          </button>
+        ) : null}
       </div>
       <div className="mt-8 grid gap-4 lg:grid-cols-2">
-        {items.map((item) => (
-          <ResourceItem key={item.title} collection={collection} item={item} onOpenModal={onOpenModal} />
+        {resources.map((resource) => (
+          <ResourceCard
+            key={resource.id}
+            collection={collection}
+            resource={resource}
+            isAdminMode={isAdminMode}
+            onOpenModal={onOpenModal}
+            onOpenVideo={onOpenVideo}
+            onEdit={editorState.handleCardAction}
+            onDragStart={handleDragStart}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+            onDragEnd={handleDragEnd}
+          />
         ))}
       </div>
     </section>
@@ -96,22 +89,99 @@ export default function ResourcesPage() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchValue, setSearchValue] = useState('');
   const [activeModal, setActiveModal] = useState(null);
+  const [activeVideo, setActiveVideo] = useState(null);
+  const [editorTarget, setEditorTarget] = useState(null);
+
+  const library = useResourceLibrary();
+  const { isAdmin: isAdminMode } = useAuth();
 
   const filteredCollections = useMemo(() => {
     const normalizedQuery = searchValue.trim().toLowerCase();
 
-    return resourceCollections.filter((collection) => {
-      const matchesCategory = activeCategory === 'all' || collection.id === activeCategory;
-      if (!matchesCategory) return false;
+    return resourceCollections
+      .map((collection) => ({
+        ...collection,
+        resources: library.library[collection.id] || [],
+      }))
+      .filter((collection) => {
+        const matchesCategory = activeCategory === 'all' || collection.id === activeCategory;
+        if (!matchesCategory) return false;
 
-      if (!normalizedQuery) return true;
+        if (!normalizedQuery) return true;
 
-      return [collection.title, collection.description, ...collection.items.flatMap((item) => [item.title, item.description, ...item.tags])]
-        .join(' ')
-        .toLowerCase()
-        .includes(normalizedQuery);
-    });
-  }, [activeCategory, searchValue]);
+        const haystack = [
+          collection.title,
+          collection.description,
+          ...collection.resources.flatMap((resource) => [
+            resource.title,
+            resource.description,
+            resource.category,
+            ...resource.tags,
+          ]),
+        ]
+          .join(' ')
+          .toLowerCase();
+
+        return haystack.includes(normalizedQuery);
+      });
+  }, [activeCategory, library.library, searchValue]);
+
+  const editorState = {
+    openCreate: (collection) => {
+      setEditorTarget({
+        mode: 'create',
+        collectionId: collection.id,
+        resource: null,
+        kind: DEFAULT_KIND_BY_COLLECTION[collection.id] || 'pdf',
+      });
+    },
+    handleCardAction: (resource, action, file) => {
+      const { collectionId } = resource;
+
+      switch (action) {
+        case 'edit':
+          setEditorTarget({ mode: 'edit', collectionId, resource, kind: resource.kind });
+          break;
+        case 'duplicate':
+          library.duplicateResource(collectionId, resource);
+          break;
+        case 'delete':
+          if (window.confirm(`Delete "${resource.title}"? This cannot be undone.`)) {
+            library.deleteResource(collectionId, resource.id);
+          }
+          break;
+        case 'attach-thumbnail':
+          library.attachThumbnail(collectionId, resource, file);
+          break;
+        case 'remove-thumbnail':
+          library.removeThumbnail(collectionId, resource.id);
+          break;
+        case 'attach-document':
+          library.attachDocument(collectionId, resource, file);
+          break;
+        case 'remove-document':
+          library.removeDocument(collectionId, resource.id);
+          break;
+        case 'attach-video':
+          library.attachVideo(collectionId, resource, file);
+          break;
+        case 'remove-video':
+          library.removeVideo(collectionId, resource.id);
+          break;
+        default:
+          break;
+      }
+    },
+  };
+
+  const handleSaveEditor = (fields) => {
+    if (editorTarget.mode === 'create') {
+      library.addResource(editorTarget.collectionId, fields);
+    } else {
+      library.updateContent(editorTarget.collectionId, editorTarget.resource.id, fields);
+    }
+    setEditorTarget(null);
+  };
 
   return (
     <div className="space-y-8">
@@ -170,10 +240,25 @@ export default function ResourcesPage() {
         </div>
       </section>
 
+      {library.validationMessage ? (
+        <div role="alert" className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-800">
+          {library.validationMessage}
+        </div>
+      ) : null}
+
       <div className="space-y-6">
         {filteredCollections.length ? (
           filteredCollections.map((collection) => (
-            <ResourceSection key={collection.id} collection={collection} onOpenModal={setActiveModal} />
+            <ResourceSection
+              key={collection.id}
+              collection={collection}
+              resources={collection.resources}
+              isAdminMode={isAdminMode}
+              library={library}
+              editorState={editorState}
+              onOpenModal={setActiveModal}
+              onOpenVideo={setActiveVideo}
+            />
           ))
         ) : (
           <div className="rounded-[2rem] border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-sm font-semibold text-slate-600">
@@ -227,6 +312,48 @@ export default function ResourcesPage() {
           </>
         ) : null}
       </AccessibleModal>
+
+      <AccessibleModal
+        isOpen={Boolean(activeVideo)}
+        onClose={() => setActiveVideo(null)}
+        ariaLabel="Video player"
+        overlayClassName="fixed inset-0 z-[80] flex items-center justify-center bg-slate-950/80 px-4 py-6"
+        className="w-full max-w-2xl rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-2xl"
+      >
+        {activeVideo ? (
+          <>
+            <div className="flex items-start justify-between gap-4">
+              <h3 className="text-xl font-semibold text-slate-950">{activeVideo.title}</h3>
+              <button
+                type="button"
+                onClick={() => setActiveVideo(null)}
+                data-autofocus
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition hover:bg-slate-100"
+                aria-label="Close video player"
+              >
+                <X size={16} aria-hidden="true" />
+              </button>
+            </div>
+            <video
+              key={activeVideo.video?.url}
+              src={activeVideo.video?.url}
+              controls
+              autoPlay
+              className="mt-4 w-full rounded-2xl bg-slate-950"
+            />
+          </>
+        ) : null}
+      </AccessibleModal>
+
+      <ResourceEditModal
+        isOpen={Boolean(editorTarget)}
+        mode={editorTarget?.mode}
+        kind={editorTarget?.kind}
+        resource={editorTarget?.resource}
+        defaultCategory={editorTarget?.collectionId}
+        onClose={() => setEditorTarget(null)}
+        onSave={handleSaveEditor}
+      />
     </div>
   );
 }

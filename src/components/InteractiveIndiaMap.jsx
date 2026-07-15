@@ -24,7 +24,7 @@ import {
   projectBhartiStateNames,
   projectBhartiStates,
 } from '../data/stateImpact.js';
-import { DEV_IMAGE_EDITOR } from '../config/development.js';
+import { useAuth } from '../context/AuthContext.jsx';
 import EditableImageSlot from './EditableImageSlot.jsx';
 import SectionTitle from './SectionTitle.jsx';
 
@@ -82,6 +82,7 @@ function DrawerImageSlot({ image, ...props }) {
 }
 
 function GalleryEditor({ entries, onChange, stateName }) {
+  const { isAdmin } = useAuth();
   const [addSlotKey, setAddSlotKey] = useState(0);
 
   return (
@@ -105,7 +106,7 @@ function GalleryEditor({ entries, onChange, stateName }) {
           className="rounded-xl border border-slate-200 bg-white shadow-sm"
         />
       ))}
-      {DEV_IMAGE_EDITOR ? (
+      {isAdmin ? (
         <DrawerImageSlot
           key={addSlotKey}
           onChange={(_file, image) => {
@@ -124,6 +125,7 @@ function GalleryEditor({ entries, onChange, stateName }) {
 }
 
 function ActivityEditor({ entries, onChange, stateName }) {
+  const { isAdmin } = useAuth();
   const updateEntry = (id, patch) => onChange(entries.map((entry) => (entry.id === id ? { ...entry, ...patch } : entry)));
 
   return (
@@ -132,11 +134,11 @@ function ActivityEditor({ entries, onChange, stateName }) {
         <div key={entry.id} className="rounded-[1.1rem] border border-slate-200 bg-white p-3 shadow-sm">
           <div className="flex items-center justify-between gap-3">
             <p className="text-sm font-semibold text-slate-800">Activity {index + 1}</p>
-            {DEV_IMAGE_EDITOR ? <EditorButton onClick={() => onChange(entries.filter((item) => item.id !== entry.id))} aria-label={`Remove activity ${index + 1}`}><Trash2 size={13} aria-hidden="true" />Remove</EditorButton> : null}
+            {isAdmin ? <EditorButton onClick={() => onChange(entries.filter((item) => item.id !== entry.id))} aria-label={`Remove activity ${index + 1}`}><Trash2 size={13} aria-hidden="true" />Remove</EditorButton> : null}
           </div>
-          <label className="mt-3 block text-xs font-semibold text-slate-600">Title<input className={fieldClassName} value={entry.title} onChange={(event) => updateEntry(entry.id, { title: event.target.value })} readOnly={!DEV_IMAGE_EDITOR} /></label>
-          <label className="mt-3 block text-xs font-semibold text-slate-600">Date<input type="date" className={fieldClassName} value={entry.date} onChange={(event) => updateEntry(entry.id, { date: event.target.value })} readOnly={!DEV_IMAGE_EDITOR} /></label>
-          <label className="mt-3 block text-xs font-semibold text-slate-600">Description<textarea className={`${fieldClassName} min-h-24 resize-y`} value={entry.description} onChange={(event) => updateEntry(entry.id, { description: event.target.value })} readOnly={!DEV_IMAGE_EDITOR} /></label>
+          <label className="mt-3 block text-xs font-semibold text-slate-600">Title<input className={fieldClassName} value={entry.title} onChange={(event) => updateEntry(entry.id, { title: event.target.value })} readOnly={!isAdmin} /></label>
+          <label className="mt-3 block text-xs font-semibold text-slate-600">Date<input type="date" className={fieldClassName} value={entry.date} onChange={(event) => updateEntry(entry.id, { date: event.target.value })} readOnly={!isAdmin} /></label>
+          <label className="mt-3 block text-xs font-semibold text-slate-600">Description<textarea className={`${fieldClassName} min-h-24 resize-y`} value={entry.description} onChange={(event) => updateEntry(entry.id, { description: event.target.value })} readOnly={!isAdmin} /></label>
           <DrawerImageSlot
             image={entry.image}
             onChange={(_file, image) => updateEntry(entry.id, { image })}
@@ -147,12 +149,13 @@ function ActivityEditor({ entries, onChange, stateName }) {
           />
         </div>
       ))}
-      {DEV_IMAGE_EDITOR ? <EditorButton onClick={() => onChange([...entries, createMediaEntry('activities')])}><Plus size={13} aria-hidden="true" />Add Activity</EditorButton> : null}
+      {isAdmin ? <EditorButton onClick={() => onChange([...entries, createMediaEntry('activities')])}><Plus size={13} aria-hidden="true" />Add Activity</EditorButton> : null}
     </div>
   );
 }
 
 function VideosEditor({ entries, onChange }) {
+  const { isAdmin } = useAuth();
   const updateEntry = (id, patch) => onChange(entries.map((entry) => (entry.id === id ? { ...entry, ...patch } : entry)));
 
   return (
@@ -161,18 +164,19 @@ function VideosEditor({ entries, onChange }) {
         <div key={entry.id} className="rounded-[1.1rem] border border-slate-200 bg-white p-3 shadow-sm">
           <div className="flex items-center justify-between gap-3">
             <p className="inline-flex items-center gap-2 text-sm font-semibold text-slate-800"><PlayCircle size={15} aria-hidden="true" />Video {index + 1}</p>
-            {DEV_IMAGE_EDITOR ? <EditorButton onClick={() => onChange(entries.filter((item) => item.id !== entry.id))} aria-label={`Remove video ${index + 1}`}><Trash2 size={13} aria-hidden="true" />Remove</EditorButton> : null}
+            {isAdmin ? <EditorButton onClick={() => onChange(entries.filter((item) => item.id !== entry.id))} aria-label={`Remove video ${index + 1}`}><Trash2 size={13} aria-hidden="true" />Remove</EditorButton> : null}
           </div>
-          <label className="mt-3 block text-xs font-semibold text-slate-600">Title<input className={fieldClassName} value={entry.title} onChange={(event) => updateEntry(entry.id, { title: event.target.value })} readOnly={!DEV_IMAGE_EDITOR} /></label>
-          <label className="mt-3 block text-xs font-semibold text-slate-600">Video URL<input type="url" className={fieldClassName} value={entry.url} onChange={(event) => updateEntry(entry.id, { url: event.target.value })} readOnly={!DEV_IMAGE_EDITOR} /></label>
+          <label className="mt-3 block text-xs font-semibold text-slate-600">Title<input className={fieldClassName} value={entry.title} onChange={(event) => updateEntry(entry.id, { title: event.target.value })} readOnly={!isAdmin} /></label>
+          <label className="mt-3 block text-xs font-semibold text-slate-600">Video URL<input type="url" className={fieldClassName} value={entry.url} onChange={(event) => updateEntry(entry.id, { url: event.target.value })} readOnly={!isAdmin} /></label>
         </div>
       ))}
-      {DEV_IMAGE_EDITOR ? <EditorButton onClick={() => onChange([...entries, createMediaEntry('videos')])}><Plus size={13} aria-hidden="true" />Add Video</EditorButton> : null}
+      {isAdmin ? <EditorButton onClick={() => onChange([...entries, createMediaEntry('videos')])}><Plus size={13} aria-hidden="true" />Add Video</EditorButton> : null}
     </div>
   );
 }
 
 function ResearchDocumentEditor({ entries, onChange }) {
+  const { isAdmin } = useAuth();
   const updateEntry = (id, patch) => onChange(entries.map((entry) => (entry.id === id ? { ...entry, ...patch } : entry)));
 
   return (
@@ -183,12 +187,13 @@ function ResearchDocumentEditor({ entries, onChange }) {
           onChange(entries.filter((item) => item.id !== entry.id));
         }} />
       ))}
-      {DEV_IMAGE_EDITOR ? <EditorButton onClick={() => onChange([...entries, createMediaEntry('research')])}><Plus size={13} aria-hidden="true" />Add Document</EditorButton> : null}
+      {isAdmin ? <EditorButton onClick={() => onChange([...entries, createMediaEntry('research')])}><Plus size={13} aria-hidden="true" />Add Document</EditorButton> : null}
     </div>
   );
 }
 
 function ResearchDocumentCard({ entry, index, onRemove, onUpdate }) {
+  const { isAdmin } = useAuth();
   const inputRef = useRef(null);
   const [validationMessage, setValidationMessage] = useState('');
 
@@ -207,10 +212,10 @@ function ResearchDocumentCard({ entry, index, onRemove, onUpdate }) {
     <div className="rounded-[1.1rem] border border-slate-200 bg-white p-3 shadow-sm">
       <div className="flex items-center justify-between gap-3">
         <p className="inline-flex items-center gap-2 text-sm font-semibold text-slate-800"><FileText size={15} aria-hidden="true" />Document {index + 1}</p>
-        {DEV_IMAGE_EDITOR ? <EditorButton onClick={onRemove} aria-label={`Remove document ${index + 1}`}><Trash2 size={13} aria-hidden="true" />Remove</EditorButton> : null}
+        {isAdmin ? <EditorButton onClick={onRemove} aria-label={`Remove document ${index + 1}`}><Trash2 size={13} aria-hidden="true" />Remove</EditorButton> : null}
       </div>
-      <label className="mt-3 block text-xs font-semibold text-slate-600">Title<input className={fieldClassName} value={entry.title} onChange={(event) => onUpdate({ title: event.target.value })} readOnly={!DEV_IMAGE_EDITOR} /></label>
-      {DEV_IMAGE_EDITOR ? (
+      <label className="mt-3 block text-xs font-semibold text-slate-600">Title<input className={fieldClassName} value={entry.title} onChange={(event) => onUpdate({ title: event.target.value })} readOnly={!isAdmin} /></label>
+      {isAdmin ? (
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <input ref={inputRef} type="file" accept="application/pdf" className="sr-only" onChange={(event) => { handleFile(event.target.files?.[0]); event.target.value = ''; }} />
           <EditorButton onClick={() => inputRef.current?.click()}><Pencil size={13} aria-hidden="true" />{entry.url ? 'Replace PDF' : 'Upload PDF'}</EditorButton>
@@ -223,6 +228,7 @@ function ResearchDocumentCard({ entry, index, onRemove, onUpdate }) {
 }
 
 function NewsEditor({ entries, onChange }) {
+  const { isAdmin } = useAuth();
   const updateEntry = (id, patch) => onChange(entries.map((entry) => (entry.id === id ? { ...entry, ...patch } : entry)));
 
   return (
@@ -231,15 +237,15 @@ function NewsEditor({ entries, onChange }) {
         <div key={entry.id} className="rounded-[1.1rem] border border-slate-200 bg-white p-3 shadow-sm">
           <div className="flex items-center justify-between gap-3">
             <p className="inline-flex items-center gap-2 text-sm font-semibold text-slate-800"><Newspaper size={15} aria-hidden="true" />News {index + 1}</p>
-            {DEV_IMAGE_EDITOR ? <EditorButton onClick={() => onChange(entries.filter((item) => item.id !== entry.id))} aria-label={`Remove news item ${index + 1}`}><Trash2 size={13} aria-hidden="true" />Remove</EditorButton> : null}
+            {isAdmin ? <EditorButton onClick={() => onChange(entries.filter((item) => item.id !== entry.id))} aria-label={`Remove news item ${index + 1}`}><Trash2 size={13} aria-hidden="true" />Remove</EditorButton> : null}
           </div>
-          <label className="mt-3 block text-xs font-semibold text-slate-600">Title<input className={fieldClassName} value={entry.title} onChange={(event) => updateEntry(entry.id, { title: event.target.value })} readOnly={!DEV_IMAGE_EDITOR} /></label>
-          <label className="mt-3 block text-xs font-semibold text-slate-600">Date<input type="date" className={fieldClassName} value={entry.date} onChange={(event) => updateEntry(entry.id, { date: event.target.value })} readOnly={!DEV_IMAGE_EDITOR} /></label>
-          <label className="mt-3 block text-xs font-semibold text-slate-600">Description<textarea className={`${fieldClassName} min-h-24 resize-y`} value={entry.description} onChange={(event) => updateEntry(entry.id, { description: event.target.value })} readOnly={!DEV_IMAGE_EDITOR} /></label>
-          <label className="mt-3 block text-xs font-semibold text-slate-600">Optional Link<input type="url" className={fieldClassName} value={entry.link} onChange={(event) => updateEntry(entry.id, { link: event.target.value })} readOnly={!DEV_IMAGE_EDITOR} /></label>
+          <label className="mt-3 block text-xs font-semibold text-slate-600">Title<input className={fieldClassName} value={entry.title} onChange={(event) => updateEntry(entry.id, { title: event.target.value })} readOnly={!isAdmin} /></label>
+          <label className="mt-3 block text-xs font-semibold text-slate-600">Date<input type="date" className={fieldClassName} value={entry.date} onChange={(event) => updateEntry(entry.id, { date: event.target.value })} readOnly={!isAdmin} /></label>
+          <label className="mt-3 block text-xs font-semibold text-slate-600">Description<textarea className={`${fieldClassName} min-h-24 resize-y`} value={entry.description} onChange={(event) => updateEntry(entry.id, { description: event.target.value })} readOnly={!isAdmin} /></label>
+          <label className="mt-3 block text-xs font-semibold text-slate-600">Optional Link<input type="url" className={fieldClassName} value={entry.link} onChange={(event) => updateEntry(entry.id, { link: event.target.value })} readOnly={!isAdmin} /></label>
         </div>
       ))}
-      {DEV_IMAGE_EDITOR ? <EditorButton onClick={() => onChange([...entries, createMediaEntry('news')])}><Plus size={13} aria-hidden="true" />Add News</EditorButton> : null}
+      {isAdmin ? <EditorButton onClick={() => onChange([...entries, createMediaEntry('news')])}><Plus size={13} aria-hidden="true" />Add News</EditorButton> : null}
     </div>
   );
 }

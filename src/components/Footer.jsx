@@ -1,7 +1,10 @@
 import { NavLink } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext.jsx';
 import { footerLinks } from '../data/homepage.js';
 
 export default function Footer() {
+  const { isAdmin, logout } = useAuth();
+
   return (
     <footer className="bg-slate-950 text-white">
       <div className="site-container py-12">
@@ -21,8 +24,17 @@ export default function Footer() {
             ))}
           </nav>
         </div>
-        <div className="mt-10 border-t border-white/10 pt-6 text-sm text-slate-400">
-          Official project website prototype for presentation and content planning.
+        <div className="mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-6 text-sm text-slate-400">
+          <span>Official project website prototype for presentation and content planning.</span>
+          {isAdmin ? (
+            <button type="button" onClick={logout} className="font-semibold text-slate-300 transition hover:text-white">
+              Admin Mode &middot; Logout
+            </button>
+          ) : (
+            <NavLink to="/admin/login" className="font-semibold text-slate-500 transition hover:text-slate-300">
+              Admin
+            </NavLink>
+          )}
         </div>
       </div>
     </footer>

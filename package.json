@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "server:install": "npm --prefix server install",
+    "server:migrate": "npm --prefix server run migrate",
+    "server:seed": "npm --prefix server run seed",
+    "server": "npm --prefix server run dev"
   },
   "dependencies": {
     "framer-motion": "latest",

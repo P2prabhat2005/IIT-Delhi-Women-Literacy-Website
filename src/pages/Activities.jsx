@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, MapPinned } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { MapPinned } from 'lucide-react';
+import ActivitiesCTA from '../components/ActivitiesCTA.jsx';
 import ActivityCard from '../components/ActivityCard.jsx';
 import ActivityTimeline from '../components/ActivityTimeline.jsx';
 import SectionTitle from '../components/SectionTitle.jsx';
@@ -20,7 +20,6 @@ function findActivityImage(key) {
 
 export default function Activities() {
   const {
-    callToAction,
     districtTrainingProgrammes,
     focusGroupDiscussions,
     impactHighlights,
@@ -171,26 +170,7 @@ export default function Activities() {
         </div>
       </section>
 
-      <section className="section bg-white">
-        <div className="site-container">
-          <div className="rounded-[2rem] bg-red-900 p-8 text-white shadow-2xl shadow-red-950/20 md:p-12">
-            <div className="grid gap-8 lg:grid-cols-[1fr_0.65fr] lg:items-center">
-              <SectionTitle eyebrow={callToAction.eyebrow} id="activities-cta" description={callToAction.description}>
-                {callToAction.title}
-              </SectionTitle>
-              <div className="flex flex-col gap-3 sm:flex-row lg:justify-end">
-                <Link className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-5 py-3 font-semibold text-red-900 transition hover:bg-red-50" to={callToAction.primaryTo}>
-                  {callToAction.primaryLabel}
-                  <ArrowRight size={18} aria-hidden="true" />
-                </Link>
-                <Link className="inline-flex items-center justify-center rounded-full border border-white/30 px-5 py-3 font-semibold text-white transition hover:bg-white/10" to={callToAction.secondaryTo}>
-                  {callToAction.secondaryLabel}
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <ActivitiesCTA />
     </>
   );
 }
