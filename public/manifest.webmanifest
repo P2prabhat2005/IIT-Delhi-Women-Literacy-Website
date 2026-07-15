@@ -1,0 +1,16 @@
+{
+  "name": "Project Bharti",
+  "short_name": "Project Bharti",
+  "description": "Project Bharti is an IIT Delhi initiative focused on digital and financial literacy, women-led entrepreneurship, and community-led capacity building.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#7f1d1d",
+  "icons": [
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
