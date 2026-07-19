@@ -38,6 +38,7 @@ const heroBackgroundImage =
   findAsset(heroBackgroundAssets, ['background']) ||
   (heroArtworkImage ? null : findAsset(heroBackgroundAssets, ['hero'])) ||
   (heroArtworkImage ? null : firstAsset(heroBackgroundAssets));
+const heroSectionBackgroundImage = heroBackgroundImage || heroArtworkImage;
 
 export default function Hero() {
   const sectionRef = useRef(null);
@@ -67,14 +68,14 @@ export default function Hero() {
         className="relative isolate mx-auto max-w-[1440px] overflow-hidden rounded-[2rem] border border-slate-200/70 bg-[#fbfaf8] shadow-[0_24px_70px_rgba(15,23,42,0.12)] transition-shadow duration-300 md:rounded-[2.25rem]"
       >
       <motion.div className="absolute inset-0 -z-20" style={{ y: backgroundY }} aria-hidden="true">
-        {heroBackgroundImage ? (
+        {heroSectionBackgroundImage ? (
           <img
-            src={heroBackgroundImage}
+            src={heroSectionBackgroundImage}
             alt=""
-            className="h-full w-full object-cover opacity-[0.14] saturate-75"
+            className="h-full w-full object-cover object-center opacity-[0.36] saturate-75"
           />
         ) : null}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(153,27,27,0.14),transparent_30%),radial-gradient(circle_at_82%_16%,rgba(15,118,110,0.10),transparent_28%),linear-gradient(135deg,#fffaf7_0%,#ffffff_48%,#f6f8fb_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(153,27,27,0.11),transparent_30%),radial-gradient(circle_at_82%_16%,rgba(15,118,110,0.08),transparent_28%),linear-gradient(135deg,rgba(255,250,247,0.75)_0%,rgba(255,255,255,0.67)_48%,rgba(246,248,251,0.72)_100%)]" />
       </motion.div>
 
       <motion.div
@@ -98,9 +99,9 @@ export default function Hero() {
           className="max-w-4xl"
         >
           <div className="mb-8 flex flex-wrap items-center gap-3" aria-label="Project collaborators">
-            <div className="flex min-h-16 items-center gap-3 rounded-[16px] border border-[#E8E4DD] bg-[#6B0F1A] px-4 py-3 shadow-[0_6px_18px_rgba(15,23,42,0.10)] backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:shadow-lg">
+            <div className="flex min-h-16 items-center gap-3 rounded-[16px] border border-[#E8E4DD] bg-[#F7F4EF] px-4 py-3 shadow-[0_8px_24px_rgba(15,23,42,0.06)] backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:shadow-lg">
               {iitDelhiLogo ? (
-                <img src={iitDelhiLogo} alt="IIT Delhi logo" className="h-11 w-auto object-contain" />
+                <img src={iitDelhiLogo} alt="IIT Delhi logo" className="h-9 w-auto object-contain" />
               ) : (
                 <span className="text-sm font-bold text-red-900">IIT Delhi</span>
               )}
@@ -162,23 +163,6 @@ export default function Hero() {
           className="relative flex min-h-[calc(100vh-88px)] w-full self-stretch items-center justify-center overflow-hidden"
           aria-label="Project Bharti research focus summary"
         >
-          {heroArtworkImage ? (
-            <>
-              <img
-                src={heroArtworkImage}
-                alt=""
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 z-0 h-full w-full scale-125 object-cover object-center opacity-[0.33] blur-3xl"
-              />
-              <img
-                src={heroArtworkImage}
-                alt=""
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover object-center opacity-[0.33]"
-              />
-            </>
-          ) : null}
-
           <div className="relative z-10">
             <div className="rounded-[2rem] border border-slate-200 bg-white/90 p-5 shadow-2xl shadow-slate-200/70 backdrop-blur">
               <div className="rounded-[1.5rem] bg-slate-950 p-6 text-white shadow-inner shadow-white/5">

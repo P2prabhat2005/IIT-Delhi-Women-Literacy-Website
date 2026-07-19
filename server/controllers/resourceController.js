@@ -3,10 +3,12 @@ import * as mediaService from '../services/mediaService.js';
 import * as resourceService from '../services/resourceService.js';
 import { ApiError } from '../utils/errors.js';
 import { sendCreated, sendSuccess } from '../utils/responses.js';
+import { assertSafeId, assertSafeQueryString, validateReorderPayload, validateResourceFields } from '../utils/validation.js';
 
 const RESOURCE_OWNER_TYPE = 'resource';
 
 function ensureResourceExists(id) {
+  assertSafeId(id, 'resourceId');
   const resource = getById(id);
   if (!resource) throw ApiError.notFound(`Resource ${id} not found`);
   return resource;
@@ -14,43 +16,47 @@ function ensureResourceExists(id) {
 
 export function listResources(req, res) {
   const { section, search, category } = req.query;
+  if (section) assertSafeId(section, 'section');
+  if (category) assertSafeId(category, 'category');
+  if (search) assertSafeQueryString(search, 'search', 240);
   const data = resourceService.listResources({ section: section || category, search });
   sendSuccess(res, data);
 }
 
 export function getResource(req, res) {
+  assertSafeId(req.params.id, 'resourceId');
   const data = resourceService.getResourceDto(req.params.id);
   sendSuccess(res, data);
 }
 
 export function createResource(req, res) {
-  if (!req.body?.title) {
-    throw ApiError.badRequest('title is required');
-  }
+  validateResourceFields(req.body);
   const data = resourceService.createResourceEntry(req.body);
   sendCreated(res, data);
 }
 
 export function updateResourceMetadata(req, res) {
+  assertSafeId(req.params.id, 'resourceId');
+  validateResourceFields(req.body || {}, { partial: true });
   const data = resourceService.updateResourceEntry(req.params.id, req.body || {});
   sendSuccess(res, data);
 }
 
 export function deleteResource(req, res) {
+  assertSafeId(req.params.id, 'resourceId');
   resourceService.deleteResourceEntry(req.params.id);
   sendSuccess(res, { id: req.params.id, deleted: true });
 }
 
 export function duplicateResource(req, res) {
+  assertSafeId(req.params.id, 'resourceId');
   const data = resourceService.duplicateResourceEntry(req.params.id);
   sendCreated(res, data);
 }
 
 export function reorderResources(req, res) {
   const { sectionId, orderedIds } = req.body || {};
-  if (!sectionId || !Array.isArray(orderedIds)) {
-    throw ApiError.badRequest('sectionId and orderedIds[] are required');
-  }
+  validateReorderPayload(sectionId, orderedIds);
   const data = resourceService.reorderResourcesInSection(sectionId, orderedIds);
   sendSuccess(res, data);
 }

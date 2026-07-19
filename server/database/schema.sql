@@ -68,6 +68,37 @@ CREATE TABLE IF NOT EXISTS media_assets (
 CREATE UNIQUE INDEX IF NOT EXISTS idx_media_owner_asset
   ON media_assets(owner_type, owner_id, asset_type);
 
+-- Generic team directory. Categories are intentionally data-driven so the
+-- admin can add future groups (mentors, volunteers, advisory board, etc.)
+-- without a frontend or backend schema change.
+CREATE TABLE IF NOT EXISTS team_categories (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  slug TEXT NOT NULL UNIQUE,
+  description TEXT DEFAULT '',
+  display_order INTEGER NOT NULL DEFAULT 0,
+  is_active INTEGER NOT NULL DEFAULT 1,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_team_categories_active_order
+  ON team_categories(is_active, display_order);
+
+CREATE TABLE IF NOT EXISTS team_members (
+  id TEXT PRIMARY KEY,
+  category_id TEXT NOT NULL REFERENCES team_categories(id) ON DELETE CASCADE,
+  full_name TEXT NOT NULL,
+  designation TEXT NOT NULL DEFAULT '',
+  display_order INTEGER NOT NULL DEFAULT 0,
+  is_active INTEGER NOT NULL DEFAULT 1,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_team_members_category_order
+  ON team_members(category_id, is_active, display_order);
+
 -- Administrators. Only bcrypt password hashes are stored, never plaintext.
 -- Designed to support multiple future admins without any schema change.
 CREATE TABLE IF NOT EXISTS admins (

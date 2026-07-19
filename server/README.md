@@ -31,18 +31,19 @@ npm run dev            # starts the Vite frontend, proxying /api and /uploads to
 
 ## Environment variables
 
-Copy `.env.example` to `.env` to override any of these (all have safe
-development defaults, so `.env` is optional):
+Copy `.env.example` to `.env` and set the sensitive values before starting
+the API. `JWT_SECRET` is required; the server will not boot without it.
 
 | Variable          | Default                            |
 | ----------------- | ----------------------------------- |
 | `PORT`            | `4000`                              |
-| `CORS_ORIGIN`     | reflects request origin             |
+| `CORS_ORIGIN`     | comma-separated allowed origins     |
+| `PRODUCTION_FRONTEND_URL` | production frontend origin   |
 | `DB_FILE`         | `server/data/bharti.sqlite`         |
 | `UPLOADS_ROOT`    | `server/uploads`                    |
-| `ADMIN_USERNAME`  | `Shashank@11`                       |
-| `ADMIN_PASSWORD`  | `Shashank@2026`                     |
-| `JWT_SECRET`      | dev placeholder — change in any real deployment |
+| `ADMIN_USERNAME`  | no default                          |
+| `ADMIN_PASSWORD`  | no default                          |
+| `JWT_SECRET`      | required, no default                |
 | `JWT_EXPIRES_IN`  | `7d`                                |
 
 `ADMIN_USERNAME`/`ADMIN_PASSWORD` are only used once, to seed the first row

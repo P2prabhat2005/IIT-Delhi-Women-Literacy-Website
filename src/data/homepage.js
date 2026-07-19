@@ -14,11 +14,12 @@ import {
   Smartphone,
   UsersRound,
 } from 'lucide-react';
+import { projectBhartiStateNames, projectBhartiTotals } from './stateImpact.js';
 
 export const impactMetrics = [
-  { value: '5', label: 'Current states' },
-  { value: '12', label: 'Districts covered' },
-  { value: '1000+', label: 'Women reached' },
+  { value: projectBhartiTotals.stateCount.toLocaleString('en-IN'), label: 'Current states' },
+  { value: projectBhartiTotals.totalDistricts.toLocaleString('en-IN'), label: 'Districts covered' },
+  { value: projectBhartiTotals.totalWomenTrained.toLocaleString('en-IN'), label: 'Women trained' },
 ];
 
 export const heroContent = {
@@ -36,9 +37,9 @@ export const heroContent = {
     to: '/resources',
   },
   stats: [
-    { value: '5', label: 'Current states', detail: 'Delhi, Haryana, Himachal Pradesh, Uttarakhand, Uttar Pradesh' },
-    { value: '12', label: 'Districts covered', detail: 'Across current project states' },
-    { value: '1000+', label: 'Women reached', detail: 'Verified project reach' },
+    { value: projectBhartiTotals.stateCount.toLocaleString('en-IN'), label: 'Current states', detail: projectBhartiStateNames.join(', ') },
+    { value: projectBhartiTotals.totalDistricts.toLocaleString('en-IN'), label: 'Districts covered', detail: 'Across current project states' },
+    { value: projectBhartiTotals.totalWomenTrained.toLocaleString('en-IN'), label: 'Women trained', detail: 'Across current project states' },
   ],
   visual: {
     eyebrow: 'Research to field impact',
@@ -151,19 +152,18 @@ export const objectives = [
 export const objectiveImpactHighlights = [
   {
     label: 'Current States',
-    value: 5,
+    value: projectBhartiTotals.stateCount,
     helper: 'Current project coverage',
   },
   {
     label: 'Districts Covered',
-    value: 12,
+    value: projectBhartiTotals.totalDistricts,
     helper: 'Across current project states',
   },
   {
-    label: 'Women Reached',
-    value: null,
-    placeholder: '1000+',
-    helper: 'Verified project reach',
+    label: 'Women Trained',
+    value: projectBhartiTotals.totalWomenTrained,
+    helper: 'Across current project states',
   },
 ];
 

@@ -8,16 +8,19 @@ const ASSET_RULES = {
   image: {
     folder: 'images',
     mimeTypes: new Set(['image/jpeg', 'image/png', 'image/webp']),
+    extensions: new Set(['.jpg', '.jpeg', '.png', '.webp']),
     maxBytes: env.limits.imageMaxBytes,
   },
   thumbnail: {
     folder: 'thumbnails',
     mimeTypes: new Set(['image/jpeg', 'image/png', 'image/webp']),
+    extensions: new Set(['.jpg', '.jpeg', '.png', '.webp']),
     maxBytes: env.limits.imageMaxBytes,
   },
   video: {
     folder: 'videos',
     mimeTypes: new Set(['video/mp4', 'video/webm', 'video/quicktime']),
+    extensions: new Set(['.mp4', '.webm', '.mov']),
     maxBytes: env.limits.videoMaxBytes,
   },
   document: {
@@ -29,9 +32,30 @@ const ASSET_RULES = {
       'application/msword',
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     ]),
+    extensions: new Set(['.pdf', '.doc', '.docx']),
     maxBytes: env.limits.documentMaxBytes,
   },
 };
+
+const DANGEROUS_EXTENSIONS = new Set([
+  '.bat',
+  '.cmd',
+  '.com',
+  '.cpl',
+  '.dll',
+  '.exe',
+  '.hta',
+  '.jar',
+  '.js',
+  '.jse',
+  '.msi',
+  '.php',
+  '.ps1',
+  '.scr',
+  '.sh',
+  '.vbe',
+  '.vbs',
+]);
 
 function resolveFolder(rule, mimeType) {
   return typeof rule.folder === 'function' ? rule.folder(mimeType) : rule.folder;
@@ -58,8 +82,15 @@ function createFileFilter(assetType) {
   const rule = ASSET_RULES[assetType];
 
   return (req, file, callback) => {
+    const extension = path.extname(file.originalname || '').toLowerCase();
+
+    if (DANGEROUS_EXTENSIONS.has(extension) || !rule.extensions.has(extension)) {
+      callback(new multer.MulterError('LIMIT_UNEXPECTED_FILE', 'Unsupported file extension'));
+      return;
+    }
+
     if (!rule.mimeTypes.has(file.mimetype)) {
-      callback(new multer.MulterError('LIMIT_UNEXPECTED_FILE', `Unsupported file type: ${file.mimetype}`));
+      callback(new multer.MulterError('LIMIT_UNEXPECTED_FILE', 'Unsupported file type'));
       return;
     }
     callback(null, true);
@@ -72,7 +103,7 @@ function createUploader(assetType) {
   return multer({
     storage: createStorage(assetType),
     fileFilter: createFileFilter(assetType),
-    limits: { fileSize: rule.maxBytes },
+    limits: { fileSize: rule.maxBytes, files: 1 },
   });
 }
 

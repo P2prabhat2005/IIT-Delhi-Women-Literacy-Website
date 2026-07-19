@@ -16,12 +16,11 @@ import {
   UsersRound,
   X,
 } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
 import indiaGeographyUrl from '../assets/maps/india-states.geojson?url';
 import {
-  projectBhartiStateByName,
-  projectBhartiStateNames,
+  projectBhartiStateByMapName,
   projectBhartiStates,
 } from '../data/stateImpact.js';
 import { useAuth } from '../context/AuthContext.jsx';
@@ -35,6 +34,17 @@ const metricIconMap = {
   Shield: ShieldCheck,
   Handshake,
   FileText,
+};
+
+const brightenHexColor = (color, amount = 0.12) => {
+  const hex = color.replace('#', '');
+
+  if (!/^[\da-f]{6}$/i.test(hex)) return color;
+
+  const channels = hex.match(/\w\w/g).map((channel) => parseInt(channel, 16));
+  const brightened = channels.map((channel) => Math.round(channel + (255 - channel) * amount));
+
+  return `#${brightened.map((channel) => channel.toString(16).padStart(2, '0')).join('')}`;
 };
 
 let mediaEntrySequence = 0;
@@ -371,15 +381,14 @@ function StatePanel({ onClose, selectedState }) {
             <section className="rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm">
               <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
                 <MapPin size={14} aria-hidden="true" />
-                District coverage summary
+                District list
               </div>
-              <h4 className="mt-4 text-lg font-semibold text-slate-950">{selectedState.districtSummary.title}</h4>
-              <p className="mt-2 text-sm leading-7 text-slate-600">{selectedState.districtSummary.description}</p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {selectedState.districtSummary.districts.map((district) => (
-                  <span key={district} className="rounded-full bg-red-50 px-3 py-1 text-sm font-semibold text-red-900">
-                    {district}
-                  </span>
+              <div className="mt-4 space-y-2">
+                {selectedState.districts.map((district) => (
+                  <div key={district.name} className="flex items-center justify-between gap-3 rounded-2xl bg-slate-50 px-4 py-3">
+                    <span className="text-sm font-semibold text-slate-800">{district.name}</span>
+                    <span className="text-sm font-semibold text-slate-600">{district.womenTrained.toLocaleString('en-IN')} women trained</span>
+                  </div>
                 ))}
               </div>
             </section>
@@ -484,8 +493,7 @@ export default function InteractiveIndiaMap() {
   const [indiaGeography, setIndiaGeography] = useState(null);
   const [mapError, setMapError] = useState('');
   const [selectedState, setSelectedState] = useState(projectBhartiStates[0]);
-  const [activeStateName, setActiveStateName] = useState(projectBhartiStates[0].stateName);
-  const highlightedStateSet = useMemo(() => new Set(projectBhartiStateNames), []);
+  const [activeStateName, setActiveStateName] = useState(projectBhartiStates[0].mapName);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const shouldReduceMotion = useReducedMotion();
 
@@ -520,13 +528,13 @@ export default function InteractiveIndiaMap() {
     };
   }, []);
 
-  const handleStateSelect = (stateName) => {
-    const nextState = projectBhartiStateByName[stateName];
+  const handleStateSelect = (mapName) => {
+    const nextState = projectBhartiStateByMapName[mapName];
 
     if (!nextState) return;
 
     setSelectedState(nextState);
-    setActiveStateName(stateName);
+    setActiveStateName(mapName);
     setIsPanelOpen(true);
   };
 
@@ -551,9 +559,9 @@ export default function InteractiveIndiaMap() {
                   <button
                     key={stateKey}
                     type="button"
-                    onClick={() => handleStateSelect(state.stateName)}
+                    onClick={() => handleStateSelect(state.mapName)}
                     className={`group rounded-2xl border p-5 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-xl ${
-                      activeStateName === state.stateName
+                      activeStateName === state.mapName
                         ? 'border-red-200 bg-red-50'
                         : 'border-slate-200 bg-white'
                     }`}
@@ -596,7 +604,8 @@ export default function InteractiveIndiaMap() {
                     {({ geographies }) =>
                       geographies.map((geo) => {
                         const stateName = geo.properties.name;
-                        const isHighlighted = highlightedStateSet.has(stateName);
+                        const state = projectBhartiStateByMapName[stateName];
+                        const isHighlighted = Boolean(state);
                         const isActive = activeStateName === stateName;
 
                         return (
@@ -615,21 +624,21 @@ export default function InteractiveIndiaMap() {
                             }}
                             style={{
                               default: {
-                                fill: isActive ? '#7f1d1d' : isHighlighted ? '#b91c1c' : '#e2e8f0',
+                                fill: isHighlighted ? state.color : '#e2e8f0',
                                 stroke: '#ffffff',
-                                strokeWidth: isHighlighted ? 0.8 : 0.45,
+                                strokeWidth: isActive ? 1.15 : isHighlighted ? 0.8 : 0.45,
                                 outline: 'none',
                                 transition: shouldReduceMotion ? 'none' : 'fill 180ms ease, transform 180ms ease',
                               },
                               hover: {
-                                fill: isHighlighted ? '#991b1b' : '#cbd5e1',
+                                fill: isHighlighted ? brightenHexColor(state.color) : '#cbd5e1',
                                 stroke: '#ffffff',
                                 strokeWidth: isHighlighted ? 1.1 : 0.45,
                                 outline: 'none',
                                 cursor: isHighlighted ? 'pointer' : 'default',
                               },
                               pressed: {
-                                fill: '#7f1d1d',
+                                fill: isHighlighted ? state.color : '#cbd5e1',
                                 outline: 'none',
                               },
                             }}

@@ -1,6 +1,7 @@
 import * as mediaService from '../services/mediaService.js';
 import { ApiError } from '../utils/errors.js';
 import { sendSuccess } from '../utils/responses.js';
+import { assertSafeOwnerValue } from '../utils/validation.js';
 
 const VALID_ASSET_TYPES = new Set(['image', 'thumbnail', 'document', 'video']);
 
@@ -12,6 +13,8 @@ function assertValidAssetType(assetType) {
 
 export function getAsset(req, res) {
   const { ownerType, ownerId, assetType } = req.params;
+  assertSafeOwnerValue(ownerType, 'ownerType');
+  assertSafeOwnerValue(ownerId, 'ownerId');
   assertValidAssetType(assetType);
   const asset = mediaService.getAsset(ownerType, ownerId, assetType);
   sendSuccess(res, asset);
@@ -22,9 +25,12 @@ export function listAssetsByOwnerType(req, res) {
   if (!ownerType) {
     throw ApiError.badRequest('ownerType query parameter is required');
   }
+  assertSafeOwnerValue(ownerType, 'ownerType');
 
   if (req.query.ownerIds) {
     const ownerIds = String(req.query.ownerIds).split(',').filter(Boolean);
+    if (ownerIds.length > 500) throw ApiError.badRequest('too many ownerIds');
+    ownerIds.forEach((ownerId) => assertSafeOwnerValue(ownerId, 'ownerId'));
     sendSuccess(res, mediaService.getAssetsForOwners(ownerType, ownerIds));
     return;
   }
@@ -34,6 +40,8 @@ export function listAssetsByOwnerType(req, res) {
 
 export function uploadAsset(req, res) {
   const { ownerType, ownerId, assetType } = req.params;
+  assertSafeOwnerValue(ownerType, 'ownerType');
+  assertSafeOwnerValue(ownerId, 'ownerId');
   assertValidAssetType(assetType);
 
   if (!req.file) {
@@ -46,6 +54,8 @@ export function uploadAsset(req, res) {
 
 export function removeAsset(req, res) {
   const { ownerType, ownerId, assetType } = req.params;
+  assertSafeOwnerValue(ownerType, 'ownerType');
+  assertSafeOwnerValue(ownerId, 'ownerId');
   assertValidAssetType(assetType);
 
   const removed = mediaService.deleteAsset(ownerType, ownerId, assetType);

@@ -8,12 +8,14 @@ import Partners from '../components/Partners.jsx';
 import ProjectLeadership from '../components/ProjectLeadership.jsx';
 import ResourcesPreview from '../components/ResourcesPreview.jsx';
 import RouteLoadingState from '../components/RouteLoadingState.jsx';
+import SessionIntroVideo from '../components/SessionIntroVideo.jsx';
 
 const InteractiveIndiaMap = lazy(() => import('../components/InteractiveIndiaMap.jsx'));
 
 export default function Home() {
   return (
     <>
+      <SessionIntroVideo />
       <Hero />
       <AboutPreview />
       <Objectives />

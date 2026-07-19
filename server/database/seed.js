@@ -2,6 +2,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { runMigrations } from './migrate.js';
 import { getDb } from '../config/db.js';
+import { countTeamCategories, createCategory, createMember, getCategoryBySlug } from '../models/Team.js';
 
 /**
  * Mirrors the default content shipped in `src/data/resources.js` so the
@@ -150,6 +151,29 @@ const SEED_SECTIONS = [
   },
 ];
 
+const SEED_TEAM_CATEGORIES = [
+  {
+    title: 'Project Leadership',
+    slug: 'project-leadership',
+    description: 'Academic and implementation leadership guiding Project Bharti.',
+    displayOrder: 0,
+    members: [
+      { fullName: 'Prof. Seema Sharma', designation: 'Project Lead', displayOrder: 0 },
+      { fullName: 'Prof. Gourav Dwivedi', designation: 'Co-Project Lead', displayOrder: 1 },
+    ],
+  },
+  {
+    title: 'Development Team',
+    slug: 'development-team',
+    description: 'A multidisciplinary team contributing to research, technology, documentation, and implementation of Project Bharti.',
+    displayOrder: 1,
+    members: [
+      { fullName: 'Purari Sharma', designation: 'Research Associate', displayOrder: 0 },
+      { fullName: 'Shashank Kumar', designation: 'Research Associate', displayOrder: 1 },
+    ],
+  },
+];
+
 function upsertTag(db, name) {
   db.prepare('INSERT OR IGNORE INTO tags (name) VALUES (?)').run(name);
   const row = db.prepare('SELECT id FROM tags WHERE name = ?').get(name);
@@ -207,11 +231,46 @@ export function seedDatabase({ force = false } = {}) {
   return { seeded: true, sections: SEED_SECTIONS.length };
 }
 
+export function seedTeamDirectory({ force = false } = {}) {
+  runMigrations();
+
+  if (countTeamCategories() > 0 && !force) {
+    return { seeded: false, reason: 'already-seeded' };
+  }
+
+  SEED_TEAM_CATEGORIES.forEach((category) => {
+    const existingCategory = getCategoryBySlug(category.slug);
+    const savedCategory =
+      existingCategory ||
+      createCategory({
+        title: category.title,
+        slug: category.slug,
+        description: category.description,
+        displayOrder: category.displayOrder,
+        isActive: true,
+      });
+
+    category.members.forEach((member) => {
+      createMember({
+        categoryId: savedCategory.id,
+        fullName: member.fullName,
+        designation: member.designation,
+        displayOrder: member.displayOrder,
+        isActive: true,
+      });
+    });
+  });
+
+  return { seeded: true, categories: SEED_TEAM_CATEGORIES.length };
+}
+
 const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (isMain) {
   const force = process.argv.includes('--force');
   const result = seedDatabase({ force });
+  const teamResult = seedTeamDirectory({ force });
   console.log(result.seeded ? `Seeded ${result.sections} sections.` : `Skipped seeding (${result.reason}).`);
+  console.log(teamResult.seeded ? `Seeded ${teamResult.categories} team categories.` : `Skipped team seeding (${teamResult.reason}).`);
 }
 
 export { SEED_SECTIONS };

@@ -16,6 +16,20 @@ function toPublicUrl(absolutePath) {
   return `${env.uploadsPublicPath}/${relative}`;
 }
 
+function resolveUploadPathFromUrl(url) {
+  if (!url?.startsWith(`${env.uploadsPublicPath}/`)) return null;
+
+  const relative = url.replace(env.uploadsPublicPath, '').replace(/^\/+/, '');
+  const absolutePath = path.resolve(env.uploadsRoot, relative);
+  const uploadsRoot = path.resolve(env.uploadsRoot);
+
+  if (absolutePath !== uploadsRoot && !absolutePath.startsWith(`${uploadsRoot}${path.sep}`)) {
+    return null;
+  }
+
+  return absolutePath;
+}
+
 function toDto(row) {
   if (!row) return null;
   return {
@@ -33,9 +47,8 @@ function toDto(row) {
 }
 
 function unlinkIfExists(url) {
-  if (!url) return;
-  const relative = url.replace(env.uploadsPublicPath, '').replace(/^\/+/, '');
-  const absolutePath = path.join(env.uploadsRoot, relative);
+  const absolutePath = resolveUploadPathFromUrl(url);
+  if (!absolutePath) return;
   fs.unlink(absolutePath, () => {});
 }
 
@@ -90,9 +103,10 @@ export function duplicateAsset(ownerType, sourceOwnerId, targetOwnerId, assetTyp
   const source = getMediaAsset(ownerType, sourceOwnerId, assetType);
   if (!source || !source.url) return null;
 
-  const relative = source.url.replace(env.uploadsPublicPath, '').replace(/^\/+/, '');
-  const sourcePath = path.join(env.uploadsRoot, relative);
-  const folder = path.dirname(relative);
+  const sourcePath = resolveUploadPathFromUrl(source.url);
+  if (!sourcePath) return null;
+
+  const folder = path.relative(env.uploadsRoot, path.dirname(sourcePath));
   const newFileName = buildUniqueFileName(source.original_name || source.file_name);
   const targetPath = path.join(env.uploadsRoot, folder, newFileName);
 
