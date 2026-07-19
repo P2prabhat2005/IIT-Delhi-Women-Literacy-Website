@@ -25,7 +25,36 @@ async function parseResponse(response) {
     throw new ApiRequestError(message, response.status, body?.error?.code || 'REQUEST_FAILED');
   }
 
-  return body?.data ?? null;
+  const data = body?.data ?? null;
+  return resolveUrlsInObject(data);
+}
+
+function getFullMediaUrl(path) {
+  if (!path || typeof path !== 'string') return path;
+  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('blob:') || path.startsWith('data:')) return path;
+  
+  try {
+    const base = new URL(API_BASE, window.location.origin);
+    return new URL(path, base.origin).toString();
+  } catch {
+    return path;
+  }
+}
+
+function resolveUrlsInObject(obj) {
+  if (!obj || typeof obj !== 'object') return obj;
+  if (Array.isArray(obj)) {
+    obj.forEach(resolveUrlsInObject);
+  } else {
+    for (const key of Object.keys(obj)) {
+      if (key === 'url' && typeof obj[key] === 'string') {
+        obj[key] = getFullMediaUrl(obj[key]);
+      } else if (typeof obj[key] === 'object') {
+        resolveUrlsInObject(obj[key]);
+      }
+    }
+  }
+  return obj;
 }
 
 export async function apiGet(path, params) {
@@ -38,7 +67,7 @@ export async function apiGet(path, params) {
     });
   }
 
-  const response = await fetch(url.pathname + (url.search || ''), { credentials: 'include' });
+  const response = await fetch(url.toString(), { credentials: 'include' });
   return parseResponse(response);
 }
 
