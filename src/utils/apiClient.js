@@ -6,7 +6,15 @@
  * JSON/multipart handling only need to be defined once.
  */
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api';
+const FALLBACK_API_BASE = typeof window !== 'undefined' && !window.location.hostname.includes('localhost') && !window.location.hostname.includes('127.0.0.1')
+  ? 'https://project-bharti-api.onrender.com/api' 
+  : '/api';
+
+let base = (import.meta.env.VITE_API_BASE_URL || FALLBACK_API_BASE).replace(/\/$/, '');
+if (!base.endsWith('/api')) {
+  base += '/api';
+}
+const API_BASE = base;
 
 class ApiRequestError extends Error {
   constructor(message, status, code) {

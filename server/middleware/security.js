@@ -8,6 +8,7 @@ const NULL_BYTE = /\0/g;
 function isAllowedOrigin(origin) {
   if (!origin) return true;
   if (env.allowedCorsOrigins.includes(origin)) return true;
+  if (origin.endsWith('.vercel.app')) return true;
   return !env.isProduction && /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin);
 }
 
@@ -37,7 +38,7 @@ function rateLimitResponse(message) {
 
 export const authRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  limit: 10,
+  limit: 50,
   standardHeaders: true,
   legacyHeaders: false,
   message: rateLimitResponse('Too many authentication attempts. Please try again later.'),

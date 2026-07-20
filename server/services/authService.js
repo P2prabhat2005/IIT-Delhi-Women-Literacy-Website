@@ -37,7 +37,7 @@ export async function login(username, password) {
     throw ApiError.badRequest('Username and password are required.');
   }
 
-  const admin = findByUsername(username);
+  const admin = findByUsername(username.trim());
   if (!admin) {
     throw ApiError.unauthorized('Invalid username or password.');
   }

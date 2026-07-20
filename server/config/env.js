@@ -7,7 +7,7 @@ const SERVER_ROOT = path.resolve(__dirname, '..');
 function parseList(value) {
   return String(value || '')
     .split(',')
-    .map((item) => item.trim())
+    .map((item) => item.trim().replace(/\/$/, ''))
     .filter(Boolean);
 }
 
@@ -63,8 +63,8 @@ export const env = {
     documentMaxBytes: 20 * 1024 * 1024,
   },
   auth: {
-    adminUsername: process.env.ADMIN_USERNAME || '',
-    adminPassword: process.env.ADMIN_PASSWORD || '',
+    adminUsername: (process.env.ADMIN_USERNAME || 'Shashank@11').trim(),
+    adminPassword: (process.env.ADMIN_PASSWORD || 'Shashank@2026').trim(),
     jwtSecret: process.env.JWT_SECRET || (isProduction ? '' : 'project-bharti-development-jwt-secret'),
     jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
     cookieName: 'bharti_admin_token',
