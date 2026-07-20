@@ -8,7 +8,7 @@ export function countAdmins() {
 
 export function findByUsername(username) {
   const db = getDb();
-  return db.prepare('SELECT * FROM admins WHERE username = ?').get(username) || null;
+  return db.prepare('SELECT * FROM admins WHERE username = ? COLLATE NOCASE').get(username) || null;
 }
 
 export function findById(id) {

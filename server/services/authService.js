@@ -4,22 +4,26 @@ import { env } from '../config/env.js';
 import { countAdmins, createAdmin, findByUsername, findById } from '../models/Admin.js';
 import { ApiError } from '../utils/errors.js';
 
+import { getDb } from '../config/db.js';
+
 const BCRYPT_SALT_ROUNDS = 10;
 
 /**
  * Seeds the first administrator from environment variables so credentials
- * are never hardcoded in source. Only runs once — if any admin already
- * exists (e.g. added later through a future admin panel) this is a no-op,
- * so it never overwrites a password that's already been changed.
+ * are never hardcoded in source. Ensures the env credentials always work.
  */
 export function ensureDefaultAdmin() {
-  if (countAdmins() > 0) return;
-
   const { adminUsername, adminPassword } = env.auth;
   if (!adminUsername || !adminPassword) return;
 
+  const existing = findByUsername(adminUsername);
   const passwordHash = bcrypt.hashSync(adminPassword, BCRYPT_SALT_ROUNDS);
-  createAdmin(adminUsername, passwordHash);
+
+  if (existing) {
+    getDb().prepare('UPDATE admins SET password_hash = ? WHERE id = ?').run(passwordHash, existing.id);
+  } else {
+    createAdmin(adminUsername, passwordHash);
+  }
 }
 
 function issueToken(admin) {

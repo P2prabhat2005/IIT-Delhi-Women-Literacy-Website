@@ -3,10 +3,11 @@ import * as authService from '../services/authService.js';
 import { sendSuccess } from '../utils/responses.js';
 
 function cookieOptions() {
+  const isProduction = env.nodeEnv === 'production';
   return {
     httpOnly: true,
-    sameSite: 'lax',
-    secure: env.nodeEnv === 'production',
+    sameSite: isProduction ? 'none' : 'lax',
+    secure: isProduction,
     maxAge: env.auth.cookieMaxAgeMs,
     path: '/',
   };
