@@ -51,6 +51,38 @@ export async function login(username, password) {
   return { token, admin: { id: admin.id, username: admin.username } };
 }
 
+/**
+ * TEMPORARY DIAGNOSTIC — remove after the login issue is confirmed fixed.
+ * Returns DB path, stored admin rows (no hashes), and whether the env
+ * credentials currently match what is stored.
+ */
+export async function getAuthDiagnostics() {
+  const { adminUsername, adminPassword } = env.auth;
+  const admins = getDb()
+    .prepare('SELECT id, username, password_hash FROM admins')
+    .all();
+
+  const results = await Promise.all(
+    admins.map(async (a) => {
+      const match = await bcrypt.compare(adminPassword, a.password_hash);
+      return {
+        id: a.id,
+        username: a.username,
+        hashPrefix: a.password_hash ? a.password_hash.slice(0, 7) : null,
+        passwordMatchesEnvPassword: match,
+      };
+    }),
+  );
+
+  return {
+    dbFile: env.dbFile,
+    envUsername: adminUsername,
+    envPasswordLength: adminPassword.length,
+    adminCount: admins.length,
+    admins: results,
+  };
+}
+
 export function verifyToken(token) {
   try {
     const payload = jwt.verify(token, env.auth.jwtSecret);
