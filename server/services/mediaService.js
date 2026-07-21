@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { isCloudinaryConfigured } from '../config/cloudinary.js';
 import { env } from '../config/env.js';
 import { buildUniqueFileName } from '../utils/fileNaming.js';
 import {
@@ -10,6 +11,7 @@ import {
   removeMediaAsset,
   upsertMediaAsset,
 } from '../models/MediaAsset.js';
+import { deleteFromCloudinary, uploadToCloudinary } from './cloudinaryUpload.js';
 
 function toPublicUrl(absolutePath) {
   const relative = path.relative(env.uploadsRoot, absolutePath).split(path.sep).join('/');
@@ -43,6 +45,7 @@ function toDto(row) {
     sizeBytes: row.size_bytes,
     url: row.url,
     updatedAt: row.updated_at,
+    // publicId is stored internally but not exposed to maintain API compatibility
   };
 }
 
@@ -69,12 +72,49 @@ export function getAssetsByOwnerType(ownerType) {
   return listMediaByOwnerType(ownerType).map(toDto);
 }
 
-export function saveUploadedAsset(ownerType, ownerId, assetType, file) {
+export async function saveUploadedAsset(ownerType, ownerId, assetType, file) {
   const previous = getMediaAsset(ownerType, ownerId, assetType);
-  if (previous && previous.url) {
-    unlinkIfExists(previous.url);
+  
+  // Clean up previous asset (both local and Cloudinary)
+  if (previous) {
+    if (previous.public_id) {
+      // Previous asset was on Cloudinary
+      await deleteFromCloudinary(previous.public_id);
+    } else if (previous.url) {
+      // Previous asset was local
+      unlinkIfExists(previous.url);
+    }
   }
 
+  // Try Cloudinary first if configured, fallback to local
+  if (isCloudinaryConfigured()) {
+    try {
+      const cloudinaryResult = await uploadToCloudinary(file, ownerType, ownerId, assetType);
+      
+      const saved = upsertMediaAsset(ownerType, ownerId, assetType, {
+        fileName: file.filename,
+        originalName: file.originalname,
+        mimeType: file.mimetype,
+        sizeBytes: cloudinaryResult.sizeBytes,
+        url: cloudinaryResult.secureUrl,
+        publicId: cloudinaryResult.publicId,
+      });
+
+      // Clean up local temp file
+      try {
+        fs.unlinkSync(file.path);
+      } catch (error) {
+        // Ignore cleanup errors
+      }
+
+      return toDto(saved);
+    } catch (error) {
+      console.warn('Cloudinary upload failed, falling back to local storage:', error.message);
+      // Continue to local storage fallback below
+    }
+  }
+
+  // Local storage fallback (existing behavior)
   const url = toPublicUrl(file.path);
   const saved = upsertMediaAsset(ownerType, ownerId, assetType, {
     fileName: file.filename,
@@ -82,27 +122,55 @@ export function saveUploadedAsset(ownerType, ownerId, assetType, file) {
     mimeType: file.mimetype,
     sizeBytes: file.size,
     url,
+    publicId: null, // Local files don't have Cloudinary public_id
   });
 
   return toDto(saved);
 }
 
-export function deleteAsset(ownerType, ownerId, assetType) {
+export async function deleteAsset(ownerType, ownerId, assetType) {
   const removed = removeMediaAsset(ownerType, ownerId, assetType);
-  if (removed?.url) unlinkIfExists(removed.url);
+  
+  if (removed) {
+    if (removed.public_id) {
+      // Asset is on Cloudinary
+      await deleteFromCloudinary(removed.public_id);
+    } else if (removed.url) {
+      // Asset is local
+      unlinkIfExists(removed.url);
+    }
+  }
+  
   return toDto(removed);
 }
 
-export function deleteAllAssetsForOwner(ownerType, ownerId) {
+export async function deleteAllAssetsForOwner(ownerType, ownerId) {
   const removed = removeAllMediaForOwner(ownerType, ownerId);
-  removed.forEach((row) => unlinkIfExists(row.url));
+  
+  // Clean up both Cloudinary and local assets
+  await Promise.all(removed.map(async (row) => {
+    if (row.public_id) {
+      await deleteFromCloudinary(row.public_id);
+    } else if (row.url) {
+      unlinkIfExists(row.url);
+    }
+  }));
+  
   return removed.map(toDto);
 }
 
-export function duplicateAsset(ownerType, sourceOwnerId, targetOwnerId, assetType) {
+export async function duplicateAsset(ownerType, sourceOwnerId, targetOwnerId, assetType) {
   const source = getMediaAsset(ownerType, sourceOwnerId, assetType);
   if (!source || !source.url) return null;
 
+  // If source is on Cloudinary, we can't easily duplicate it without re-uploading
+  // For now, Cloudinary assets won't be duplicated (this matches the existing behavior for cross-region assets)
+  if (source.public_id) {
+    console.warn(`Cannot duplicate Cloudinary asset ${source.public_id} - duplication not supported for cloud assets`);
+    return null;
+  }
+
+  // Handle local assets (existing behavior)
   const sourcePath = resolveUploadPathFromUrl(source.url);
   if (!sourcePath) return null;
 
@@ -122,6 +190,7 @@ export function duplicateAsset(ownerType, sourceOwnerId, targetOwnerId, assetTyp
     mimeType: source.mime_type,
     sizeBytes: source.size_bytes,
     url: toPublicUrl(targetPath),
+    publicId: null, // Duplicated local file has no Cloudinary ID
   });
 
   return toDto(saved);

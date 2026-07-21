@@ -70,6 +70,11 @@ export const env = {
     cookieName: 'bharti_admin_token',
     cookieMaxAgeMs: 7 * 24 * 60 * 60 * 1000,
   },
+  cloudinary: {
+    cloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
+    apiKey: process.env.CLOUDINARY_API_KEY || '',
+    apiSecret: process.env.CLOUDINARY_API_SECRET || '',
+  },
 };
 
 export default env;

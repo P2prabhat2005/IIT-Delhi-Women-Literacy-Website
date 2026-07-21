@@ -38,7 +38,7 @@ export function listAssetsByOwnerType(req, res) {
   sendSuccess(res, mediaService.getAssetsByOwnerType(ownerType));
 }
 
-export function uploadAsset(req, res) {
+export async function uploadAsset(req, res) {
   const { ownerType, ownerId, assetType } = req.params;
   assertSafeOwnerValue(ownerType, 'ownerType');
   assertSafeOwnerValue(ownerId, 'ownerId');
@@ -48,16 +48,16 @@ export function uploadAsset(req, res) {
     throw ApiError.badRequest('No file uploaded');
   }
 
-  const asset = mediaService.saveUploadedAsset(ownerType, ownerId, assetType, req.file);
+  const asset = await mediaService.saveUploadedAsset(ownerType, ownerId, assetType, req.file);
   sendSuccess(res, asset);
 }
 
-export function removeAsset(req, res) {
+export async function removeAsset(req, res) {
   const { ownerType, ownerId, assetType } = req.params;
   assertSafeOwnerValue(ownerType, 'ownerType');
   assertSafeOwnerValue(ownerId, 'ownerId');
   assertValidAssetType(assetType);
 
-  const removed = mediaService.deleteAsset(ownerType, ownerId, assetType);
+  const removed = await mediaService.deleteAsset(ownerType, ownerId, assetType);
   sendSuccess(res, { removed: Boolean(removed) });
 }

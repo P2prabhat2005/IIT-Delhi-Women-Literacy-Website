@@ -25,9 +25,9 @@ export function updateCategory(req, res) {
   sendSuccess(res, data);
 }
 
-export function deleteCategory(req, res) {
+export async function deleteCategory(req, res) {
   assertSafeId(req.params.id, 'categoryId');
-  const data = teamService.deleteTeamCategory(req.params.id);
+  const data = await teamService.deleteTeamCategory(req.params.id);
   sendSuccess(res, data);
 }
 
@@ -44,26 +44,26 @@ export function updateMember(req, res) {
   sendSuccess(res, data);
 }
 
-export function deleteMember(req, res) {
+export async function deleteMember(req, res) {
   assertSafeId(req.params.id, 'memberId');
-  const data = teamService.deleteTeamMember(req.params.id);
+  const data = await teamService.deleteTeamMember(req.params.id);
   sendSuccess(res, data);
 }
 
-export function uploadMemberPhoto(req, res) {
+export async function uploadMemberPhoto(req, res) {
   assertSafeId(req.params.id, 'memberId');
 
   if (!req.file) {
     throw ApiError.badRequest('No file uploaded');
   }
 
-  const data = teamService.uploadTeamMemberPhoto(req.params.id, req.file);
+  const data = await teamService.uploadTeamMemberPhoto(req.params.id, req.file);
   sendSuccess(res, data);
 }
 
-export function removeMemberPhoto(req, res) {
+export async function removeMemberPhoto(req, res) {
   assertSafeId(req.params.id, 'memberId');
-  const removed = teamService.removeTeamMemberPhoto(req.params.id);
+  const removed = await teamService.removeTeamMemberPhoto(req.params.id);
   sendSuccess(res, { removed: Boolean(removed) });
 }
 

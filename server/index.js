@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
 import fs from 'node:fs';
+import { configureCloudinary } from './config/cloudinary.js';
 import { env } from './config/env.js';
 import { seedDatabase, seedTeamDirectory } from './database/seed.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
@@ -12,6 +13,7 @@ import apiRoutes from './routes/index.js';
 import { ensureDefaultAdmin } from './services/authService.js';
 
 validateSecurityConfig();
+configureCloudinary();
 fs.mkdirSync(env.uploadsRoot, { recursive: true });
 seedDatabase();
 seedTeamDirectory();

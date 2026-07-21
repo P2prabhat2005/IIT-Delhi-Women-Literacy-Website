@@ -146,15 +146,15 @@ export function updateResourceEntry(id, fields) {
   return getResourceDto(id);
 }
 
-export function deleteResourceEntry(id) {
+export async function deleteResourceEntry(id) {
   const existing = getById(id);
   if (!existing) throw ApiError.notFound(`Resource ${id} not found`);
 
   softDeleteResource(id);
-  deleteAllAssetsForOwner(RESOURCE_OWNER_TYPE, id);
+  await deleteAllAssetsForOwner(RESOURCE_OWNER_TYPE, id);
 }
 
-export function duplicateResourceEntry(id) {
+export async function duplicateResourceEntry(id) {
   const existing = getById(id);
   if (!existing) throw ApiError.notFound(`Resource ${id} not found`);
 
@@ -162,9 +162,9 @@ export function duplicateResourceEntry(id) {
   const tags = getTagsForResource(id);
   setResourceTags(duplicatedRow.id, tags);
 
-  ['thumbnail', 'document', 'video'].forEach((assetType) => {
-    duplicateAsset(RESOURCE_OWNER_TYPE, id, duplicatedRow.id, assetType);
-  });
+  await Promise.all(['thumbnail', 'document', 'video'].map((assetType) => 
+    duplicateAsset(RESOURCE_OWNER_TYPE, id, duplicatedRow.id, assetType)
+  ));
 
   return getResourceDto(duplicatedRow.id);
 }

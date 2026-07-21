@@ -30,24 +30,24 @@ export function listMediaByOwnerType(ownerType) {
   return db.prepare('SELECT * FROM media_assets WHERE owner_type = ?').all(ownerType);
 }
 
-export function upsertMediaAsset(ownerType, ownerId, assetType, { fileName, originalName, mimeType, sizeBytes, url }) {
+export function upsertMediaAsset(ownerType, ownerId, assetType, { fileName, originalName, mimeType, sizeBytes, url, publicId = null }) {
   const db = getDb();
   const existing = getMediaAsset(ownerType, ownerId, assetType);
 
   if (existing) {
     db.prepare(
       `UPDATE media_assets
-       SET file_name = ?, original_name = ?, mime_type = ?, size_bytes = ?, url = ?, updated_at = datetime('now')
+       SET file_name = ?, original_name = ?, mime_type = ?, size_bytes = ?, url = ?, public_id = ?, updated_at = datetime('now')
        WHERE id = ?`,
-    ).run(fileName, originalName, mimeType, sizeBytes, url, existing.id);
+    ).run(fileName, originalName, mimeType, sizeBytes, url, publicId, existing.id);
     return getMediaAsset(ownerType, ownerId, assetType);
   }
 
   const id = crypto.randomUUID();
   db.prepare(
-    `INSERT INTO media_assets (id, owner_type, owner_id, asset_type, file_name, original_name, mime_type, size_bytes, url)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-  ).run(id, ownerType, ownerId, assetType, fileName, originalName, mimeType, sizeBytes, url);
+    `INSERT INTO media_assets (id, owner_type, owner_id, asset_type, file_name, original_name, mime_type, size_bytes, url, public_id)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+  ).run(id, ownerType, ownerId, assetType, fileName, originalName, mimeType, sizeBytes, url, publicId);
 
   return getMediaAsset(ownerType, ownerId, assetType);
 }

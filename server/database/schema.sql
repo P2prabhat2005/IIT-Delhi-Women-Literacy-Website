@@ -61,6 +61,7 @@ CREATE TABLE IF NOT EXISTS media_assets (
   mime_type TEXT,
   size_bytes INTEGER,
   url TEXT NOT NULL,
+  public_id TEXT,
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 );

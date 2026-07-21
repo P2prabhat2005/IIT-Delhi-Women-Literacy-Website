@@ -42,15 +42,15 @@ export function updateResourceMetadata(req, res) {
   sendSuccess(res, data);
 }
 
-export function deleteResource(req, res) {
+export async function deleteResource(req, res) {
   assertSafeId(req.params.id, 'resourceId');
-  resourceService.deleteResourceEntry(req.params.id);
+  await resourceService.deleteResourceEntry(req.params.id);
   sendSuccess(res, { id: req.params.id, deleted: true });
 }
 
-export function duplicateResource(req, res) {
+export async function duplicateResource(req, res) {
   assertSafeId(req.params.id, 'resourceId');
-  const data = resourceService.duplicateResourceEntry(req.params.id);
+  const data = await resourceService.duplicateResourceEntry(req.params.id);
   sendCreated(res, data);
 }
 
@@ -62,20 +62,20 @@ export function reorderResources(req, res) {
 }
 
 function handleAssetUpload(assetType) {
-  return (req, res) => {
+  return async (req, res) => {
     ensureResourceExists(req.params.id);
     if (!req.file) {
       throw ApiError.badRequest('No file uploaded');
     }
-    const asset = mediaService.saveUploadedAsset(RESOURCE_OWNER_TYPE, req.params.id, assetType, req.file);
+    const asset = await mediaService.saveUploadedAsset(RESOURCE_OWNER_TYPE, req.params.id, assetType, req.file);
     sendSuccess(res, asset);
   };
 }
 
 function handleAssetRemove(assetType) {
-  return (req, res) => {
+  return async (req, res) => {
     ensureResourceExists(req.params.id);
-    const removed = mediaService.deleteAsset(RESOURCE_OWNER_TYPE, req.params.id, assetType);
+    const removed = await mediaService.deleteAsset(RESOURCE_OWNER_TYPE, req.params.id, assetType);
     sendSuccess(res, { removed: Boolean(removed) });
   };
 }

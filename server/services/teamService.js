@@ -119,10 +119,10 @@ export function updateTeamCategory(id, fields) {
   return toCategoryDto(updateCategory(id, updates));
 }
 
-export function deleteTeamCategory(id) {
+export async function deleteTeamCategory(id) {
   const category = requireCategory(id);
   const members = listMembers({ includeInactive: true }).filter((member) => member.category_id === id);
-  members.forEach((member) => deleteAllAssetsForOwner(TEAM_MEMBER_OWNER_TYPE, member.id));
+  await Promise.all(members.map((member) => deleteAllAssetsForOwner(TEAM_MEMBER_OWNER_TYPE, member.id)));
   deleteCategory(id);
   return { id: category.id, deleted: true };
 }
@@ -157,20 +157,20 @@ export function updateTeamMember(id, fields) {
   return toMemberDto(row, media[id]?.image || null);
 }
 
-export function deleteTeamMember(id) {
+export async function deleteTeamMember(id) {
   const member = requireMember(id);
-  deleteAllAssetsForOwner(TEAM_MEMBER_OWNER_TYPE, id);
+  await deleteAllAssetsForOwner(TEAM_MEMBER_OWNER_TYPE, id);
   deleteMember(id);
   return { id: member.id, deleted: true };
 }
 
-export function uploadTeamMemberPhoto(id, file) {
+export async function uploadTeamMemberPhoto(id, file) {
   requireMember(id);
-  return saveUploadedAsset(TEAM_MEMBER_OWNER_TYPE, id, 'image', file);
+  return await saveUploadedAsset(TEAM_MEMBER_OWNER_TYPE, id, 'image', file);
 }
 
-export function removeTeamMemberPhoto(id) {
+export async function removeTeamMemberPhoto(id) {
   requireMember(id);
-  return deleteAsset(TEAM_MEMBER_OWNER_TYPE, id, 'image');
+  return await deleteAsset(TEAM_MEMBER_OWNER_TYPE, id, 'image');
 }
 
