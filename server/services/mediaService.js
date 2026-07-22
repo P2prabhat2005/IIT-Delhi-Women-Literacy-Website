@@ -11,7 +11,7 @@ import {
   removeMediaAsset,
   upsertMediaAsset,
 } from '../models/MediaAsset.js';
-import { deleteFromCloudinary, uploadToCloudinary } from './cloudinaryUpload.js';
+import { deleteFromCloudinary, getPublicIdFromCloudinaryUrl, getResourceType, uploadToCloudinary } from './cloudinaryUpload.js';
 
 function toPublicUrl(absolutePath) {
   const relative = path.relative(env.uploadsRoot, absolutePath).split(path.sep).join('/');
@@ -55,6 +55,20 @@ function unlinkIfExists(url) {
   fs.unlink(absolutePath, () => {});
 }
 
+async function cleanupAsset(row) {
+  if (!row) return;
+
+  const publicId = row.public_id || getPublicIdFromCloudinaryUrl(row.url);
+  if (publicId) {
+    await deleteFromCloudinary(publicId, getResourceType(row.mime_type));
+    return;
+  }
+
+  if (row.url) {
+    unlinkIfExists(row.url);
+  }
+}
+
 export function getAsset(ownerType, ownerId, assetType) {
   return toDto(getMediaAsset(ownerType, ownerId, assetType));
 }
@@ -76,15 +90,7 @@ export async function saveUploadedAsset(ownerType, ownerId, assetType, file) {
   const previous = getMediaAsset(ownerType, ownerId, assetType);
   
   // Clean up previous asset (both local and Cloudinary)
-  if (previous) {
-    if (previous.public_id) {
-      // Previous asset was on Cloudinary
-      await deleteFromCloudinary(previous.public_id);
-    } else if (previous.url) {
-      // Previous asset was local
-      unlinkIfExists(previous.url);
-    }
-  }
+  await cleanupAsset(previous);
 
   // Try Cloudinary first if configured, fallback to local
   if (isCloudinaryConfigured()) {
@@ -131,15 +137,7 @@ export async function saveUploadedAsset(ownerType, ownerId, assetType, file) {
 export async function deleteAsset(ownerType, ownerId, assetType) {
   const removed = removeMediaAsset(ownerType, ownerId, assetType);
   
-  if (removed) {
-    if (removed.public_id) {
-      // Asset is on Cloudinary
-      await deleteFromCloudinary(removed.public_id);
-    } else if (removed.url) {
-      // Asset is local
-      unlinkIfExists(removed.url);
-    }
-  }
+  await cleanupAsset(removed);
   
   return toDto(removed);
 }
@@ -148,13 +146,7 @@ export async function deleteAllAssetsForOwner(ownerType, ownerId) {
   const removed = removeAllMediaForOwner(ownerType, ownerId);
   
   // Clean up both Cloudinary and local assets
-  await Promise.all(removed.map(async (row) => {
-    if (row.public_id) {
-      await deleteFromCloudinary(row.public_id);
-    } else if (row.url) {
-      unlinkIfExists(row.url);
-    }
-  }));
+  await Promise.all(removed.map(cleanupAsset));
   
   return removed.map(toDto);
 }

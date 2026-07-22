@@ -15,10 +15,32 @@ function getCloudinaryFolder(ownerType) {
   return FOLDER_MAPPING[ownerType] || 'project-bharti/misc';
 }
 
-function getResourceType(mimeType) {
+export function getResourceType(mimeType) {
   if (mimeType?.startsWith('image/')) return 'image';
   if (mimeType?.startsWith('video/')) return 'video';
   return 'raw'; // For PDFs and other documents
+}
+
+export function getPublicIdFromCloudinaryUrl(url) {
+  if (!url || typeof url !== 'string') return null;
+
+  try {
+    const parsedUrl = new URL(url);
+    if (parsedUrl.hostname !== 'res.cloudinary.com') return null;
+
+    const segments = parsedUrl.pathname.split('/').filter(Boolean);
+    const uploadIndex = segments.indexOf('upload');
+    if (uploadIndex === -1) return null;
+
+    const versionIndex = segments.findIndex((segment, index) => index > uploadIndex && /^v\d+$/.test(segment));
+    const publicIdSegments = segments.slice(versionIndex === -1 ? uploadIndex + 1 : versionIndex + 1);
+    if (!publicIdSegments.length) return null;
+
+    const publicIdWithExtension = publicIdSegments.join('/');
+    return decodeURIComponent(publicIdWithExtension.replace(/\.[^/.]+$/, ''));
+  } catch {
+    return null;
+  }
 }
 
 export async function uploadToCloudinary(file, ownerType, ownerId, assetType) {
@@ -56,13 +78,13 @@ export async function uploadToCloudinary(file, ownerType, ownerId, assetType) {
   }
 }
 
-export async function deleteFromCloudinary(publicId) {
+export async function deleteFromCloudinary(publicId, resourceType = 'image') {
   if (!isCloudinaryConfigured() || !publicId) {
     return false;
   }
 
   try {
-    const result = await cloudinary.uploader.destroy(publicId);
+    const result = await cloudinary.uploader.destroy(publicId, { resource_type: resourceType });
     return result.result === 'ok';
   } catch (error) {
     console.error('Cloudinary delete failed:', error);
