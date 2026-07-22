@@ -1,6 +1,7 @@
 import { ImageUp, LoaderCircle, Pencil, Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
+import { getOptimizedImageProps } from '../utils/cloudinaryImage.js';
 
 const acceptedTypes = new Set(['image/jpeg', 'image/png', 'image/webp']);
 const maxFileSize = 10 * 1024 * 1024;
@@ -15,6 +16,8 @@ export default function EditableImageSlot({
   emptyClassName = '',
   emptyTextClassName = '',
   image,
+  imageFallbackWidth = 1200,
+  imageSizes = '(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw',
   onChange,
   title = 'Official Project Photograph',
   wrapperClassName = '',
@@ -124,6 +127,9 @@ export default function EditableImageSlot({
 
   const hasPreview = Boolean(previewUrl);
   const showToolbar = isEditable && hasPreview;
+  const optimizedImage = hasPreview
+    ? getOptimizedImageProps(previewUrl, { fallbackWidth: imageFallbackWidth, sizes: imageSizes })
+    : null;
 
   return (
     <div className={wrapperClassName}>
@@ -151,8 +157,12 @@ export default function EditableImageSlot({
 
         {hasPreview ? (
           <img
-            src={previewUrl}
+            src={optimizedImage.src}
+            srcSet={optimizedImage.srcSet}
+            sizes={optimizedImage.sizes}
             alt={alt}
+            loading="lazy"
+            decoding="async"
             onLoad={() => {
               setIsLoading(false);
               requestAnimationFrame(() => setIsPreviewVisible(true));

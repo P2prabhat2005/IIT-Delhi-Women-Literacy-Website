@@ -23,6 +23,8 @@ function CollageTile({ index }) {
         ownerId={`about-collage-${index}`}
         title="Official Project Photograph"
         alt={`Research to field impact photograph ${index + 1}`}
+        imageFallbackWidth={640}
+        imageSizes="(min-width: 1024px) 20vw, (min-width: 640px) 33vw, 100vw"
         wrapperClassName="h-full w-full"
         className="h-full w-full rounded-[1.5rem] border border-[#E9E5DF] bg-slate-50 shadow-[0_18px_45px_rgba(15,23,42,0.10)]"
       />
@@ -107,6 +109,8 @@ export default function AboutPreview() {
                 ownerId="about-overview"
                 title="Official Project Photograph"
                 alt="Women participating in a Project Bharti activity"
+                imageFallbackWidth={960}
+                imageSizes="(min-width: 1024px) 32vw, 100vw"
                 aspectRatio="aspect-[4/5] lg:aspect-auto"
                 className="mt-8 w-full rounded-[1.5rem] border border-[#E9E5DF] bg-slate-50 shadow-[0_18px_45px_rgba(15,23,42,0.10)] lg:min-h-[430px]"
               />

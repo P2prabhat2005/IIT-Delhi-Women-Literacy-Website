@@ -1,29 +1,22 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { env } from '../config/env.js';
-import { createAdmin, findByUsername, findById } from '../models/Admin.js';
+import { countAdmins, createAdmin, findByUsername, findById } from '../models/Admin.js';
 import { ApiError } from '../utils/errors.js';
-
-import { getDb } from '../config/db.js';
 
 const BCRYPT_SALT_ROUNDS = 10;
 
 /**
- * Ensures exactly one administrator exists with the credentials configured
- * via ADMIN_USERNAME and ADMIN_PASSWORD (defaults: Shashank@11 / Shashank@2026).
- *
- * Strategy: wipe every existing admin row and re-create a single fresh one.
- * This guarantees that stale records from old env-var values (e.g. a previous
- * deployment where ADMIN_USERNAME was set to "admin") never block login.
+ * Seeds the first administrator from ADMIN_USERNAME and ADMIN_PASSWORD.
+ * Existing administrators are never overwritten during normal startup.
  */
 export function ensureDefaultAdmin() {
+  if (countAdmins() > 0) return;
+
   const { adminUsername, adminPassword } = env.auth;
   if (!adminUsername || !adminPassword) return;
 
   const passwordHash = bcrypt.hashSync(adminPassword, BCRYPT_SALT_ROUNDS);
-
-  const db = getDb();
-  db.prepare('DELETE FROM admins').run();
   createAdmin(adminUsername, passwordHash);
 }
 

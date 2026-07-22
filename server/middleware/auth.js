@@ -3,13 +3,7 @@ import { verifyToken } from '../services/authService.js';
 import { ApiError } from '../utils/errors.js';
 
 function extractToken(req) {
-  const cookieToken = req.cookies?.[env.auth.cookieName];
-  if (cookieToken) return cookieToken;
-
-  const header = req.headers.authorization || '';
-  if (header.startsWith('Bearer ')) return header.slice('Bearer '.length);
-
-  return null;
+  return req.cookies?.[env.auth.cookieName] || null;
 }
 
 /**

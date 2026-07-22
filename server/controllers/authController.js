@@ -18,7 +18,7 @@ export async function login(req, res) {
   const { token, admin } = await authService.login(username, password);
 
   res.cookie(env.auth.cookieName, token, cookieOptions());
-  sendSuccess(res, { admin, token });
+  sendSuccess(res, { admin });
 }
 
 export function logout(req, res) {

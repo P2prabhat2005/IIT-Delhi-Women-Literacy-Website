@@ -72,6 +72,10 @@ export default function Hero() {
           <img
             src={heroSectionBackgroundImage}
             alt=""
+            width="1024"
+            height="1536"
+            decoding="async"
+            fetchPriority="high"
             className="h-full w-full object-cover object-center opacity-[0.36] saturate-75"
           />
         ) : null}
@@ -101,14 +105,14 @@ export default function Hero() {
           <div className="mb-8 flex flex-wrap items-center gap-3" aria-label="Project collaborators">
             <div className="flex min-h-16 items-center gap-3 rounded-[16px] border border-[#E8E4DD] bg-[#F7F4EF] px-4 py-3 shadow-[0_8px_24px_rgba(15,23,42,0.06)] backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:shadow-lg">
               {iitDelhiLogo ? (
-                <img src={iitDelhiLogo} alt="IIT Delhi logo" className="h-9 w-auto object-contain" />
+                <img src={iitDelhiLogo} alt="IIT Delhi logo" width="1024" height="1024" decoding="async" className="h-9 w-auto object-contain" />
               ) : (
                 <span className="text-sm font-bold text-red-900">IIT Delhi</span>
               )}
             </div>
             <div className="flex min-h-16 items-center gap-3 rounded-[16px] border border-[#E8E4DD] bg-[#F7F4EF] px-4 py-3 shadow-[0_8px_24px_rgba(15,23,42,0.06)] backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:shadow-lg">
               {exlLogo ? (
-                <img src={exlLogo} alt="EXL logo" className="h-8 w-auto object-contain" />
+                <img src={exlLogo} alt="EXL logo" width="94" height="56" decoding="async" className="h-8 w-auto object-contain" />
               ) : (
                 <span className="text-sm font-bold text-orange-600">EXL</span>
               )}

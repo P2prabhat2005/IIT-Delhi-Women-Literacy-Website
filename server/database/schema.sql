@@ -35,6 +35,10 @@ CREATE TABLE IF NOT EXISTS resources (
 
 CREATE INDEX IF NOT EXISTS idx_resources_section ON resources(section_id);
 CREATE INDEX IF NOT EXISTS idx_resources_deleted ON resources(deleted_at);
+CREATE INDEX IF NOT EXISTS idx_resources_section_active_order
+  ON resources(section_id, deleted_at, order_index, created_at);
+CREATE INDEX IF NOT EXISTS idx_resources_active_order
+  ON resources(deleted_at, section_id, order_index, created_at);
 
 CREATE TABLE IF NOT EXISTS tags (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -85,6 +89,8 @@ CREATE TABLE IF NOT EXISTS team_categories (
 
 CREATE INDEX IF NOT EXISTS idx_team_categories_active_order
   ON team_categories(is_active, display_order);
+CREATE INDEX IF NOT EXISTS idx_team_categories_active_order_created
+  ON team_categories(is_active, display_order, created_at);
 
 CREATE TABLE IF NOT EXISTS team_members (
   id TEXT PRIMARY KEY,
@@ -99,6 +105,8 @@ CREATE TABLE IF NOT EXISTS team_members (
 
 CREATE INDEX IF NOT EXISTS idx_team_members_category_order
   ON team_members(category_id, is_active, display_order);
+CREATE INDEX IF NOT EXISTS idx_team_members_active_category_order_created
+  ON team_members(is_active, category_id, display_order, created_at);
 
 -- Administrators. Only bcrypt password hashes are stored, never plaintext.
 -- Designed to support multiple future admins without any schema change.

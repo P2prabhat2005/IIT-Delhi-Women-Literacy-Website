@@ -62,17 +62,52 @@ export function openDocumentInNewTab(url) {
   return true;
 }
 
+const pendingMediaAssetBatches = new Map();
+
+function getMediaAssetBatchKey(ownerType, assetType) {
+  return `${ownerType}::${assetType}`;
+}
+
+function queueMediaAssetBatch(ownerType, ownerId, assetType) {
+  const batchKey = getMediaAssetBatchKey(ownerType, assetType);
+  let batch = pendingMediaAssetBatches.get(batchKey);
+
+  if (!batch) {
+    batch = {
+      ownerIds: new Set(),
+      resolvers: new Map(),
+    };
+    pendingMediaAssetBatches.set(batchKey, batch);
+
+    const schedule = typeof queueMicrotask === 'function' ? queueMicrotask : (callback) => setTimeout(callback, 0);
+    schedule(async () => {
+      pendingMediaAssetBatches.delete(batchKey);
+      const ownerIds = [...batch.ownerIds];
+      const mediaMap = await fetchMediaMap(ownerType, ownerIds, assetType);
+
+      batch.resolvers.forEach((callbacks, queuedOwnerId) => {
+        callbacks.forEach((resolve) => resolve(mediaMap[queuedOwnerId] || null));
+      });
+    });
+  }
+
+  batch.ownerIds.add(ownerId);
+  if (!batch.resolvers.has(ownerId)) {
+    batch.resolvers.set(ownerId, []);
+  }
+
+  return new Promise((resolve) => {
+    batch.resolvers.get(ownerId).push(resolve);
+  });
+}
+
 /**
  * Fetches a single persisted media asset for a given owner/asset type, or
  * `null` when nothing has been uploaded yet.
  */
 export async function fetchMediaAsset(ownerType, ownerId, assetType = 'document') {
   if (!ownerType || !ownerId) return null;
-  try {
-    return await apiGet(`/media/${encodeURIComponent(ownerType)}/${encodeURIComponent(ownerId)}/${assetType}`);
-  } catch {
-    return null;
-  }
+  return queueMediaAssetBatch(ownerType, ownerId, assetType);
 }
 
 /**

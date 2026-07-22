@@ -1,15 +1,30 @@
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import { env } from '../config/env.js';
+import { ApiError } from '../utils/errors.js';
 
 const DANGEROUS_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
 const NULL_BYTE = /\0/g;
+const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
 
 function isAllowedOrigin(origin) {
   if (!origin) return true;
   if (env.allowedCorsOrigins.includes(origin)) return true;
-  if (origin.endsWith('.vercel.app')) return true;
   return !env.isProduction && /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin);
+}
+
+function getRequestOrigin(req) {
+  const origin = req.get('origin');
+  if (origin) return origin.replace(/\/$/, '');
+
+  const referer = req.get('referer');
+  if (!referer) return '';
+
+  try {
+    return new URL(referer).origin;
+  } catch {
+    return '';
+  }
 }
 
 export const corsOptions = {
@@ -84,6 +99,26 @@ export function sanitizeRequest(req, res, next) {
   next();
 }
 
+export function validateRequestOrigin(req, res, next) {
+  if (SAFE_METHODS.has(req.method)) {
+    next();
+    return;
+  }
+
+  const requestOrigin = getRequestOrigin(req);
+  if (requestOrigin && isAllowedOrigin(requestOrigin)) {
+    next();
+    return;
+  }
+
+  if (!env.isProduction && !requestOrigin) {
+    next();
+    return;
+  }
+
+  next(ApiError.forbidden('Request origin is not allowed.'));
+}
+
 export function validateSecurityConfig() {
   if (!env.auth.jwtSecret) {
     throw new Error('JWT_SECRET must be set in the server environment.');
@@ -91,5 +126,9 @@ export function validateSecurityConfig() {
 
   if (env.isProduction && env.allowedCorsOrigins.length === 0) {
     throw new Error('Set CORS_ORIGIN or PRODUCTION_FRONTEND_URL before starting the production server.');
+  }
+
+  if (env.isProduction && (!env.auth.adminUsername || !env.auth.adminPassword)) {
+    throw new Error('ADMIN_USERNAME and ADMIN_PASSWORD must be set in the production server environment.');
   }
 }

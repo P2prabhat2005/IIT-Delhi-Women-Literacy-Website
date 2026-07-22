@@ -57,6 +57,8 @@ function TeamPhotoSlot({ member, onRemovePhoto, onUploadPhoto, tone = 'light' })
       }}
       title="Profile Photo"
       alt={`${member.fullName} profile photograph`}
+      imageFallbackWidth={640}
+      imageSizes="(min-width: 1024px) 320px, (min-width: 768px) 50vw, 100vw"
       aspectRatio="aspect-[4/3]"
       emptyClassName={tone === 'dark' ? 'bg-white/[0.07]' : 'bg-red-50'}
       emptyTextClassName={tone === 'dark' ? 'text-slate-200' : ''}
@@ -218,6 +220,8 @@ function DarkCategory({ category, isAdminMode, teamActions }) {
           ownerId="dev-team-group"
           title="Official Project Photograph"
           alt="Development team group photograph"
+          imageFallbackWidth={1200}
+          imageSizes="(min-width: 1024px) 960px, 100vw"
           aspectRatio="aspect-[16/7]"
           emptyClassName="bg-white/[0.07]"
           emptyTextClassName="text-slate-200"

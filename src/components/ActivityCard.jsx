@@ -16,6 +16,8 @@ export default function ActivityCard({ description, Icon, image, items, title })
         image={image}
         title="Official Project Photograph"
         alt={`${title} activity photograph`}
+        imageFallbackWidth={640}
+        imageSizes="(min-width: 768px) 33vw, 100vw"
         className="h-44 w-full bg-slate-50"
       />
       <div className="p-6">

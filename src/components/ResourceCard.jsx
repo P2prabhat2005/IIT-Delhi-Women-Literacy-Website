@@ -12,6 +12,7 @@ import {
   Trash2,
   Video,
 } from 'lucide-react';
+import { getOptimizedImageProps } from '../utils/cloudinaryImage.js';
 import { IMAGE_ACCEPT, PDF_ACCEPT, VIDEO_ACCEPT } from '../utils/editableMediaStorage.js';
 import EditableAssetControl from './EditableAssetControl.jsx';
 
@@ -34,6 +35,13 @@ export default function ResourceCard({
   const hasDocument = Boolean(resource.document?.url);
   const hasVideo = Boolean(resource.video?.url);
   const hasResolvedMedia = (resource.kind === 'pdf' && hasDocument) || (resource.kind === 'video' && hasVideo);
+  const optimizedThumbnail = hasThumbnail
+    ? getOptimizedImageProps(resource.thumbnail.url, {
+        fallbackWidth: 640,
+        sizes: '(min-width: 1024px) 320px, (min-width: 768px) 33vw, 100vw',
+        widths: [320, 480, 640, 768],
+      })
+    : null;
 
   const handlePrimaryAction = () => {
     if (resource.kind === 'pdf' && hasDocument) {
@@ -107,7 +115,15 @@ export default function ResourceCard({
 
         {hasThumbnail ? (
           <div className="relative mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
-            <img src={resource.thumbnail.url} alt="" className="h-40 w-full object-cover" />
+            <img
+              src={optimizedThumbnail.src}
+              srcSet={optimizedThumbnail.srcSet}
+              sizes={optimizedThumbnail.sizes}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              className="h-40 w-full object-cover"
+            />
             {isAdminMode ? (
               <div className="absolute bottom-2 right-2 flex items-center gap-1 rounded-full bg-white/95 p-1 shadow-sm">
                 <EditableAssetControl
