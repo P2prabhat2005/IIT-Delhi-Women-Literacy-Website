@@ -7,8 +7,8 @@ function includeInactive(req) {
   return Boolean(req.admin && req.query.includeInactive === 'true');
 }
 
-export function listTeamDirectory(req, res) {
-  const data = teamService.listTeamDirectory({ includeInactive: includeInactive(req) });
+export async function listTeamDirectory(req, res) {
+  const data = await teamService.listTeamDirectory({ includeInactive: includeInactive(req) });
   sendSuccess(res, data);
 }
 
@@ -37,10 +37,10 @@ export function createMember(req, res) {
   sendCreated(res, data);
 }
 
-export function updateMember(req, res) {
+export async function updateMember(req, res) {
   assertSafeId(req.params.id, 'memberId');
   validateTeamMemberFields(req.body || {}, { partial: true });
-  const data = teamService.updateTeamMember(req.params.id, req.body || {});
+  const data = await teamService.updateTeamMember(req.params.id, req.body || {});
   sendSuccess(res, data);
 }
 

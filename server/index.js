@@ -6,39 +6,51 @@ import express from 'express';
 import fs from 'node:fs';
 import { configureCloudinary } from './config/cloudinary.js';
 import { env } from './config/env.js';
+import { runMigrations } from './database/migrate.js';
 import { seedDatabase, seedTeamDirectory } from './database/seed.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 import { corsOptions, sanitizeRequest, securityHeaders, validateRequestOrigin, validateSecurityConfig } from './middleware/security.js';
 import apiRoutes from './routes/index.js';
 import { ensureDefaultAdmin } from './services/authService.js';
 
-validateSecurityConfig();
-configureCloudinary();
-fs.mkdirSync(env.uploadsRoot, { recursive: true });
-seedDatabase();
-seedTeamDirectory();
-ensureDefaultAdmin();
+async function startServer() {
+  validateSecurityConfig();
+  configureCloudinary();
+  fs.mkdirSync(env.uploadsRoot, { recursive: true });
 
-const app = express();
+  // Run migrations before accepting traffic so startup never partially initializes.
+  await runMigrations();
 
-app.set('trust proxy', 1);
-app.disable('x-powered-by');
-app.use(securityHeaders);
-app.use(cors(corsOptions));
-app.use(cookieParser());
-app.use(express.json({ limit: env.jsonLimit, strict: true }));
-app.use(express.urlencoded({ extended: false, limit: env.jsonLimit }));
-app.use(sanitizeRequest);
-app.use(validateRequestOrigin);
-app.use(env.uploadsPublicPath, express.static(env.uploadsRoot));
+  seedDatabase();
+  seedTeamDirectory();
+  ensureDefaultAdmin();
 
-app.use('/api', apiRoutes);
+  const app = express();
 
-app.use(notFoundHandler);
-app.use(errorHandler);
+  app.set('trust proxy', 1);
+  app.disable('x-powered-by');
+  app.use(securityHeaders);
+  app.use(cors(corsOptions));
+  app.use(cookieParser());
+  app.use(express.json({ limit: env.jsonLimit, strict: true }));
+  app.use(express.urlencoded({ extended: false, limit: env.jsonLimit }));
+  app.use(sanitizeRequest);
+  app.use(validateRequestOrigin);
+  app.use(env.uploadsPublicPath, express.static(env.uploadsRoot));
 
-app.listen(env.port, () => {
-  if (!env.isProduction) {
-    console.log(`Project Bharti API listening on http://localhost:${env.port}`);
-  }
+  app.use('/api', apiRoutes);
+
+  app.use(notFoundHandler);
+  app.use(errorHandler);
+
+  app.listen(env.port, () => {
+    if (!env.isProduction) {
+      console.log(`Project Bharti API listening on http://localhost:${env.port}`);
+    }
+  });
+}
+
+startServer().catch((error) => {
+  console.error(`Project Bharti API failed to start: ${error.message}`);
+  process.exit(1);
 });

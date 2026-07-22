@@ -53,6 +53,8 @@ export const env = {
   ])),
   serverRoot: SERVER_ROOT,
   dbFile: process.env.DB_FILE || path.join(SERVER_ROOT, 'data', 'bharti.sqlite'),
+  databaseUrl: (process.env.DATABASE_URL || '').trim(),
+  databaseBackend: (process.env.DATABASE_BACKEND || 'sqlite').trim().toLowerCase(),
   uploadsRoot: process.env.UPLOADS_ROOT || path.join(SERVER_ROOT, 'uploads'),
   uploadsPublicPath: '/uploads',
   jsonLimit: process.env.JSON_BODY_LIMIT || '2mb',

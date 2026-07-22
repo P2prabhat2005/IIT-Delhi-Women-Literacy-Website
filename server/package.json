@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "project-bharti-server",
   "private": true,
   "version": "1.0.0",
@@ -9,6 +9,7 @@
     "start": "node index.js",
     "dev": "node --watch index.js",
     "migrate": "node database/migrate.js",
+    "migrate:postgres": "node database/migrate-postgres.js",
     "seed": "node database/seed.js"
   },
   "dependencies": {
@@ -20,6 +21,7 @@
     "express-rate-limit": "^7.5.0",
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
-    "multer": "^2.0.1"
+    "multer": "^2.0.1",
+    "pg": "^8.22.0"
   }
 }

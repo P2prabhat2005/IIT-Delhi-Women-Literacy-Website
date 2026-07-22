@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { runMigrations } from './migrate.js';
+import { runSqliteMigrations } from './migrate.js';
 import { getDb } from '../config/db.js';
 import { countTeamCategories, createCategory, createMember, getCategoryBySlug } from '../models/Team.js';
 
@@ -181,7 +181,7 @@ function upsertTag(db, name) {
 }
 
 export function seedDatabase({ force = false } = {}) {
-  const db = runMigrations();
+  const db = runSqliteMigrations();
 
   const existing = db.prepare('SELECT COUNT(*) AS count FROM sections').get();
   if (existing.count > 0 && !force) {
@@ -232,7 +232,7 @@ export function seedDatabase({ force = false } = {}) {
 }
 
 export function seedTeamDirectory({ force = false } = {}) {
-  runMigrations();
+  runSqliteMigrations();
 
   if (countTeamCategories() > 0 && !force) {
     return { seeded: false, reason: 'already-seeded' };

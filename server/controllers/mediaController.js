@@ -11,16 +11,16 @@ function assertValidAssetType(assetType) {
   }
 }
 
-export function getAsset(req, res) {
+export async function getAsset(req, res) {
   const { ownerType, ownerId, assetType } = req.params;
   assertSafeOwnerValue(ownerType, 'ownerType');
   assertSafeOwnerValue(ownerId, 'ownerId');
   assertValidAssetType(assetType);
-  const asset = mediaService.getAsset(ownerType, ownerId, assetType);
+  const asset = await mediaService.getAsset(ownerType, ownerId, assetType);
   sendSuccess(res, asset);
 }
 
-export function listAssetsByOwnerType(req, res) {
+export async function listAssetsByOwnerType(req, res) {
   const { ownerType } = req.query;
   if (!ownerType) {
     throw ApiError.badRequest('ownerType query parameter is required');
@@ -31,11 +31,11 @@ export function listAssetsByOwnerType(req, res) {
     const ownerIds = String(req.query.ownerIds).split(',').filter(Boolean);
     if (ownerIds.length > 500) throw ApiError.badRequest('too many ownerIds');
     ownerIds.forEach((ownerId) => assertSafeOwnerValue(ownerId, 'ownerId'));
-    sendSuccess(res, mediaService.getAssetsForOwners(ownerType, ownerIds));
+    sendSuccess(res, await mediaService.getAssetsForOwners(ownerType, ownerIds));
     return;
   }
 
-  sendSuccess(res, mediaService.getAssetsByOwnerType(ownerType));
+  sendSuccess(res, await mediaService.getAssetsByOwnerType(ownerType));
 }
 
 export async function uploadAsset(req, res) {

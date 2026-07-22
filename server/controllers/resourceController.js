@@ -14,31 +14,31 @@ function ensureResourceExists(id) {
   return resource;
 }
 
-export function listResources(req, res) {
+export async function listResources(req, res) {
   const { section, search, category } = req.query;
   if (section) assertSafeId(section, 'section');
   if (category) assertSafeId(category, 'category');
   if (search) assertSafeQueryString(search, 'search', 240);
-  const data = resourceService.listResources({ section: section || category, search });
+  const data = await resourceService.listResources({ section: section || category, search });
   sendSuccess(res, data);
 }
 
-export function getResource(req, res) {
+export async function getResource(req, res) {
   assertSafeId(req.params.id, 'resourceId');
-  const data = resourceService.getResourceDto(req.params.id);
+  const data = await resourceService.getResourceDto(req.params.id);
   sendSuccess(res, data);
 }
 
-export function createResource(req, res) {
+export async function createResource(req, res) {
   validateResourceFields(req.body);
-  const data = resourceService.createResourceEntry(req.body);
+  const data = await resourceService.createResourceEntry(req.body);
   sendCreated(res, data);
 }
 
-export function updateResourceMetadata(req, res) {
+export async function updateResourceMetadata(req, res) {
   assertSafeId(req.params.id, 'resourceId');
   validateResourceFields(req.body || {}, { partial: true });
-  const data = resourceService.updateResourceEntry(req.params.id, req.body || {});
+  const data = await resourceService.updateResourceEntry(req.params.id, req.body || {});
   sendSuccess(res, data);
 }
 
@@ -54,10 +54,10 @@ export async function duplicateResource(req, res) {
   sendCreated(res, data);
 }
 
-export function reorderResources(req, res) {
+export async function reorderResources(req, res) {
   const { sectionId, orderedIds } = req.body || {};
   validateReorderPayload(sectionId, orderedIds);
-  const data = resourceService.reorderResourcesInSection(sectionId, orderedIds);
+  const data = await resourceService.reorderResourcesInSection(sectionId, orderedIds);
   sendSuccess(res, data);
 }
 

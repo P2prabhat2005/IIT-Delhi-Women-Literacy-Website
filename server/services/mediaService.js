@@ -69,12 +69,12 @@ async function cleanupAsset(row) {
   }
 }
 
-export function getAsset(ownerType, ownerId, assetType) {
-  return toDto(getMediaAsset(ownerType, ownerId, assetType));
+export async function getAsset(ownerType, ownerId, assetType) {
+  return toDto(await getMediaAsset(ownerType, ownerId, assetType));
 }
 
-export function getAssetsForOwners(ownerType, ownerIds) {
-  const map = listMediaForOwners(ownerType, ownerIds);
+export async function getAssetsForOwners(ownerType, ownerIds) {
+  const map = await listMediaForOwners(ownerType, ownerIds);
   const result = {};
   Object.entries(map).forEach(([ownerId, assets]) => {
     result[ownerId] = Object.fromEntries(Object.entries(assets).map(([assetType, row]) => [assetType, toDto(row)]));
@@ -82,12 +82,12 @@ export function getAssetsForOwners(ownerType, ownerIds) {
   return result;
 }
 
-export function getAssetsByOwnerType(ownerType) {
-  return listMediaByOwnerType(ownerType).map(toDto);
+export async function getAssetsByOwnerType(ownerType) {
+  return (await listMediaByOwnerType(ownerType)).map(toDto);
 }
 
 export async function saveUploadedAsset(ownerType, ownerId, assetType, file) {
-  const previous = getMediaAsset(ownerType, ownerId, assetType);
+  const previous = await getMediaAsset(ownerType, ownerId, assetType);
   
   // Clean up previous asset (both local and Cloudinary)
   await cleanupAsset(previous);
@@ -97,7 +97,7 @@ export async function saveUploadedAsset(ownerType, ownerId, assetType, file) {
     try {
       const cloudinaryResult = await uploadToCloudinary(file, ownerType, ownerId, assetType);
       
-      const saved = upsertMediaAsset(ownerType, ownerId, assetType, {
+      const saved = await upsertMediaAsset(ownerType, ownerId, assetType, {
         fileName: file.filename,
         originalName: file.originalname,
         mimeType: file.mimetype,
@@ -122,7 +122,7 @@ export async function saveUploadedAsset(ownerType, ownerId, assetType, file) {
 
   // Local storage fallback (existing behavior)
   const url = toPublicUrl(file.path);
-  const saved = upsertMediaAsset(ownerType, ownerId, assetType, {
+  const saved = await upsertMediaAsset(ownerType, ownerId, assetType, {
     fileName: file.filename,
     originalName: file.originalname,
     mimeType: file.mimetype,
@@ -135,7 +135,7 @@ export async function saveUploadedAsset(ownerType, ownerId, assetType, file) {
 }
 
 export async function deleteAsset(ownerType, ownerId, assetType) {
-  const removed = removeMediaAsset(ownerType, ownerId, assetType);
+  const removed = await removeMediaAsset(ownerType, ownerId, assetType);
   
   await cleanupAsset(removed);
   
@@ -143,7 +143,7 @@ export async function deleteAsset(ownerType, ownerId, assetType) {
 }
 
 export async function deleteAllAssetsForOwner(ownerType, ownerId) {
-  const removed = removeAllMediaForOwner(ownerType, ownerId);
+  const removed = await removeAllMediaForOwner(ownerType, ownerId);
   
   // Clean up both Cloudinary and local assets
   await Promise.all(removed.map(cleanupAsset));
@@ -152,7 +152,7 @@ export async function deleteAllAssetsForOwner(ownerType, ownerId) {
 }
 
 export async function duplicateAsset(ownerType, sourceOwnerId, targetOwnerId, assetType) {
-  const source = getMediaAsset(ownerType, sourceOwnerId, assetType);
+  const source = await getMediaAsset(ownerType, sourceOwnerId, assetType);
   if (!source || !source.url) return null;
 
   // If source is on Cloudinary, we can't easily duplicate it without re-uploading
@@ -176,7 +176,7 @@ export async function duplicateAsset(ownerType, sourceOwnerId, targetOwnerId, as
     return null;
   }
 
-  const saved = upsertMediaAsset(ownerType, targetOwnerId, assetType, {
+  const saved = await upsertMediaAsset(ownerType, targetOwnerId, assetType, {
     fileName: newFileName,
     originalName: source.original_name,
     mimeType: source.mime_type,

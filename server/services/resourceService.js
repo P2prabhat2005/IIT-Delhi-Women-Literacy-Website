@@ -51,10 +51,10 @@ function toDto(row, { tags = [], media = {} } = {}) {
   };
 }
 
-function hydrateRows(rows) {
+async function hydrateRows(rows) {
   const ids = rows.map((row) => row.id);
   const tagsByResource = getTagsForResources(ids);
-  const mediaByResource = getAssetsForOwners(RESOURCE_OWNER_TYPE, ids);
+  const mediaByResource = await getAssetsForOwners(RESOURCE_OWNER_TYPE, ids);
 
   return rows.map((row) =>
     toDto(row, {
@@ -80,9 +80,9 @@ export function listSectionsWithMeta() {
   }));
 }
 
-export function listResources({ section, search } = {}) {
+export async function listResources({ section, search } = {}) {
   const rows = section ? listBySection(section) : listAllActive();
-  let hydrated = hydrateRows(rows);
+  let hydrated = await hydrateRows(rows);
 
   if (search) {
     const normalized = search.trim().toLowerCase();
@@ -99,14 +99,14 @@ export function listResources({ section, search } = {}) {
   return hydrated;
 }
 
-export function getResourceDto(id) {
+export async function getResourceDto(id) {
   const row = getById(id);
   if (!row) throw ApiError.notFound(`Resource ${id} not found`);
-  const [dto] = hydrateRows([row]);
+  const [dto] = await hydrateRows([row]);
   return dto;
 }
 
-export function createResourceEntry(fields) {
+export async function createResourceEntry(fields) {
   const sectionId = fields.category || fields.sectionId;
   requireSection(sectionId);
 
@@ -125,10 +125,10 @@ export function createResourceEntry(fields) {
   });
 
   setResourceTags(row.id, fields.tags || []);
-  return getResourceDto(row.id);
+  return await getResourceDto(row.id);
 }
 
-export function updateResourceEntry(id, fields) {
+export async function updateResourceEntry(id, fields) {
   const existing = getById(id);
   if (!existing) throw ApiError.notFound(`Resource ${id} not found`);
 
@@ -143,7 +143,7 @@ export function updateResourceEntry(id, fields) {
     setResourceTags(id, fields.tags || []);
   }
 
-  return getResourceDto(id);
+  return await getResourceDto(id);
 }
 
 export async function deleteResourceEntry(id) {
@@ -166,13 +166,13 @@ export async function duplicateResourceEntry(id) {
     duplicateAsset(RESOURCE_OWNER_TYPE, id, duplicatedRow.id, assetType)
   ));
 
-  return getResourceDto(duplicatedRow.id);
+  return await getResourceDto(duplicatedRow.id);
 }
 
-export function reorderResourcesInSection(sectionId, orderedIds) {
+export async function reorderResourcesInSection(sectionId, orderedIds) {
   requireSection(sectionId);
   reorderSection(sectionId, orderedIds);
-  return listResources({ section: sectionId });
+  return await listResources({ section: sectionId });
 }
 
 export { RESOURCE_OWNER_TYPE };

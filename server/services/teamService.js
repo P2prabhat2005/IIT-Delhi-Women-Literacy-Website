@@ -70,10 +70,10 @@ function toMemberDto(row, photo = null) {
   };
 }
 
-function hydrateDirectory({ includeInactive = false } = {}) {
+async function hydrateDirectory({ includeInactive = false } = {}) {
   const categories = listCategories({ includeInactive });
   const members = listMembers({ includeInactive });
-  const mediaByMember = getAssetsForOwners(TEAM_MEMBER_OWNER_TYPE, members.map((member) => member.id));
+  const mediaByMember = await getAssetsForOwners(TEAM_MEMBER_OWNER_TYPE, members.map((member) => member.id));
   const membersByCategory = members.reduce((map, member) => {
     if (!map[member.category_id]) map[member.category_id] = [];
     map[member.category_id].push(toMemberDto(member, mediaByMember[member.id]?.image || null));
@@ -83,8 +83,8 @@ function hydrateDirectory({ includeInactive = false } = {}) {
   return categories.map((category) => toCategoryDto(category, membersByCategory[category.id] || []));
 }
 
-export function listTeamDirectory({ includeInactive = false } = {}) {
-  return hydrateDirectory({ includeInactive });
+export async function listTeamDirectory({ includeInactive = false } = {}) {
+  return await hydrateDirectory({ includeInactive });
 }
 
 export function createTeamCategory(fields) {
@@ -139,7 +139,7 @@ export function createTeamMember(fields) {
   }));
 }
 
-export function updateTeamMember(id, fields) {
+export async function updateTeamMember(id, fields) {
   requireMember(id);
   const updates = {};
 
@@ -153,7 +153,7 @@ export function updateTeamMember(id, fields) {
   if (Object.prototype.hasOwnProperty.call(fields, 'isActive')) updates.is_active = fields.isActive;
 
   const row = updateMember(id, updates);
-  const media = getAssetsForOwners(TEAM_MEMBER_OWNER_TYPE, [id]);
+  const media = await getAssetsForOwners(TEAM_MEMBER_OWNER_TYPE, [id]);
   return toMemberDto(row, media[id]?.image || null);
 }
 
