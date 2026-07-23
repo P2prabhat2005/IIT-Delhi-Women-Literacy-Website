@@ -1,16 +1,39 @@
+import { lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { Network } from 'lucide-react';
+import Objectives from '../components/Objectives.jsx';
+import ProjectLeadership from '../components/ProjectLeadership.jsx';
+import RouteLoadingState from '../components/RouteLoadingState.jsx';
 import SectionTitle from '../components/SectionTitle.jsx';
 import { aboutProjectContent } from '../data/homepage.js';
+
+const InteractiveIndiaMap = lazy(() => import('../components/InteractiveIndiaMap.jsx'));
 
 export default function About() {
   return (
     <>
-      <section className="section bg-white" aria-labelledby="about-page-title">
+      <section className="section bg-white" aria-labelledby="about-project-bharti-intro-title">
+        <div className="site-container">
+          <SectionTitle
+            eyebrow="About"
+            id="about-project-bharti-intro-title"
+            description={aboutProjectContent.section.description}
+          >
+            About Project Bharti
+          </SectionTitle>
+          <p className="mx-auto mt-8 max-w-3xl text-center leading-8 text-slate-600">
+            {aboutProjectContent.overview.paragraphs[0]}
+          </p>
+        </div>
+      </section>
+
+      <ProjectLeadership />
+
+      <section className="section bg-white" aria-labelledby="research-to-field-impact-title">
         <div className="site-container">
           <SectionTitle
             eyebrow={aboutProjectContent.section.eyebrow}
-            id="about-page-title"
+            id="research-to-field-impact-title"
             description={aboutProjectContent.section.description}
           >
             {aboutProjectContent.section.title}
@@ -53,12 +76,12 @@ export default function About() {
         </div>
       </section>
 
-      <section className="section bg-slate-950 text-white" aria-labelledby="about-project-bharti-title">
+      <section className="section bg-slate-950 text-white" aria-labelledby="literacy-to-livelihood-title">
         <div className="site-container">
           <div className="grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:items-start">
             <SectionTitle
               eyebrow={aboutProjectContent.overview.eyebrow}
-              id="about-project-bharti-title"
+              id="literacy-to-livelihood-title"
               description={aboutProjectContent.overview.paragraphs[0]}
             >
               {aboutProjectContent.overview.title}
@@ -109,6 +132,12 @@ export default function About() {
           </div>
         </div>
       </section>
+
+      <Objectives />
+
+      <Suspense fallback={<RouteLoadingState />}>
+        <InteractiveIndiaMap />
+      </Suspense>
     </>
   );
 }

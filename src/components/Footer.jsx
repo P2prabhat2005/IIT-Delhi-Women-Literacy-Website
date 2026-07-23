@@ -25,7 +25,7 @@ export default function Footer() {
           </nav>
         </div>
         <div className="mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-6 text-sm text-slate-400">
-          <span>Official project website prototype for presentation and content planning.</span>
+          <span>&copy; {new Date().getFullYear()} Project Bharti. All Rights Reserved.</span>
           {isAdmin ? (
             <button type="button" onClick={logout} className="font-semibold text-slate-300 transition hover:text-white">
               Admin Mode &middot; Logout

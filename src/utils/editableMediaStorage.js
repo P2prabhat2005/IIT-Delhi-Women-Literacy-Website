@@ -75,7 +75,7 @@ function queueMediaAssetBatch(ownerType, ownerId, assetType) {
   if (!batch) {
     batch = {
       ownerIds: new Set(),
-      resolvers: new Map(),
+      waiters: new Map(),
     };
     pendingMediaAssetBatches.set(batchKey, batch);
 
@@ -83,21 +83,27 @@ function queueMediaAssetBatch(ownerType, ownerId, assetType) {
     schedule(async () => {
       pendingMediaAssetBatches.delete(batchKey);
       const ownerIds = [...batch.ownerIds];
-      const mediaMap = await fetchMediaMap(ownerType, ownerIds, assetType);
 
-      batch.resolvers.forEach((callbacks, queuedOwnerId) => {
-        callbacks.forEach((resolve) => resolve(mediaMap[queuedOwnerId] || null));
-      });
+      try {
+        const mediaMap = await fetchMediaMap(ownerType, ownerIds, assetType);
+        batch.waiters.forEach((callbacks, queuedOwnerId) => {
+          callbacks.forEach(({ resolve }) => resolve(mediaMap[queuedOwnerId] || null));
+        });
+      } catch (error) {
+        batch.waiters.forEach((callbacks) => {
+          callbacks.forEach(({ reject }) => reject(error));
+        });
+      }
     });
   }
 
   batch.ownerIds.add(ownerId);
-  if (!batch.resolvers.has(ownerId)) {
-    batch.resolvers.set(ownerId, []);
+  if (!batch.waiters.has(ownerId)) {
+    batch.waiters.set(ownerId, []);
   }
 
-  return new Promise((resolve) => {
-    batch.resolvers.get(ownerId).push(resolve);
+  return new Promise((resolve, reject) => {
+    batch.waiters.get(ownerId).push({ resolve, reject });
   });
 }
 
@@ -118,17 +124,15 @@ export async function fetchMediaAsset(ownerType, ownerId, assetType = 'document'
 export async function fetchMediaMap(ownerType, ownerIds = [], assetType = 'document') {
   if (!ownerType || !ownerIds.length) return {};
 
-  try {
-    const map = await apiGet('/media', { ownerType, ownerIds: ownerIds.join(',') });
-    return Object.entries(map || {}).reduce((result, [ownerId, assets]) => {
-      if (assets?.[assetType]) {
-        result[ownerId] = assets[assetType];
-      }
-      return result;
-    }, {});
-  } catch {
-    return {};
-  }
+  // Errors propagate to callers. Transient failures are retried inside apiGet;
+  // they must never be collapsed into {} ("no media exists").
+  const map = await apiGet('/media', { ownerType, ownerIds: ownerIds.join(',') });
+  return Object.entries(map || {}).reduce((result, [ownerId, assets]) => {
+    if (assets?.[assetType]) {
+      result[ownerId] = assets[assetType];
+    }
+    return result;
+  }, {});
 }
 
 const VALIDATORS = {

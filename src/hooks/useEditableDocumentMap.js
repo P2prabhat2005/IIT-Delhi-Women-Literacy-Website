@@ -13,9 +13,13 @@ export function useEditableDocumentMap(namespace, keys = []) {
   useEffect(() => {
     let cancelled = false;
 
-    fetchMediaMap(namespace, keys, 'document').then((map) => {
-      if (!cancelled) setDocuments(map);
-    });
+    fetchMediaMap(namespace, keys, 'document')
+      .then((map) => {
+        if (!cancelled) setDocuments(map);
+      })
+      .catch(() => {
+        // Keep prior/empty documents state; do not treat fetch failure as "no documents".
+      });
 
     return () => {
       cancelled = true;

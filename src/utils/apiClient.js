@@ -65,6 +65,22 @@ function resolveUrlsInObject(obj) {
   return obj;
 }
 
+const TRANSIENT_HTTP_STATUSES = new Set([502, 503, 504]);
+const GET_RETRY_ATTEMPTS = 5;
+const GET_RETRY_BASE_DELAY_MS = 1000;
+
+function isTransientGetError(error) {
+  if (!error) return false;
+  if (TRANSIENT_HTTP_STATUSES.has(error.status)) return true;
+  if (error.name === 'TypeError') return true;
+  const message = String(error.message || '');
+  return /failed to fetch|networkerror|load failed|network request failed/i.test(message);
+}
+
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export async function apiGet(path, params) {
   const url = new URL(`${API_BASE}${path}`, window.location.origin);
   if (params) {
@@ -75,8 +91,21 @@ export async function apiGet(path, params) {
     });
   }
 
-  const response = await fetch(url.toString(), { credentials: 'include' });
-  return parseResponse(response);
+  let lastError;
+
+  for (let attempt = 0; attempt < GET_RETRY_ATTEMPTS; attempt += 1) {
+    try {
+      const response = await fetch(url.toString(), { credentials: 'include' });
+      return await parseResponse(response);
+    } catch (error) {
+      lastError = error;
+      const shouldRetry = isTransientGetError(error) && attempt < GET_RETRY_ATTEMPTS - 1;
+      if (!shouldRetry) throw error;
+      await delay(GET_RETRY_BASE_DELAY_MS * 2 ** attempt);
+    }
+  }
+
+  throw lastError;
 }
 
 export async function apiSend(method, path, body) {

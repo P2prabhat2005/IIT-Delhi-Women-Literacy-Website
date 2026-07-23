@@ -28,6 +28,7 @@ India`,
   },
   {
     title: 'Research Collaboration',
+    value: '[Official research email — to be confirmed by Project Bharti]',
     detail: 'Connect with the Project Bharti team for academic collaboration, research partnerships, institutional engagement, and project-related enquiries.',
     Icon: Handshake,
   },

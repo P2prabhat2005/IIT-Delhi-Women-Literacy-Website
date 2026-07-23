@@ -36,6 +36,25 @@ const metricIconMap = {
   FileText,
 };
 
+function isLiveStatus(status) {
+  const normalized = String(status || '').trim().toLowerCase();
+  return normalized === 'active' || normalized === 'ongoing';
+}
+
+function StatusBadge({ status, className = '' }) {
+  const live = isLiveStatus(status);
+
+  return (
+    <span
+      className={`${className}${live ? ' status-badge-pulse' : ''}`}
+      aria-label={live ? `${status} status` : undefined}
+    >
+      {live ? <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-current" aria-hidden="true" /> : null}
+      {status}
+    </span>
+  );
+}
+
 const brightenHexColor = (color, amount = 0.12) => {
   const hex = color.replace('#', '');
 
@@ -323,9 +342,10 @@ function StatePanel({ onClose, selectedState }) {
                 <p className="text-sm font-bold uppercase tracking-[0.16em] text-red-800">Project Bharti</p>
                 <h3 id="state-sidebar-title" className="mt-2 text-3xl font-semibold text-slate-950">{selectedState.stateName}</h3>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  <span className="rounded-full border border-red-100 bg-red-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-red-900">
-                    {selectedState.status}
-                  </span>
+                  <StatusBadge
+                    status={selectedState.status}
+                    className="rounded-full border border-red-100 bg-red-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-red-900"
+                  />
                   <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600">
                     {selectedState.lastUpdated}
                   </span>
@@ -567,8 +587,7 @@ export default function InteractiveIndiaMap() {
                     }`}
                   >
                     <div className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-bold text-red-900 shadow-sm">
-                      <MapPin size={14} aria-hidden="true" />
-                      {state.status}
+                      <StatusBadge status={state.status} className="inline-flex items-center uppercase tracking-[0.04em]" />
                     </div>
                     <h3 className="mt-4 text-lg font-semibold text-slate-950">{state.stateName}</h3>
                     <p className="mt-2 text-sm leading-6 text-slate-600">{state.overview}</p>

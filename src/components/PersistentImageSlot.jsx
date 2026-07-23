@@ -18,11 +18,17 @@ export default function PersistentImageSlot({ image: fallbackImage, ownerId, ...
 
   useEffect(() => {
     let cancelled = false;
+    // Stay in loading state (undefined) until a successful response arrives.
     setOverrideUrl(undefined);
 
-    fetchMediaAsset(OWNER_TYPE, ownerId, 'image').then((asset) => {
-      if (!cancelled) setOverrideUrl(asset?.url || null);
-    });
+    fetchMediaAsset(OWNER_TYPE, ownerId, 'image')
+      .then((asset) => {
+        if (!cancelled) setOverrideUrl(asset?.url || null);
+      })
+      .catch(() => {
+        // Retries for transient failures happen in apiGet. After exhaustion,
+        // do not interpret failure as "no media exists" (null).
+      });
 
     return () => {
       cancelled = true;

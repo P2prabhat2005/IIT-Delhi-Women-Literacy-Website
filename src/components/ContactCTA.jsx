@@ -4,7 +4,7 @@ import { contactChannels, contactCtaContent } from '../data/homepage.js';
 
 export default function ContactCTA() {
   return (
-    <section aria-labelledby="contact-cta-title" className="section bg-white">
+    <section id="get-involved" aria-labelledby="contact-cta-title" className="section bg-white scroll-mt-24">
       <div className="site-container">
         <div className="rounded-[2rem] bg-red-900 p-8 text-white shadow-2xl shadow-red-950/20 md:p-12">
           <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">

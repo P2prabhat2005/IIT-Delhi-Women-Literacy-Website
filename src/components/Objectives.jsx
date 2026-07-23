@@ -76,7 +76,7 @@ export default function Objectives() {
       <div className="site-container relative">
         <SectionTitle
           align="center"
-          eyebrow="Project Objectives"
+          eyebrow="Project Objectives / Mandate"
           id="objectives-title"
           description="Project Bharti focuses on practical literacy, enterprise capability, and evidence-led community impact for women-led micro-enterprises."
         >
