@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Update each <loc> host to the production domain before launch. -->
   <url>
-    <loc>https://your-domain.example/</loc>
+    <loc>/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://your-domain.example/about</loc>
+    <loc>/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://your-domain.example/activities</loc>
+    <loc>/activities</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://your-domain.example/resources</loc>
+    <loc>/resources</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://your-domain.example/contact</loc>
+    <loc>/contact</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowUpRight, ChevronDown, Mail, MapPin, Phone, Send, Sparkles, UserRound } from 'lucide-react';
+import { ArrowUpRight, ChevronDown, Mail, MapPin, Send, Sparkles, UserRound } from 'lucide-react';
 import { contactFaqItems, contactHighlights, contactInfoCards } from '../data/contact.js';
 
 function ContactCard({ card }) {
@@ -226,14 +226,20 @@ export default function ContactPage() {
               <div key={item.question} className="rounded-[1.25rem] border border-slate-200 bg-slate-50">
                 <button
                   type="button"
+                  id={`faq-trigger-${index}`}
                   className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
                   onClick={() => setOpenFaq(isOpen ? -1 : index)}
                   aria-expanded={isOpen}
+                  aria-controls={`faq-panel-${index}`}
                 >
                   <span className="text-sm font-semibold text-slate-900">{item.question}</span>
                   <ChevronDown size={18} className={`shrink-0 text-slate-600 transition ${isOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
                 </button>
-                {isOpen ? <p className="px-5 pb-5 text-sm leading-7 text-slate-600">{item.answer}</p> : null}
+                {isOpen ? (
+                  <p id={`faq-panel-${index}`} role="region" aria-labelledby={`faq-trigger-${index}`} className="px-5 pb-5 text-sm leading-7 text-slate-600">
+                    {item.answer}
+                  </p>
+                ) : null}
               </div>
             );
           })}

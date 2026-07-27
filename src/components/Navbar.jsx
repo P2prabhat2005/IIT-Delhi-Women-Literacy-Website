@@ -3,6 +3,10 @@ import { useEffect, useRef, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { navItems } from '../data/navigation.js';
 
+function isHashNavItem(to) {
+  return String(to || '').includes('#');
+}
+
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const buttonRef = useRef(null);
@@ -45,18 +49,20 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/88 backdrop-blur-xl">
       <div className="site-container flex min-h-20 items-center justify-between gap-4 py-3">
-        <NavLink to="/" className="flex items-center gap-3 text-slate-950">
-          <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-red-900 text-sm font-bold text-white">
-            SHU
-          </span>
-          <span>
-            <span className="block text-sm font-bold uppercase text-slate-950">Project Bharti</span>
-          </span>
+        <NavLink to="/" className="text-slate-950">
+          <span className="block text-sm font-bold uppercase text-slate-950">Project Bharti</span>
         </NavLink>
 
         <nav aria-label="Primary navigation" className="hidden items-center gap-1 rounded-full border border-slate-200 bg-white p-1 shadow-sm md:flex">
           {navItems.map((item) => (
-            <NavLink key={item.to} to={item.to} className="nav-link">
+            <NavLink
+              key={item.to}
+              to={item.to}
+              aria-current={isHashNavItem(item.to) ? false : undefined}
+              className={({ isActive }) =>
+                `nav-link${!isHashNavItem(item.to) && isActive ? ' active' : ''}`
+              }
+            >
               {item.label}
             </NavLink>
           ))}
@@ -108,9 +114,10 @@ export default function Navbar() {
                   key={item.to}
                   to={item.to}
                   onClick={() => setIsMenuOpen(false)}
+                  aria-current={isHashNavItem(item.to) ? false : undefined}
                   className={({ isActive }) =>
                     `rounded-2xl px-4 py-3 text-sm font-semibold transition ${
-                      isActive
+                      !isHashNavItem(item.to) && isActive
                         ? 'bg-red-50 text-red-900'
                         : 'text-slate-700 hover:bg-slate-50 hover:text-slate-950'
                     }`

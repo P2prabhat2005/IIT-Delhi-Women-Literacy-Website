@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { labelToDocumentKey } from '../utils/editableMediaStorage.js';
+import { labelToImageKey } from '../data/siteImages.js';
 import PersistentImageSlot from './PersistentImageSlot.jsx';
 
 export default function ActivityCard({ description, Icon, image, items, title }) {
@@ -12,12 +12,10 @@ export default function ActivityCard({ description, Icon, image, items, title })
       className="group overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm shadow-slate-200/60 transition duration-300 hover:-translate-y-1 hover:shadow-xl"
     >
       <PersistentImageSlot
-        ownerId={`activity-card-${labelToDocumentKey(title)}`}
+        ownerId={`activity-card-${labelToImageKey(title)}`}
         image={image}
         title="Official Project Photograph"
         alt={`${title} activity photograph`}
-        imageFallbackWidth={640}
-        imageSizes="(min-width: 768px) 33vw, 100vw"
         className="h-44 w-full bg-slate-50"
       />
       <div className="p-6">

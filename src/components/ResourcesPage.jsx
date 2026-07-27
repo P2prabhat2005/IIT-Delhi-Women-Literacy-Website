@@ -1,46 +1,11 @@
-import { useMemo, useRef, useState } from 'react';
-import { FileText, Plus, PlayCircle, Search, X } from 'lucide-react';
-import { useAuth } from '../context/AuthContext.jsx';
-import { resourceCategoryOptions, resourceCollections } from '../data/resources.js';
-import { useResourceLibrary } from '../hooks/useResourceLibrary.js';
+import { useMemo, useState } from 'react';
+import { FileText, PlayCircle, Search, X } from 'lucide-react';
+import { resourceCategoryOptions, resourceCollections, getStaticResourceLibrary } from '../data/resources.js';
 import AccessibleModal from './AccessibleModal.jsx';
 import ResourceCard from './ResourceCard.jsx';
-import ResourceEditModal from './ResourceEditModal.jsx';
 
-const DEFAULT_KIND_BY_COLLECTION = {
-  'downloadable-pdfs': 'pdf',
-  videos: 'video',
-  'government-schemes': 'scheme',
-  'training-material': 'pdf',
-  'financial-literacy': 'pdf',
-  'digital-literacy': 'pdf',
-};
-
-function ResourceSection({ collection, editorState, isAdminMode, library, onOpenModal, onOpenVideo, resources }) {
+function ResourceSection({ collection, onOpenModal, onOpenVideo, resources }) {
   const { Icon, accent, description, id, title } = collection;
-  const dragState = useRef(null);
-
-  const handleDragStart = (event, resource) => {
-    dragState.current = resource.id;
-    event.dataTransfer.effectAllowed = 'move';
-  };
-
-  const handleDragOver = (event) => {
-    event.preventDefault();
-  };
-
-  const handleDrop = (event, targetResource) => {
-    event.preventDefault();
-    const draggedId = dragState.current;
-    if (!draggedId || draggedId === targetResource.id) return;
-    const fallbackOrder = resources.map((item) => item.id);
-    library.moveBefore(id, draggedId, targetResource.id, fallbackOrder);
-    dragState.current = null;
-  };
-
-  const handleDragEnd = () => {
-    dragState.current = null;
-  };
 
   return (
     <section id={id} className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/70 md:p-8">
@@ -53,16 +18,6 @@ function ResourceSection({ collection, editorState, isAdminMode, library, onOpen
           <h2 className="mt-4 text-2xl font-semibold text-slate-950">{title}</h2>
           <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">{description}</p>
         </div>
-        {isAdminMode ? (
-          <button
-            type="button"
-            onClick={() => editorState.openCreate(collection)}
-            className="inline-flex shrink-0 items-center gap-2 rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-          >
-            <Plus size={16} aria-hidden="true" />
-            Add Resource
-          </button>
-        ) : null}
       </div>
       <div className="mt-8 grid gap-4 lg:grid-cols-2">
         {resources.map((resource) => (
@@ -70,14 +25,8 @@ function ResourceSection({ collection, editorState, isAdminMode, library, onOpen
             key={resource.id}
             collection={collection}
             resource={resource}
-            isAdminMode={isAdminMode}
             onOpenModal={onOpenModal}
             onOpenVideo={onOpenVideo}
-            onEdit={editorState.handleCardAction}
-            onDragStart={handleDragStart}
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
-            onDragEnd={handleDragEnd}
           />
         ))}
       </div>
@@ -90,10 +39,15 @@ export default function ResourcesPage() {
   const [searchValue, setSearchValue] = useState('');
   const [activeModal, setActiveModal] = useState(null);
   const [activeVideo, setActiveVideo] = useState(null);
-  const [editorTarget, setEditorTarget] = useState(null);
 
-  const library = useResourceLibrary();
-  const { isAdmin: isAdminMode } = useAuth();
+  const library = useMemo(() => {
+    const resources = getStaticResourceLibrary();
+    return resources.reduce((map, resource) => {
+      if (!map[resource.collectionId]) map[resource.collectionId] = [];
+      map[resource.collectionId].push(resource);
+      return map;
+    }, {});
+  }, []);
 
   const filteredCollections = useMemo(() => {
     const normalizedQuery = searchValue.trim().toLowerCase();
@@ -101,7 +55,7 @@ export default function ResourcesPage() {
     return resourceCollections
       .map((collection) => ({
         ...collection,
-        resources: library.library[collection.id] || [],
+        resources: library[collection.id] || [],
       }))
       .filter((collection) => {
         const matchesCategory = activeCategory === 'all' || collection.id === activeCategory;
@@ -124,64 +78,7 @@ export default function ResourcesPage() {
 
         return haystack.includes(normalizedQuery);
       });
-  }, [activeCategory, library.library, searchValue]);
-
-  const editorState = {
-    openCreate: (collection) => {
-      setEditorTarget({
-        mode: 'create',
-        collectionId: collection.id,
-        resource: null,
-        kind: DEFAULT_KIND_BY_COLLECTION[collection.id] || 'pdf',
-      });
-    },
-    handleCardAction: (resource, action, file) => {
-      const { collectionId } = resource;
-
-      switch (action) {
-        case 'edit':
-          setEditorTarget({ mode: 'edit', collectionId, resource, kind: resource.kind });
-          break;
-        case 'duplicate':
-          library.duplicateResource(collectionId, resource);
-          break;
-        case 'delete':
-          if (window.confirm(`Delete "${resource.title}"? This cannot be undone.`)) {
-            library.deleteResource(collectionId, resource.id);
-          }
-          break;
-        case 'attach-thumbnail':
-          library.attachThumbnail(collectionId, resource, file);
-          break;
-        case 'remove-thumbnail':
-          library.removeThumbnail(collectionId, resource.id);
-          break;
-        case 'attach-document':
-          library.attachDocument(collectionId, resource, file);
-          break;
-        case 'remove-document':
-          library.removeDocument(collectionId, resource.id);
-          break;
-        case 'attach-video':
-          library.attachVideo(collectionId, resource, file);
-          break;
-        case 'remove-video':
-          library.removeVideo(collectionId, resource.id);
-          break;
-        default:
-          break;
-      }
-    },
-  };
-
-  const handleSaveEditor = (fields) => {
-    if (editorTarget.mode === 'create') {
-      library.addResource(editorTarget.collectionId, fields);
-    } else {
-      library.updateContent(editorTarget.collectionId, editorTarget.resource.id, fields);
-    }
-    setEditorTarget(null);
-  };
+  }, [activeCategory, library, searchValue]);
 
   return (
     <div className="space-y-8">
@@ -240,12 +137,6 @@ export default function ResourcesPage() {
         </div>
       </section>
 
-      {library.validationMessage ? (
-        <div role="alert" className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-800">
-          {library.validationMessage}
-        </div>
-      ) : null}
-
       <div className="space-y-6">
         {filteredCollections.length ? (
           filteredCollections.map((collection) => (
@@ -253,9 +144,6 @@ export default function ResourcesPage() {
               key={collection.id}
               collection={collection}
               resources={collection.resources}
-              isAdminMode={isAdminMode}
-              library={library}
-              editorState={editorState}
               onOpenModal={setActiveModal}
               onOpenVideo={setActiveVideo}
             />
@@ -344,16 +232,6 @@ export default function ResourcesPage() {
           </>
         ) : null}
       </AccessibleModal>
-
-      <ResourceEditModal
-        isOpen={Boolean(editorTarget)}
-        mode={editorTarget?.mode}
-        kind={editorTarget?.kind}
-        resource={editorTarget?.resource}
-        defaultCategory={editorTarget?.collectionId}
-        onClose={() => setEditorTarget(null)}
-        onSave={handleSaveEditor}
-      />
     </div>
   );
 }

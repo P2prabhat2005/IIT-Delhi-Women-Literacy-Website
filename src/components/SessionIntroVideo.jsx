@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import introVideoSrc from '../assets/hero/project-bharti-opening.mp4';
+import { createPortal } from 'react-dom';
 
+const INTRO_VIDEO_SRC = '/videos/project-bharti-opening.mp4';
 const INTRO_SESSION_KEY = 'project-bharti-opening-intro-played';
 const FADE_SECONDS = 0.85;
 const FADE_MS = 850;
@@ -211,19 +212,35 @@ export default function SessionIntroVideo() {
     }
 
     const { body, documentElement } = document;
+    const root = document.getElementById('root');
     const previousBodyOverflow = body.style.overflow;
     const previousHtmlOverflow = documentElement.style.overflow;
+    const previouslyInert = root?.hasAttribute('inert') ?? false;
 
     body.style.overflow = 'hidden';
     documentElement.style.overflow = 'hidden';
+    root?.setAttribute('inert', '');
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        removeIntro();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
 
     return () => {
       body.style.overflow = previousBodyOverflow;
       documentElement.style.overflow = previousHtmlOverflow;
+      if (root && !previouslyInert) {
+        root.removeAttribute('inert');
+      }
+      window.removeEventListener('keydown', handleKeyDown);
       window.clearTimeout(removeTimerRef.current);
       window.clearTimeout(readyFallbackTimerRef.current);
     };
-  }, [isVisible]);
+  }, [isVisible, removeIntro]);
 
   useEffect(() => {
     if (!isVisible) {
@@ -256,13 +273,14 @@ export default function SessionIntroVideo() {
     return null;
   }
 
-  return (
+  return createPortal(
     <div
       className={`fixed inset-0 z-[100] transform-gpu transition-opacity duration-[850ms] ease-out will-change-[opacity] ${
         isPlaying ? 'bg-transparent' : 'bg-black'
       } ${
         isFading ? 'opacity-0' : 'opacity-100'
       }`}
+      role="presentation"
       aria-hidden="true"
     >
       <video
@@ -270,7 +288,7 @@ export default function SessionIntroVideo() {
         className={`h-full w-full transform-gpu object-cover will-change-[opacity] ${
           isPlaying ? 'opacity-100' : 'opacity-0'
         }`}
-        src={introVideoSrc}
+        src={INTRO_VIDEO_SRC}
         muted
         playsInline
         preload="auto"
@@ -284,6 +302,7 @@ export default function SessionIntroVideo() {
         onEnded={handleVideoEnd}
         onError={removeIntro}
       />
-    </div>
+    </div>,
+    document.body,
   );
 }

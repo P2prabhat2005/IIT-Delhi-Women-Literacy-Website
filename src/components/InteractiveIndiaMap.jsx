@@ -7,23 +7,19 @@ import {
   Handshake,
   MapPin,
   Newspaper,
-  Pencil,
   PlayCircle,
-  Plus,
   ShieldCheck,
   Sparkles,
-  Trash2,
   UsersRound,
   X,
 } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
 import indiaGeographyUrl from '../assets/maps/india-states.geojson?url';
 import {
   projectBhartiStateByMapName,
   projectBhartiStates,
 } from '../data/stateImpact.js';
-import { useAuth } from '../context/AuthContext.jsx';
 import EditableImageSlot from './EditableImageSlot.jsx';
 import SectionTitle from './SectionTitle.jsx';
 
@@ -69,9 +65,6 @@ const brightenHexColor = (color, amount = 0.12) => {
 let mediaEntrySequence = 0;
 
 const createEntryId = (groupKey) => `${groupKey}-${Date.now()}-${mediaEntrySequence++}`;
-const releaseObjectUrl = (url) => {
-  if (url?.startsWith('blob:')) URL.revokeObjectURL(url);
-};
 
 function createMediaEntry(groupKey, item = {}) {
   const id = item.id || createEntryId(groupKey);
@@ -90,87 +83,46 @@ function createMediaContent(mediaGroups = []) {
   }), {});
 }
 
-const fieldClassName = 'mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-red-300 focus:ring-2 focus:ring-red-100';
-
-function EditorButton({ children, className = '', ...props }) {
+function EmptyMediaState({ label }) {
   return (
-    <button
-      type="button"
-      className={`inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 ${className}`}
-      {...props}
-    >
-      {children}
-    </button>
+    <div className="rounded-[1.1rem] border border-dashed border-slate-300 bg-white px-4 py-6 text-center text-sm font-semibold text-slate-500">
+      {label} will be added soon.
+    </div>
   );
 }
 
-function DrawerImageSlot({ image, ...props }) {
-  const initialImageRef = useRef(image || undefined);
-
-  return <EditableImageSlot image={initialImageRef.current} {...props} />;
-}
-
-function GalleryEditor({ entries, onChange, stateName }) {
-  const { isAdmin } = useAuth();
-  const [addSlotKey, setAddSlotKey] = useState(0);
+function GalleryViewer({ entries, stateName }) {
+  if (!entries.length) return <EmptyMediaState label="Gallery images" />;
 
   return (
     <div className="grid gap-3 sm:grid-cols-2">
       {entries.map((entry, index) => (
-        <DrawerImageSlot
+        <EditableImageSlot
           key={entry.id}
           image={entry.image}
-          onChange={(_file, image) => {
-            if (!image) {
-              releaseObjectUrl(entry.image);
-              onChange(entries.filter((item) => item.id !== entry.id));
-              return;
-            }
-            releaseObjectUrl(entry.image);
-            onChange(entries.map((item) => (item.id === entry.id ? { ...item, image } : item)));
-          }}
           title={`Gallery image ${index + 1}`}
           alt={`${stateName} gallery image ${index + 1}`}
           aspectRatio="aspect-[4/3]"
           className="rounded-xl border border-slate-200 bg-white shadow-sm"
         />
       ))}
-      {isAdmin ? (
-        <DrawerImageSlot
-          key={addSlotKey}
-          onChange={(_file, image) => {
-            if (!image) return;
-            onChange([...entries, createMediaEntry('gallery', { image })]);
-            setAddSlotKey((key) => key + 1);
-          }}
-          title="Add Image"
-          alt={`${stateName} gallery image`}
-          aspectRatio="aspect-[4/3]"
-          className="rounded-xl border border-dashed border-slate-300 bg-white shadow-sm"
-        />
-      ) : null}
     </div>
   );
 }
 
-function ActivityEditor({ entries, onChange, stateName }) {
-  const { isAdmin } = useAuth();
-  const updateEntry = (id, patch) => onChange(entries.map((entry) => (entry.id === id ? { ...entry, ...patch } : entry)));
+function ActivityViewer({ entries, stateName }) {
+  if (!entries.length) return <EmptyMediaState label="Activities" />;
 
   return (
     <div className="space-y-3">
       {entries.map((entry, index) => (
         <div key={entry.id} className="rounded-[1.1rem] border border-slate-200 bg-white p-3 shadow-sm">
-          <div className="flex items-center justify-between gap-3">
-            <p className="text-sm font-semibold text-slate-800">Activity {index + 1}</p>
-            {isAdmin ? <EditorButton onClick={() => onChange(entries.filter((item) => item.id !== entry.id))} aria-label={`Remove activity ${index + 1}`}><Trash2 size={13} aria-hidden="true" />Remove</EditorButton> : null}
-          </div>
-          <label className="mt-3 block text-xs font-semibold text-slate-600">Title<input className={fieldClassName} value={entry.title} onChange={(event) => updateEntry(entry.id, { title: event.target.value })} readOnly={!isAdmin} /></label>
-          <label className="mt-3 block text-xs font-semibold text-slate-600">Date<input type="date" className={fieldClassName} value={entry.date} onChange={(event) => updateEntry(entry.id, { date: event.target.value })} readOnly={!isAdmin} /></label>
-          <label className="mt-3 block text-xs font-semibold text-slate-600">Description<textarea className={`${fieldClassName} min-h-24 resize-y`} value={entry.description} onChange={(event) => updateEntry(entry.id, { description: event.target.value })} readOnly={!isAdmin} /></label>
-          <DrawerImageSlot
+          <p className="text-sm font-semibold text-slate-800">Activity {index + 1}</p>
+          {entry.title ? <h4 className="mt-3 text-base font-semibold text-slate-900">{entry.title}</h4> : null}
+          {entry.date ? <p className="mt-2 text-xs font-semibold text-slate-500">{entry.date}</p> : null}
+          {entry.description ? <p className="mt-3 text-sm leading-7 text-slate-600">{entry.description}</p> : null}
+          <EditableImageSlot
             image={entry.image}
-            onChange={(_file, image) => updateEntry(entry.id, { image })}
             title="Optional activity image"
             alt={`${stateName} activity ${index + 1}`}
             aspectRatio="aspect-[4/3]"
@@ -178,137 +130,182 @@ function ActivityEditor({ entries, onChange, stateName }) {
           />
         </div>
       ))}
-      {isAdmin ? <EditorButton onClick={() => onChange([...entries, createMediaEntry('activities')])}><Plus size={13} aria-hidden="true" />Add Activity</EditorButton> : null}
     </div>
   );
 }
 
-function VideosEditor({ entries, onChange }) {
-  const { isAdmin } = useAuth();
-  const updateEntry = (id, patch) => onChange(entries.map((entry) => (entry.id === id ? { ...entry, ...patch } : entry)));
+function VideosViewer({ entries }) {
+  if (!entries.length) return <EmptyMediaState label="Videos" />;
 
   return (
     <div className="space-y-3">
       {entries.map((entry, index) => (
         <div key={entry.id} className="rounded-[1.1rem] border border-slate-200 bg-white p-3 shadow-sm">
-          <div className="flex items-center justify-between gap-3">
-            <p className="inline-flex items-center gap-2 text-sm font-semibold text-slate-800"><PlayCircle size={15} aria-hidden="true" />Video {index + 1}</p>
-            {isAdmin ? <EditorButton onClick={() => onChange(entries.filter((item) => item.id !== entry.id))} aria-label={`Remove video ${index + 1}`}><Trash2 size={13} aria-hidden="true" />Remove</EditorButton> : null}
-          </div>
-          <label className="mt-3 block text-xs font-semibold text-slate-600">Title<input className={fieldClassName} value={entry.title} onChange={(event) => updateEntry(entry.id, { title: event.target.value })} readOnly={!isAdmin} /></label>
-          <label className="mt-3 block text-xs font-semibold text-slate-600">Video URL<input type="url" className={fieldClassName} value={entry.url} onChange={(event) => updateEntry(entry.id, { url: event.target.value })} readOnly={!isAdmin} /></label>
+          <p className="inline-flex items-center gap-2 text-sm font-semibold text-slate-800">
+            <PlayCircle size={15} aria-hidden="true" />
+            Video {index + 1}
+          </p>
+          {entry.title ? <h4 className="mt-3 text-base font-semibold text-slate-900">{entry.title}</h4> : null}
+          {entry.url ? (
+            <a
+              href={entry.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 inline-flex text-sm font-semibold text-red-900 underline-offset-2 hover:underline"
+            >
+              Watch video
+            </a>
+          ) : null}
         </div>
       ))}
-      {isAdmin ? <EditorButton onClick={() => onChange([...entries, createMediaEntry('videos')])}><Plus size={13} aria-hidden="true" />Add Video</EditorButton> : null}
     </div>
   );
 }
 
-function ResearchDocumentEditor({ entries, onChange }) {
-  const { isAdmin } = useAuth();
-  const updateEntry = (id, patch) => onChange(entries.map((entry) => (entry.id === id ? { ...entry, ...patch } : entry)));
-
-  return (
-    <div className="space-y-3">
-      {entries.map((entry, index) => (
-        <ResearchDocumentCard key={entry.id} entry={entry} index={index} onUpdate={(patch) => updateEntry(entry.id, patch)} onRemove={() => {
-          releaseObjectUrl(entry.url);
-          onChange(entries.filter((item) => item.id !== entry.id));
-        }} />
-      ))}
-      {isAdmin ? <EditorButton onClick={() => onChange([...entries, createMediaEntry('research')])}><Plus size={13} aria-hidden="true" />Add Document</EditorButton> : null}
-    </div>
-  );
-}
-
-function ResearchDocumentCard({ entry, index, onRemove, onUpdate }) {
-  const { isAdmin } = useAuth();
-  const inputRef = useRef(null);
-  const [validationMessage, setValidationMessage] = useState('');
-
-  const handleFile = (file) => {
-    if (!file) return;
-    if (file.type !== 'application/pdf') {
-      setValidationMessage('Use a PDF document.');
-      return;
-    }
-    releaseObjectUrl(entry.url);
-    setValidationMessage('');
-    onUpdate({ fileName: file.name, url: URL.createObjectURL(file) });
-  };
-
-  return (
-    <div className="rounded-[1.1rem] border border-slate-200 bg-white p-3 shadow-sm">
-      <div className="flex items-center justify-between gap-3">
-        <p className="inline-flex items-center gap-2 text-sm font-semibold text-slate-800"><FileText size={15} aria-hidden="true" />Document {index + 1}</p>
-        {isAdmin ? <EditorButton onClick={onRemove} aria-label={`Remove document ${index + 1}`}><Trash2 size={13} aria-hidden="true" />Remove</EditorButton> : null}
-      </div>
-      <label className="mt-3 block text-xs font-semibold text-slate-600">Title<input className={fieldClassName} value={entry.title} onChange={(event) => onUpdate({ title: event.target.value })} readOnly={!isAdmin} /></label>
-      {isAdmin ? (
-        <div className="mt-3 flex flex-wrap items-center gap-2">
-          <input ref={inputRef} type="file" accept="application/pdf" className="sr-only" onChange={(event) => { handleFile(event.target.files?.[0]); event.target.value = ''; }} />
-          <EditorButton onClick={() => inputRef.current?.click()}><Pencil size={13} aria-hidden="true" />{entry.url ? 'Replace PDF' : 'Upload PDF'}</EditorButton>
-          {entry.fileName ? <span className="max-w-full truncate text-xs text-slate-500">{entry.fileName}</span> : null}
-        </div>
-      ) : entry.fileName ? <p className="mt-3 text-xs text-slate-500">{entry.fileName}</p> : null}
-      {validationMessage ? <p role="alert" className="mt-2 text-xs font-medium text-red-800">{validationMessage}</p> : null}
-    </div>
-  );
-}
-
-function NewsEditor({ entries, onChange }) {
-  const { isAdmin } = useAuth();
-  const updateEntry = (id, patch) => onChange(entries.map((entry) => (entry.id === id ? { ...entry, ...patch } : entry)));
+function ResearchDocumentViewer({ entries }) {
+  if (!entries.length) return <EmptyMediaState label="Research documents" />;
 
   return (
     <div className="space-y-3">
       {entries.map((entry, index) => (
         <div key={entry.id} className="rounded-[1.1rem] border border-slate-200 bg-white p-3 shadow-sm">
-          <div className="flex items-center justify-between gap-3">
-            <p className="inline-flex items-center gap-2 text-sm font-semibold text-slate-800"><Newspaper size={15} aria-hidden="true" />News {index + 1}</p>
-            {isAdmin ? <EditorButton onClick={() => onChange(entries.filter((item) => item.id !== entry.id))} aria-label={`Remove news item ${index + 1}`}><Trash2 size={13} aria-hidden="true" />Remove</EditorButton> : null}
-          </div>
-          <label className="mt-3 block text-xs font-semibold text-slate-600">Title<input className={fieldClassName} value={entry.title} onChange={(event) => updateEntry(entry.id, { title: event.target.value })} readOnly={!isAdmin} /></label>
-          <label className="mt-3 block text-xs font-semibold text-slate-600">Date<input type="date" className={fieldClassName} value={entry.date} onChange={(event) => updateEntry(entry.id, { date: event.target.value })} readOnly={!isAdmin} /></label>
-          <label className="mt-3 block text-xs font-semibold text-slate-600">Description<textarea className={`${fieldClassName} min-h-24 resize-y`} value={entry.description} onChange={(event) => updateEntry(entry.id, { description: event.target.value })} readOnly={!isAdmin} /></label>
-          <label className="mt-3 block text-xs font-semibold text-slate-600">Optional Link<input type="url" className={fieldClassName} value={entry.link} onChange={(event) => updateEntry(entry.id, { link: event.target.value })} readOnly={!isAdmin} /></label>
+          <p className="inline-flex items-center gap-2 text-sm font-semibold text-slate-800">
+            <FileText size={15} aria-hidden="true" />
+            Document {index + 1}
+          </p>
+          {entry.title ? <h4 className="mt-3 text-base font-semibold text-slate-900">{entry.title}</h4> : null}
+          {entry.fileName ? <p className="mt-2 text-xs text-slate-500">{entry.fileName}</p> : null}
+          {entry.url ? (
+            <a
+              href={entry.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 inline-flex text-sm font-semibold text-red-900 underline-offset-2 hover:underline"
+            >
+              Open document
+            </a>
+          ) : null}
         </div>
       ))}
-      {isAdmin ? <EditorButton onClick={() => onChange([...entries, createMediaEntry('news')])}><Plus size={13} aria-hidden="true" />Add News</EditorButton> : null}
     </div>
   );
 }
 
-function MediaGroupEditor({ entries, group, onChange, stateName }) {
-  if (group.key === 'gallery') return <GalleryEditor entries={entries} onChange={onChange} stateName={stateName} />;
-  if (group.key === 'activities') return <ActivityEditor entries={entries} onChange={onChange} stateName={stateName} />;
-  if (group.key === 'videos') return <VideosEditor entries={entries} onChange={onChange} />;
-  if (group.key === 'research') return <ResearchDocumentEditor entries={entries} onChange={onChange} />;
-  return <NewsEditor entries={entries} onChange={onChange} />;
+function NewsViewer({ entries }) {
+  if (!entries.length) return <EmptyMediaState label="News" />;
+
+  return (
+    <div className="space-y-3">
+      {entries.map((entry, index) => (
+        <div key={entry.id} className="rounded-[1.1rem] border border-slate-200 bg-white p-3 shadow-sm">
+          <p className="inline-flex items-center gap-2 text-sm font-semibold text-slate-800">
+            <Newspaper size={15} aria-hidden="true" />
+            News {index + 1}
+          </p>
+          {entry.title ? <h4 className="mt-3 text-base font-semibold text-slate-900">{entry.title}</h4> : null}
+          {entry.date ? <p className="mt-2 text-xs font-semibold text-slate-500">{entry.date}</p> : null}
+          {entry.description ? <p className="mt-3 text-sm leading-7 text-slate-600">{entry.description}</p> : null}
+          {entry.link ? (
+            <a
+              href={entry.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 inline-flex text-sm font-semibold text-red-900 underline-offset-2 hover:underline"
+            >
+              Read more
+            </a>
+          ) : null}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function MediaGroupViewer({ entries, group, stateName }) {
+  if (group.key === 'gallery') return <GalleryViewer entries={entries} stateName={stateName} />;
+  if (group.key === 'activities') return <ActivityViewer entries={entries} stateName={stateName} />;
+  if (group.key === 'videos') return <VideosViewer entries={entries} />;
+  if (group.key === 'research') return <ResearchDocumentViewer entries={entries} />;
+  return <NewsViewer entries={entries} />;
 }
 
 function StatePanel({ onClose, selectedState }) {
   const [openSection, setOpenSection] = useState('gallery');
-  const [mediaContent, setMediaContent] = useState(() => createMediaContent(selectedState?.mediaGroups));
+  const mediaContent = useMemo(
+    () => createMediaContent(selectedState?.mediaGroups),
+    [selectedState],
+  );
   const closeButtonRef = useRef(null);
+  const dialogRef = useRef(null);
   const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
     setOpenSection('gallery');
-    setMediaContent(createMediaContent(selectedState?.mediaGroups));
   }, [selectedState]);
 
   useEffect(() => {
+    const { body, documentElement } = document;
+    const previousOverflow = body.style.overflow;
+    const previousPaddingRight = body.style.paddingRight;
+    const scrollbarWidth = window.innerWidth - documentElement.clientWidth;
+
+    body.style.overflow = 'hidden';
+    if (scrollbarWidth > 0) {
+      body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+
     closeButtonRef.current?.focus();
+
+    const focusableSelector = [
+      'a[href]',
+      'button:not([disabled])',
+      'input:not([disabled])',
+      'select:not([disabled])',
+      'textarea:not([disabled])',
+      '[tabindex]:not([tabindex="-1"])',
+    ].join(',');
 
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') {
+        event.preventDefault();
         onClose();
+        return;
+      }
+
+      if (event.key !== 'Tab') return;
+
+      const dialog = dialogRef.current;
+      if (!dialog) return;
+
+      const focusableElements = Array.from(dialog.querySelectorAll(focusableSelector)).filter(
+        (element) => element.getClientRects().length > 0,
+      );
+
+      if (!focusableElements.length) {
+        event.preventDefault();
+        dialog.focus();
+        return;
+      }
+
+      const firstFocusableElement = focusableElements[0];
+      const lastFocusableElement = focusableElements[focusableElements.length - 1];
+      const activeElement = document.activeElement;
+
+      if (event.shiftKey && (activeElement === firstFocusableElement || !dialog.contains(activeElement))) {
+        event.preventDefault();
+        lastFocusableElement.focus();
+      } else if (!event.shiftKey && (activeElement === lastFocusableElement || !dialog.contains(activeElement))) {
+        event.preventDefault();
+        firstFocusableElement.focus();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      body.style.overflow = previousOverflow;
+      body.style.paddingRight = previousPaddingRight;
+    };
   }, [onClose]);
 
   if (!selectedState) return null;
@@ -326,9 +323,11 @@ function StatePanel({ onClose, selectedState }) {
         onClick={onClose}
       >
         <motion.aside
+          ref={dialogRef}
           role="dialog"
           aria-modal="true"
-          aria-label={`${selectedState.stateName} project details`}
+          aria-labelledby="state-sidebar-title"
+          tabIndex={-1}
           className="absolute bottom-0 left-0 right-0 max-h-[88vh] overflow-y-auto rounded-t-[2rem] bg-white p-6 shadow-2xl md:bottom-auto md:left-auto md:top-0 md:h-full md:max-h-none md:w-[440px] md:rounded-l-[2rem] md:rounded-tr-none md:p-8"
           initial={{ y: '100%', x: 0 }}
           animate={{ y: 0, x: 0 }}
@@ -466,9 +465,11 @@ function StatePanel({ onClose, selectedState }) {
                     <div key={group.key} className="rounded-[1.15rem] border border-slate-200 bg-slate-50">
                       <button
                         type="button"
+                        id={`state-media-trigger-${group.key}`}
                         className="flex w-full items-center justify-between gap-3 px-4 py-4 text-left"
                         onClick={() => setOpenSection(isOpen ? '' : group.key)}
                         aria-expanded={isOpen}
+                        aria-controls={`state-media-panel-${group.key}`}
                       >
                         <span className="text-sm font-semibold text-slate-900">
                           {group.label} ({entries.length})
@@ -476,15 +477,11 @@ function StatePanel({ onClose, selectedState }) {
                         <ChevronDown size={16} className={`shrink-0 text-slate-600 transition ${isOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
                       </button>
                       {isOpen ? (
-                        <div className="px-4 pb-4">
-                          <MediaGroupEditor
+                        <div id={`state-media-panel-${group.key}`} className="px-4 pb-4" role="region" aria-labelledby={`state-media-trigger-${group.key}`}>
+                          <MediaGroupViewer
                             entries={entries}
                             group={group}
                             stateName={selectedState.stateName}
-                            onChange={(nextEntries) => setMediaContent((current) => ({
-                              ...current,
-                              [group.key]: nextEntries,
-                            }))}
                           />
                         </div>
                       ) : null}

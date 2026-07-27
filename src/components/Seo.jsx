@@ -1,16 +1,16 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { siteSettings } from '../data/settings.js';
 
-const siteName = 'Project Bharti';
-const siteTitleSuffix = 'IIT Delhi';
-const siteBaseUrl = 'https://your-domain.example';
+const siteName = siteSettings.siteName;
+const siteTitleSuffix = siteSettings.siteTitleSuffix;
 
-function titleCase(value) {
-  return value
-    .split('-')
-    .filter(Boolean)
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+function getSiteBaseUrl() {
+  if (typeof window !== 'undefined' && window.location?.origin) {
+    return window.location.origin;
+  }
+
+  return String(siteSettings.baseUrl || '').replace(/\/$/, '');
 }
 
 function getPageMeta(pathname) {
@@ -20,7 +20,7 @@ function getPageMeta(pathname) {
     return {
       title: `${siteName} | ${siteTitleSuffix}`,
       description:
-        'Project Bharti is an IIT Delhi initiative focused on digital and financial literacy, women-led entrepreneurship, and community-led capacity building.',
+        'Project Bharti focuses on digital and financial literacy, women-led entrepreneurship, and community-led capacity building.',
     };
   }
 
@@ -56,31 +56,10 @@ function getPageMeta(pathname) {
     };
   }
 
-  if (normalizedPath.startsWith('/states/')) {
-    const stateName = decodeURIComponent(normalizedPath.split('/states/')[1] || '');
-    const formattedState = titleCase(stateName);
-
-    return {
-      title: `${formattedState} | ${siteName} | ${siteTitleSuffix}`,
-      description: `View Project Bharti progress, focus areas, and implementation context for ${formattedState}.`,
-    };
-  }
-
   return {
     title: `Page Not Found | ${siteName} | ${siteTitleSuffix}`,
     description: 'The page you requested could not be found on the Project Bharti website.',
   };
-}
-
-function setMetaTag(name, content, attributes = {}) {
-  const element = document.querySelector(`meta[${name}]`) || document.createElement('meta');
-  Object.entries(attributes).forEach(([key, value]) => {
-    element.setAttribute(key, value);
-  });
-  element.setAttribute(name, content);
-  if (!element.parentNode) {
-    document.head.appendChild(element);
-  }
 }
 
 export default function Seo() {
@@ -88,7 +67,8 @@ export default function Seo() {
 
   useEffect(() => {
     const { description, title } = getPageMeta(location.pathname);
-    const canonicalUrl = `${siteBaseUrl}${location.pathname === '/' ? '' : location.pathname}`;
+    const baseUrl = getSiteBaseUrl();
+    const canonicalUrl = `${baseUrl}${location.pathname === '/' ? '' : location.pathname}`;
 
     document.title = title;
     document.querySelector('meta[name="description"]')?.setAttribute('content', description);

@@ -6,7 +6,7 @@ import ActivityTimeline from '../components/ActivityTimeline.jsx';
 import SectionTitle from '../components/SectionTitle.jsx';
 import { activitiesPageContent } from '../data/activities.js';
 
-const activityImages = import.meta.glob('../assets/activities/*.{png,jpg,jpeg,webp,avif}', {
+const activityImages = import.meta.glob('../assets/images/activities/**/*.{png,jpg,jpeg,webp,avif}', {
   eager: true,
   import: 'default',
   query: '?url',

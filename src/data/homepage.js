@@ -16,18 +16,12 @@ import {
 } from 'lucide-react';
 import { projectBhartiStateNames, projectBhartiTotals } from './stateImpact.js';
 
-export const impactMetrics = [
-  { value: projectBhartiTotals.stateCount.toLocaleString('en-IN'), label: 'Current states' },
-  { value: projectBhartiTotals.totalDistricts.toLocaleString('en-IN'), label: 'Districts covered' },
-  { value: projectBhartiTotals.totalWomenTrained.toLocaleString('en-IN'), label: 'Women trained' },
-];
-
 export const heroContent = {
-  eyebrow: 'IIT Delhi Research Project',
+  eyebrow: 'Project Bharti',
   title: 'Project Bharti',
   subtitle: 'Empowering Micro-Level Women Entrepreneurs through Financial and Digital Literacy',
   description:
-    'Project Bharti is an IIT Delhi initiative with EXL focused on strengthening SHG-linked women entrepreneurs through financial literacy, digital literacy, entrepreneurship support, and capacity building for community impact.',
+    'Project Bharti strengthens SHG-linked women entrepreneurs through financial literacy, digital literacy, entrepreneurship support, and capacity building for community impact.',
   primaryCta: {
     label: 'Explore Project',
     to: '/about',
@@ -44,7 +38,7 @@ export const heroContent = {
   visual: {
     eyebrow: 'Research to field impact',
     title: 'Building capability for women-led micro-enterprises',
-    footerNote: 'IIT Delhi x EXL collaboration',
+    footerNote: 'Research-led community impact',
   },
   pillars: [
     { label: 'Financial literacy', Icon: Landmark },
@@ -165,13 +159,6 @@ export const objectiveImpactHighlights = [
     value: projectBhartiTotals.totalWomenTrained,
     helper: 'Across current project states',
   },
-];
-
-export const states = [
-  { name: 'Delhi NCR', focus: 'Urban micro-enterprises', tone: 'bg-red-50 text-red-800' },
-  { name: 'Rajasthan', focus: 'Self-help group networks', tone: 'bg-amber-50 text-amber-800' },
-  { name: 'Uttar Pradesh', focus: 'Emerging market clusters', tone: 'bg-emerald-50 text-emerald-800' },
-  { name: 'Maharashtra', focus: 'Digital payment adoption', tone: 'bg-sky-50 text-sky-800' },
 ];
 
 export const activities = [

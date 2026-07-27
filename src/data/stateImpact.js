@@ -11,7 +11,6 @@ const createStateProfile = ({
   mapName,
   stateName,
   color,
-  isProjectTotal = false,
   status,
   overview,
   focusAreas,
@@ -26,7 +25,6 @@ const createStateProfile = ({
     mapName,
     stateName,
     color,
-    isProjectTotal,
     districts,
     totalDistricts,
     totalWomenTrained,
@@ -92,7 +90,6 @@ export const projectBhartiStates = [
     mapName: 'Delhi',
     stateName: 'Delhi',
     color: '#dc2626',
-    isProjectTotal: true,
     status: 'Active',
     overview: 'Urban and peri-urban engagement focused on women-led micro-enterprises, SHG networks, and practical adoption of financial and digital tools.',
     focusAreas: [
@@ -101,16 +98,8 @@ export const projectBhartiStates = [
       'Enable enterprise readiness through community training',
     ],
     districts: [
-      { name: 'Hamirpur', womenTrained: 61 },
-      { name: 'Haridwar', womenTrained: 116 },
-      { name: 'Lucknow', womenTrained: 50 },
       { name: 'North Delhi', womenTrained: 42 },
-      { name: 'Nuh', womenTrained: 69 },
-      { name: 'Palwal', womenTrained: 56 },
-      { name: 'Prayagraj', womenTrained: 78 },
-      { name: 'Shimla', womenTrained: 33 },
       { name: 'South Delhi', womenTrained: 106 },
-      { name: 'Narkanda', womenTrained: 43 },
     ],
     implementationSnapshot: {
       title: 'Implementation snapshot',
@@ -156,6 +145,7 @@ export const projectBhartiStates = [
     ],
     districts: [
       { name: 'Dharamshala', womenTrained: 50 },
+      { name: 'Hamirpur', womenTrained: 61 },
       { name: 'Narkanda', womenTrained: 43 },
       { name: 'Shimla', womenTrained: 33 },
     ],
@@ -213,20 +203,13 @@ export const projectBhartiStates = [
 
 export const projectBhartiStateNames = projectBhartiStates.map((state) => state.stateName);
 
-export const projectBhartiStateByName = projectBhartiStates.reduce((accumulator, state) => {
-  accumulator[state.stateName] = state;
-  return accumulator;
-}, {});
-
 export const projectBhartiStateByMapName = projectBhartiStates.reduce((accumulator, state) => {
   accumulator[state.mapName] = state;
   return accumulator;
 }, {});
 
-const projectTotalState = projectBhartiStates.find((state) => state.isProjectTotal) || projectBhartiStates[0];
-
 export const projectBhartiTotals = {
   stateCount: projectBhartiStates.length,
-  totalDistricts: projectTotalState.totalDistricts,
-  totalWomenTrained: projectTotalState.totalWomenTrained,
+  totalDistricts: projectBhartiStates.reduce((total, state) => total + state.totalDistricts, 0),
+  totalWomenTrained: projectBhartiStates.reduce((total, state) => total + state.totalWomenTrained, 0),
 };

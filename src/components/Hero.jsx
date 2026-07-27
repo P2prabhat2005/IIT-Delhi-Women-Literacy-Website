@@ -1,21 +1,11 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, ShieldCheck } from 'lucide-react';
-import { useMemo, useRef } from 'react';
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { heroContent } from '../data/homepage.js';
-import EditableDocumentControl from './EditableDocumentControl.jsx';
-import { useEditableDocumentMap } from '../hooks/useEditableDocumentMap.js';
-import { labelToDocumentKey } from '../utils/editableMediaStorage.js';
+import { getHeroDocument, labelToDocumentKey, openHeroDocument } from '../data/heroDocuments.js';
 
-const HERO_CAPABILITY_DOCUMENTS_NAMESPACE = 'hero-capability-documents';
-
-const logoAssets = import.meta.glob('../assets/logos/*.{png,jpg,jpeg,svg,webp}', {
-  eager: true,
-  import: 'default',
-  query: '?url',
-});
-
-const heroBackgroundAssets = import.meta.glob('../assets/hero/*.{png,jpg,jpeg,webp,avif}', {
+const heroBackgroundAssets = import.meta.glob('../assets/images/hero/*.{png,jpg,jpeg,webp,avif}', {
   eager: true,
   import: 'default',
   query: '?url',
@@ -31,8 +21,6 @@ function firstAsset(assets) {
   return Object.entries(assets).sort(([left], [right]) => left.localeCompare(right))[0]?.[1];
 }
 
-const iitDelhiLogo = findAsset(logoAssets, ['iit']) || findAsset(logoAssets, ['delhi']);
-const exlLogo = findAsset(logoAssets, ['exl']);
 const heroArtworkImage = findAsset(heroBackgroundAssets, ['artwork']);
 const heroBackgroundImage =
   findAsset(heroBackgroundAssets, ['background']) ||
@@ -42,17 +30,6 @@ const heroSectionBackgroundImage = heroBackgroundImage || heroArtworkImage;
 
 export default function Hero() {
   const sectionRef = useRef(null);
-  const capabilityDocumentKeys = useMemo(
-    () => heroContent.pillars.map(({ label }) => labelToDocumentKey(label)),
-    [],
-  );
-  const {
-    validationMessage,
-    getDocument,
-    openDocument,
-    attachDocument,
-    removeDocument,
-  } = useEditableDocumentMap(HERO_CAPABILITY_DOCUMENTS_NAMESPACE, capabilityDocumentKeys);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start start', 'end start'],
@@ -102,23 +79,6 @@ export default function Hero() {
           transition={{ duration: 0.65, ease: 'easeOut' }}
           className="max-w-4xl"
         >
-          <div className="mb-8 flex flex-wrap items-center gap-3" aria-label="Project collaborators">
-            <div className="flex min-h-16 items-center gap-3 rounded-[16px] border border-[#E8E4DD] bg-[#F7F4EF] px-4 py-3 shadow-[0_8px_24px_rgba(15,23,42,0.06)] backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:shadow-lg">
-              {iitDelhiLogo ? (
-                <img src={iitDelhiLogo} alt="IIT Delhi logo" width="1024" height="1024" decoding="async" className="h-9 w-auto object-contain" />
-              ) : (
-                <span className="text-sm font-bold text-red-900">IIT Delhi</span>
-              )}
-            </div>
-            <div className="flex min-h-16 items-center gap-3 rounded-[16px] border border-[#E8E4DD] bg-[#F7F4EF] px-4 py-3 shadow-[0_8px_24px_rgba(15,23,42,0.06)] backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:shadow-lg">
-              {exlLogo ? (
-                <img src={exlLogo} alt="EXL logo" width="94" height="56" decoding="async" className="h-8 w-auto object-contain" />
-              ) : (
-                <span className="text-sm font-bold text-orange-600">EXL</span>
-              )}
-            </div>
-          </div>
-
           <p className="mb-4 text-sm font-bold uppercase tracking-[0.16em] text-red-900">
             {heroContent.eyebrow}
           </p>
@@ -164,7 +124,7 @@ export default function Hero() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7, delay: 0.15, ease: 'easeOut' }}
           style={{ y: visualY }}
-          className="relative flex min-h-[calc(100vh-88px)] w-full self-stretch items-center justify-center overflow-hidden"
+          className="relative flex min-h-0 w-full self-stretch items-center justify-center overflow-hidden lg:min-h-[calc(100vh-88px)]"
           aria-label="Project Bharti research focus summary"
         >
           <div className="relative z-10">
@@ -185,7 +145,7 @@ export default function Hero() {
                 <div className="mt-8 grid gap-4">
                   {heroContent.pillars.map(({ Icon, label }, index) => {
                     const documentKey = labelToDocumentKey(label);
-                    const documentEntry = getDocument(documentKey);
+                    const documentEntry = getHeroDocument(documentKey);
                     const hasDocument = Boolean(documentEntry?.url);
 
                     return (
@@ -197,13 +157,13 @@ export default function Hero() {
                         role={hasDocument ? 'button' : undefined}
                         tabIndex={hasDocument ? 0 : undefined}
                         onClick={() => {
-                          if (hasDocument) openDocument(documentKey);
+                          if (hasDocument) openHeroDocument(documentKey);
                         }}
                         onKeyDown={(event) => {
                           if (!hasDocument) return;
                           if (event.key === 'Enter' || event.key === ' ') {
                             event.preventDefault();
-                            openDocument(documentKey);
+                            openHeroDocument(documentKey);
                           }
                         }}
                         className={`group flex items-center gap-4 rounded-2xl bg-white/10 p-4 transition hover:bg-white/[0.16]${hasDocument ? ' cursor-pointer' : ''}`}
@@ -212,21 +172,10 @@ export default function Hero() {
                           <Icon size={20} aria-hidden="true" />
                         </span>
                         <span className="font-medium">{label}</span>
-                        <EditableDocumentControl
-                          documentEntry={documentEntry}
-                          label={label}
-                          onAttach={(file) => attachDocument(documentKey, file)}
-                          onRemove={() => removeDocument(documentKey)}
-                        />
                       </motion.div>
                     );
                   })}
                 </div>
-                {validationMessage ? (
-                  <p role="alert" className="mt-3 text-xs font-medium text-red-200">
-                    {validationMessage}
-                  </p>
-                ) : null}
               </div>
             </div>
 

@@ -6,10 +6,13 @@ import ProjectLeadership from '../components/ProjectLeadership.jsx';
 import RouteLoadingState from '../components/RouteLoadingState.jsx';
 import SectionTitle from '../components/SectionTitle.jsx';
 import { aboutProjectContent } from '../data/homepage.js';
+import { getSiteImage } from '../data/siteImages.js';
 
 const InteractiveIndiaMap = lazy(() => import('../components/InteractiveIndiaMap.jsx'));
 
 export default function About() {
+  const aboutProjectImage = getSiteImage('about-overview');
+
   return (
     <>
       <section className="section bg-white" aria-labelledby="about-project-bharti-intro-title">
@@ -24,6 +27,14 @@ export default function About() {
           <p className="mx-auto mt-8 max-w-3xl text-center leading-8 text-slate-600">
             {aboutProjectContent.overview.paragraphs[0]}
           </p>
+          {aboutProjectImage ? (
+            <img
+              src={aboutProjectImage}
+              alt="IIT Delhi and Project Bharti team group photograph"
+              loading="lazy"
+              className="mt-10 w-full rounded-[1.75rem] shadow-xl shadow-slate-200/60"
+            />
+          ) : null}
         </div>
       </section>
 

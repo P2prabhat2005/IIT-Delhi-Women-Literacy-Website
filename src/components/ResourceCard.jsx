@@ -1,31 +1,15 @@
 import {
   ArrowUpRight,
-  Copy,
   Download,
   FileText,
-  FileUp,
-  GripVertical,
-  ImageUp,
-  Pencil,
   PlayCircle,
   Sparkles,
-  Trash2,
-  Video,
 } from 'lucide-react';
-import { getOptimizedImageProps } from '../utils/cloudinaryImage.js';
-import { IMAGE_ACCEPT, PDF_ACCEPT, VIDEO_ACCEPT } from '../utils/editableMediaStorage.js';
-import EditableAssetControl from './EditableAssetControl.jsx';
 
 const kindLabel = { pdf: 'PDF', video: 'Video', scheme: 'Scheme' };
 
 export default function ResourceCard({
   collection,
-  isAdminMode,
-  onDragEnd,
-  onDragOver,
-  onDragStart,
-  onDrop,
-  onEdit,
   onOpenModal,
   onOpenVideo,
   resource,
@@ -35,13 +19,6 @@ export default function ResourceCard({
   const hasDocument = Boolean(resource.document?.url);
   const hasVideo = Boolean(resource.video?.url);
   const hasResolvedMedia = (resource.kind === 'pdf' && hasDocument) || (resource.kind === 'video' && hasVideo);
-  const optimizedThumbnail = hasThumbnail
-    ? getOptimizedImageProps(resource.thumbnail.url, {
-        fallbackWidth: 640,
-        sizes: '(min-width: 1024px) 320px, (min-width: 768px) 33vw, 100vw',
-        widths: [320, 480, 640, 768],
-      })
-    : null;
 
   const handlePrimaryAction = () => {
     if (resource.kind === 'pdf' && hasDocument) {
@@ -56,46 +33,7 @@ export default function ResourceCard({
   };
 
   return (
-    <div
-      draggable={isAdminMode}
-      onDragStart={isAdminMode ? (event) => onDragStart(event, resource) : undefined}
-      onDragOver={isAdminMode ? (event) => onDragOver(event, resource) : undefined}
-      onDrop={isAdminMode ? (event) => onDrop(event, resource) : undefined}
-      onDragEnd={isAdminMode ? onDragEnd : undefined}
-      className="group relative flex h-full flex-col rounded-[1.35rem] border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/70 transition duration-300 hover:-translate-y-1 hover:shadow-xl"
-    >
-      {isAdminMode ? (
-        <div className="absolute right-3 top-3 z-10 flex items-center gap-1 rounded-full border border-slate-200 bg-white/95 p-1 opacity-0 shadow-sm transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100">
-          <span className="cursor-grab px-1 text-slate-400" aria-hidden="true">
-            <GripVertical size={14} />
-          </span>
-          <button
-            type="button"
-            onClick={() => onEdit(resource, 'edit')}
-            aria-label={`Edit ${resource.title}`}
-            className="inline-flex h-7 w-7 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-slate-800"
-          >
-            <Pencil size={13} aria-hidden="true" />
-          </button>
-          <button
-            type="button"
-            onClick={() => onEdit(resource, 'duplicate')}
-            aria-label={`Duplicate ${resource.title}`}
-            className="inline-flex h-7 w-7 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-slate-800"
-          >
-            <Copy size={13} aria-hidden="true" />
-          </button>
-          <button
-            type="button"
-            onClick={() => onEdit(resource, 'delete')}
-            aria-label={`Delete ${resource.title}`}
-            className="inline-flex h-7 w-7 items-center justify-center rounded-full text-slate-500 transition hover:bg-red-50 hover:text-red-700"
-          >
-            <Trash2 size={13} aria-hidden="true" />
-          </button>
-        </div>
-      ) : null}
-
+    <div className="group relative flex h-full flex-col rounded-[1.35rem] border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/70 transition duration-300 hover:-translate-y-1 hover:shadow-xl">
       <div className="overflow-hidden rounded-[1.2rem] border border-slate-200 bg-gradient-to-br from-slate-50 via-white to-red-50 p-4">
         <div className="flex items-center justify-between gap-3">
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-red-900 shadow-sm">
@@ -116,27 +54,12 @@ export default function ResourceCard({
         {hasThumbnail ? (
           <div className="relative mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
             <img
-              src={optimizedThumbnail.src}
-              srcSet={optimizedThumbnail.srcSet}
-              sizes={optimizedThumbnail.sizes}
+              src={resource.thumbnail.url}
               alt=""
               loading="lazy"
               decoding="async"
               className="h-40 w-full object-cover"
             />
-            {isAdminMode ? (
-              <div className="absolute bottom-2 right-2 flex items-center gap-1 rounded-full bg-white/95 p-1 shadow-sm">
-                <EditableAssetControl
-                  accept={IMAGE_ACCEPT}
-                  hasAsset={hasThumbnail}
-                  Icon={ImageUp}
-                  label={`${resource.title} thumbnail`}
-                  onAttach={(file) => onEdit(resource, 'attach-thumbnail', file)}
-                  onRemove={() => onEdit(resource, 'remove-thumbnail')}
-                  tone="light"
-                />
-              </div>
-            ) : null}
           </div>
         ) : (
           <div className="relative mt-4 rounded-2xl border border-slate-200 bg-white/85 p-4">
@@ -155,19 +78,6 @@ export default function ResourceCard({
                 <p className="text-xs text-slate-500">Final media will be uploaded by the Project Bharti Team.</p>
               </div>
             </div>
-            {isAdminMode ? (
-              <div className="mt-3 flex justify-end">
-                <EditableAssetControl
-                  accept={IMAGE_ACCEPT}
-                  hasAsset={hasThumbnail}
-                  Icon={ImageUp}
-                  label={`${resource.title} thumbnail`}
-                  onAttach={(file) => onEdit(resource, 'attach-thumbnail', file)}
-                  onRemove={() => onEdit(resource, 'remove-thumbnail')}
-                  tone="light"
-                />
-              </div>
-            ) : null}
           </div>
         )}
       </div>
@@ -223,30 +133,6 @@ export default function ResourceCard({
             Official resources will be added by the Project Bharti Team.
           </div>
         )}
-
-        {isAdminMode && resource.kind === 'pdf' ? (
-          <EditableAssetControl
-            accept={PDF_ACCEPT}
-            hasAsset={hasDocument}
-            Icon={FileUp}
-            label={`${resource.title} PDF`}
-            onAttach={(file) => onEdit(resource, 'attach-document', file)}
-            onRemove={() => onEdit(resource, 'remove-document')}
-            tone="light"
-          />
-        ) : null}
-
-        {isAdminMode && resource.kind === 'video' ? (
-          <EditableAssetControl
-            accept={VIDEO_ACCEPT}
-            hasAsset={hasVideo}
-            Icon={Video}
-            label={`${resource.title} video`}
-            onAttach={(file) => onEdit(resource, 'attach-video', file)}
-            onRemove={() => onEdit(resource, 'remove-video')}
-            tone="light"
-          />
-        ) : null}
       </div>
     </div>
   );

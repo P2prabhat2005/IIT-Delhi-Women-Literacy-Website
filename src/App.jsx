@@ -5,12 +5,10 @@ import RouteLoadingState from './components/RouteLoadingState.jsx';
 
 const About = lazy(() => import('./pages/About.jsx'));
 const Activities = lazy(() => import('./pages/Activities.jsx'));
-const AdminLogin = lazy(() => import('./pages/AdminLogin.jsx'));
 const Contact = lazy(() => import('./pages/Contact.jsx'));
 const Home = lazy(() => import('./pages/Home.jsx'));
 const NotFound = lazy(() => import('./pages/NotFound.jsx'));
 const Resources = lazy(() => import('./pages/Resources.jsx'));
-const StateDetails = lazy(() => import('./pages/StateDetails.jsx'));
 
 export default function App() {
   return (
@@ -49,26 +47,10 @@ export default function App() {
           }
         />
         <Route
-          path="states/:stateId"
-          element={
-            <Suspense fallback={<RouteLoadingState />}>
-              <StateDetails />
-            </Suspense>
-          }
-        />
-        <Route
           path="contact"
           element={
             <Suspense fallback={<RouteLoadingState />}>
               <Contact />
-            </Suspense>
-          }
-        />
-        <Route
-          path="admin/login"
-          element={
-            <Suspense fallback={<RouteLoadingState />}>
-              <AdminLogin />
             </Suspense>
           }
         />

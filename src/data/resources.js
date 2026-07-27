@@ -1,13 +1,37 @@
 import {
-  BadgeCheck,
   BookOpenCheck,
-  BriefcaseBusiness,
   CirclePlay,
   FileText,
   Landmark,
   ShieldCheck,
   Smartphone,
 } from 'lucide-react';
+
+function slugifyTitle(title) {
+  return String(title || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+function shapeResource(item, collectionId) {
+  return {
+    id: item.id || slugifyTitle(item.title),
+    collectionId,
+    category: item.category || collectionId,
+    title: item.title,
+    description: item.description,
+    meta: item.meta || '',
+    kind: item.kind,
+    tags: item.tags || [],
+    featured: Boolean(item.featured),
+    subtitle: item.subtitle || null,
+    href: item.href ?? null,
+    thumbnail: item.thumbnail ?? null,
+    document: item.document ?? null,
+    video: item.video ?? null,
+  };
+}
 
 export const resourceCollections = [
   {
@@ -25,6 +49,9 @@ export const resourceCollections = [
         category: 'downloadable-pdfs',
         kind: 'pdf',
         tags: ['financial literacy', 'guide', 'women entrepreneurs'],
+        thumbnail: null,
+        document: null,
+        video: null,
       },
       {
         title: 'Digital Safety for Small Business Owners',
@@ -34,6 +61,9 @@ export const resourceCollections = [
         category: 'downloadable-pdfs',
         kind: 'pdf',
         tags: ['digital literacy', 'safety', 'mobile'],
+        thumbnail: null,
+        document: null,
+        video: null,
       },
     ],
   },
@@ -52,6 +82,9 @@ export const resourceCollections = [
         category: 'videos',
         kind: 'video',
         tags: ['financial literacy', 'budgeting', 'video'],
+        thumbnail: null,
+        document: null,
+        video: null,
       },
       {
         title: 'Digital Payments in Daily Business',
@@ -61,6 +94,9 @@ export const resourceCollections = [
         category: 'videos',
         kind: 'video',
         tags: ['digital literacy', 'payments', 'video'],
+        thumbnail: null,
+        document: null,
+        video: null,
       },
     ],
   },
@@ -79,6 +115,9 @@ export const resourceCollections = [
         category: 'government-schemes',
         kind: 'scheme',
         tags: ['scheme', 'enterprise support', 'livelihood'],
+        thumbnail: null,
+        document: null,
+        video: null,
       },
       {
         title: 'Pradhan Mantri Jan Dhan Yojana',
@@ -88,6 +127,9 @@ export const resourceCollections = [
         category: 'government-schemes',
         kind: 'scheme',
         tags: ['scheme', 'banking', 'inclusion'],
+        thumbnail: null,
+        document: null,
+        video: null,
       },
     ],
   },
@@ -106,6 +148,9 @@ export const resourceCollections = [
         category: 'training-material',
         kind: 'pdf',
         tags: ['training', 'facilitator', 'workshop'],
+        thumbnail: null,
+        document: null,
+        video: null,
       },
       {
         title: 'Digital Literacy Session Plan',
@@ -115,6 +160,9 @@ export const resourceCollections = [
         category: 'training-material',
         kind: 'pdf',
         tags: ['training', 'digital literacy', 'session plan'],
+        thumbnail: null,
+        document: null,
+        video: null,
       },
     ],
   },
@@ -133,6 +181,9 @@ export const resourceCollections = [
         category: 'financial-literacy',
         kind: 'pdf',
         tags: ['budgeting', 'savings', 'checklist'],
+        thumbnail: null,
+        document: null,
+        video: null,
       },
       {
         title: 'Understanding Credit and Loans',
@@ -142,6 +193,9 @@ export const resourceCollections = [
         category: 'financial-literacy',
         kind: 'pdf',
         tags: ['credit', 'loans', 'financial literacy'],
+        thumbnail: null,
+        document: null,
+        video: null,
       },
     ],
   },
@@ -160,6 +214,9 @@ export const resourceCollections = [
         category: 'digital-literacy',
         kind: 'pdf',
         tags: ['payments', 'safety', 'digital literacy'],
+        thumbnail: null,
+        document: null,
+        video: null,
       },
       {
         title: 'Digital Skills for Everyday Business',
@@ -169,10 +226,19 @@ export const resourceCollections = [
         category: 'digital-literacy',
         kind: 'pdf',
         tags: ['digital skills', 'business', 'online tools'],
+        thumbnail: null,
+        document: null,
+        video: null,
       },
     ],
   },
 ];
+
+export function getStaticResourceLibrary() {
+  return resourceCollections.flatMap((collection) =>
+    (collection.items || []).map((item) => shapeResource(item, collection.id)),
+  );
+}
 
 export const resourceCategoryOptions = [
   { value: 'all', label: 'All Resources' },
