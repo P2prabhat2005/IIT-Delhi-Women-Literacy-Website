@@ -40,6 +40,7 @@ export default function EditableImageSlot({
               requestAnimationFrame(() => setIsPreviewVisible(true));
             }}
             onError={() => {
+              setPreviewUrl(null);
               setIsPreviewVisible(false);
             }}
             className={`h-full w-full object-cover transition-opacity duration-500 ${

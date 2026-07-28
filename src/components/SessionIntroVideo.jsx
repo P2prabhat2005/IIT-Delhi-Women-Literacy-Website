@@ -15,6 +15,13 @@ function shouldShowIntro() {
     return false;
   }
 
+  const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  const prefersReducedData = navigator.connection?.saveData;
+
+  if (prefersReducedMotion || prefersReducedData) {
+    return false;
+  }
+
   try {
     return window.sessionStorage.getItem(INTRO_SESSION_KEY) !== 'true';
   } catch {
@@ -280,8 +287,9 @@ export default function SessionIntroVideo() {
       } ${
         isFading ? 'opacity-0' : 'opacity-100'
       }`}
-      role="presentation"
-      aria-hidden="true"
+      role="dialog"
+      aria-label="Project introduction video"
+      aria-modal="true"
     >
       <video
         ref={videoRef}
@@ -302,6 +310,14 @@ export default function SessionIntroVideo() {
         onEnded={handleVideoEnd}
         onError={removeIntro}
       />
+      <button
+        type="button"
+        onClick={removeIntro}
+        autoFocus
+        className="absolute right-4 top-4 rounded-full border border-white/30 bg-slate-950/70 px-4 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-slate-950 sm:right-6 sm:top-6"
+      >
+        Skip introduction
+      </button>
     </div>,
     document.body,
   );

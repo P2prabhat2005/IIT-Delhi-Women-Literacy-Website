@@ -108,6 +108,7 @@ export default function ContactPage() {
                 Name
                 <input
                   name="name"
+                  autoComplete="name"
                   value={formState.name}
                   onChange={handleChange}
                   className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-red-300 focus:bg-white"
@@ -120,6 +121,7 @@ export default function ContactPage() {
                 <input
                   name="email"
                   type="email"
+                  autoComplete="email"
                   value={formState.email}
                   onChange={handleChange}
                   className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-red-300 focus:bg-white"
@@ -134,6 +136,9 @@ export default function ContactPage() {
                 Phone
                 <input
                   name="phone"
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
                   value={formState.phone}
                   onChange={handleChange}
                   className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-red-300 focus:bg-white"
@@ -144,6 +149,7 @@ export default function ContactPage() {
                 Organization
                 <input
                   name="organization"
+                  autoComplete="organization"
                   value={formState.organization}
                   onChange={handleChange}
                   className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-red-300 focus:bg-white"

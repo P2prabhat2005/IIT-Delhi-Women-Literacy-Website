@@ -1,6 +1,7 @@
 export default function RouteLoadingState() {
   return (
-    <div className="section bg-white">
+    <div className="section bg-white" role="status" aria-live="polite">
+      <span className="sr-only">Loading page content</span>
       <div className="site-container space-y-4">
         <div className="h-3 w-32 animate-pulse rounded-full bg-slate-200" />
         <div className="h-8 w-3/4 animate-pulse rounded-full bg-slate-200" />

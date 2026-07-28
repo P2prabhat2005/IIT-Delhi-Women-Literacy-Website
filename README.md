@@ -80,3 +80,13 @@ This project is a static SPA. `vercel.json` rewrites all routes to `index.html`.
 4. Set `siteSettings.baseUrl` in `src/data/settings.js` to the production domain for correct canonical/OG URLs.
 
 No server environment variables are required.
+
+## Release checklist
+
+Before each production deployment:
+
+1. Run `npm run build` and confirm it completes without errors.
+2. Check every public route directly, including a fresh load of each nested route.
+3. Verify keyboard navigation, visible focus states, reduced-motion behavior, and mobile layouts.
+4. Confirm all images, PDFs, videos, map data, and external links load as expected.
+5. Review the browser console for errors and confirm the production domain is configured in `siteSettings.baseUrl` before publishing.

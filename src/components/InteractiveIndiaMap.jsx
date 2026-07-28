@@ -512,6 +512,7 @@ export default function InteractiveIndiaMap() {
   const [selectedState, setSelectedState] = useState(projectBhartiStates[0]);
   const [activeStateName, setActiveStateName] = useState(projectBhartiStates[0].mapName);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const stateTriggerRef = useRef(null);
   const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
@@ -545,14 +546,23 @@ export default function InteractiveIndiaMap() {
     };
   }, []);
 
-  const handleStateSelect = (mapName) => {
+  const handleStateSelect = (mapName, trigger) => {
     const nextState = projectBhartiStateByMapName[mapName];
 
     if (!nextState) return;
 
+    stateTriggerRef.current = trigger || document.activeElement;
     setSelectedState(nextState);
     setActiveStateName(mapName);
     setIsPanelOpen(true);
+  };
+
+  const handleStatePanelClose = () => {
+    setIsPanelOpen(false);
+
+    window.requestAnimationFrame(() => {
+      stateTriggerRef.current?.focus?.();
+    });
   };
 
   return (
@@ -576,7 +586,7 @@ export default function InteractiveIndiaMap() {
                   <button
                     key={stateKey}
                     type="button"
-                    onClick={() => handleStateSelect(state.mapName)}
+                    onClick={(event) => handleStateSelect(state.mapName, event.currentTarget)}
                     className={`group rounded-2xl border p-5 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-xl ${
                       activeStateName === state.mapName
                         ? 'border-red-200 bg-red-50'
@@ -601,11 +611,11 @@ export default function InteractiveIndiaMap() {
 
             <div className="relative min-h-[360px] overflow-hidden rounded-[1.5rem] bg-[radial-gradient(circle_at_30%_20%,rgba(153,27,27,0.10),transparent_28%),linear-gradient(145deg,#ffffff,#f8fafc)] p-3 md:min-h-[520px] md:p-6">
               {mapError ? (
-                <div className="flex min-h-[320px] items-center justify-center rounded-2xl border border-dashed border-red-200 bg-red-50 px-6 text-center text-sm font-semibold text-red-900">
-                  {mapError}
+                <div role="alert" className="flex min-h-[320px] items-center justify-center rounded-2xl border border-dashed border-red-200 bg-red-50 px-6 text-center text-sm font-semibold text-red-900">
+                  The interactive map is unavailable right now. Please try again shortly.
                 </div>
               ) : !indiaGeography?.features?.length ? (
-                <div className="flex min-h-[320px] items-center justify-center text-sm font-semibold text-slate-500">
+                <div role="status" aria-live="polite" className="flex min-h-[320px] items-center justify-center text-sm font-semibold text-slate-500">
                   Loading map data...
                 </div>
               ) : (
@@ -631,11 +641,11 @@ export default function InteractiveIndiaMap() {
                             role={isHighlighted ? 'button' : 'img'}
                             tabIndex={isHighlighted ? 0 : -1}
                             aria-label={stateName}
-                            onClick={() => handleStateSelect(stateName)}
+                            onClick={(event) => handleStateSelect(stateName, event.currentTarget)}
                             onKeyDown={(event) => {
                               if (event.key === 'Enter' || event.key === ' ') {
                                 event.preventDefault();
-                                handleStateSelect(stateName);
+                                handleStateSelect(stateName, event.currentTarget);
                               }
                             }}
                             style={{
@@ -682,7 +692,7 @@ export default function InteractiveIndiaMap() {
       </div>
 
       {isPanelOpen ? (
-        <StatePanel selectedState={selectedState} onClose={() => setIsPanelOpen(false)} />
+        <StatePanel selectedState={selectedState} onClose={handleStatePanelClose} />
       ) : null}
     </section>
   );

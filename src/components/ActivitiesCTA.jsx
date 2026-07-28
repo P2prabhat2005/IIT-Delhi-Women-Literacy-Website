@@ -13,13 +13,7 @@ export default function ActivitiesCTA() {
             <SectionTitle eyebrow={callToAction.eyebrow} id="activities-cta" description={callToAction.description}>
               {callToAction.title}
             </SectionTitle>
-            <div className="flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap lg:items-end lg:justify-end">
-              <Link
-                className="inline-flex w-fit items-center justify-center rounded-full bg-white px-5 py-3 font-semibold text-red-900 transition hover:bg-red-50"
-                to={callToAction.primaryTo}
-              >
-                {callToAction.primaryLabel}
-              </Link>
+            <div className="flex items-center lg:justify-end">
               <Link
                 className="inline-flex w-fit items-center justify-center rounded-full border border-white/30 px-5 py-3 font-semibold text-white transition hover:bg-white/10"
                 to={callToAction.secondaryTo}

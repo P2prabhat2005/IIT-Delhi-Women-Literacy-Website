@@ -31,7 +31,10 @@ export default function About() {
             <img
               src={aboutProjectImage}
               alt="IIT Delhi and Project Bharti team group photograph"
+              width="2048"
+              height="1365"
               loading="lazy"
+              decoding="async"
               className="mt-10 w-full rounded-[1.75rem] shadow-xl shadow-slate-200/60"
             />
           ) : null}

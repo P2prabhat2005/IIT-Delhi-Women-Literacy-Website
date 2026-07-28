@@ -80,6 +80,11 @@ export default function ResourcesPage() {
       });
   }, [activeCategory, library, searchValue]);
 
+  const filteredResourceCount = useMemo(
+    () => filteredCollections.reduce((total, collection) => total + collection.resources.length, 0),
+    [filteredCollections],
+  );
+
   return (
     <div className="space-y-8">
       <section className="rounded-[2rem] border border-slate-200 bg-gradient-to-br from-slate-950 via-slate-900 to-red-950 p-8 text-white shadow-2xl shadow-slate-300/70 md:p-10">
@@ -126,6 +131,7 @@ export default function ResourcesPage() {
                     key={option.value}
                     type="button"
                     onClick={() => setActiveCategory(option.value)}
+                    aria-pressed={activeCategory === option.value}
                     className={`rounded-full px-3 py-2 text-sm font-semibold transition ${activeCategory === option.value ? 'bg-white text-red-900' : 'bg-white/10 text-slate-200 hover:bg-white/20'}`}
                   >
                     {option.label}
@@ -138,6 +144,9 @@ export default function ResourcesPage() {
       </section>
 
       <div className="space-y-6">
+        <p className="sr-only" role="status" aria-live="polite">
+          {filteredResourceCount} {filteredResourceCount === 1 ? 'resource' : 'resources'} shown.
+        </p>
         {filteredCollections.length ? (
           filteredCollections.map((collection) => (
             <ResourceSection
