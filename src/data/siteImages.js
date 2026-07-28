@@ -16,7 +16,7 @@ const siteImages = {
   'about-collage-0': null,
   'about-collage-1': null,
   'about-collage-2': null,
-  'about-overview': aboutProjectGroupPhoto,
+  'about-overview': null,
   'activity-card-community-centered-delivery': null,
   'activity-card-practice-led-training': null,
   'activity-card-research-documentation': null,
@@ -32,7 +32,7 @@ const siteImages = {
   'activity-card-digital-readiness': null,
   'activity-card-enterprise-capability': null,
   'activity-card-research-evidence': null,
-  'dev-team-group': null,
+  'dev-team-group': aboutProjectGroupPhoto,
 };
 
 export function getSiteImage(ownerId) {

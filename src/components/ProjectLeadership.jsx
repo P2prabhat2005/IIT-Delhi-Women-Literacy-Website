@@ -22,19 +22,20 @@ function EmptyState({ tone = 'light' }) {
   );
 }
 
-function TeamPhotoSlot({ member, tone = 'light' }) {
+function TeamPhotoSlot({ member, tone = 'light', aspectRatio = 'aspect-[4/3]', compact = false }) {
   return (
     <EditableImageSlot
       image={member.photo?.url || null}
       title="Profile Photo"
-      alt={`${member.fullName} profile photograph`}
-      aspectRatio="aspect-[4/3]"
+      alt={member.isPlaceholder ? `${member.designation} profile photograph placeholder` : `${member.fullName} profile photograph`}
+      aspectRatio={aspectRatio}
+      compact={compact}
       emptyClassName={tone === 'dark' ? 'bg-white/[0.07]' : 'bg-red-50'}
       emptyTextClassName={tone === 'dark' ? 'text-slate-200' : ''}
       className={
         tone === 'dark'
-          ? 'w-full rounded-[1.25rem] border border-white/15 bg-white/[0.07] shadow-sm'
-          : 'w-full rounded-[1.25rem] border border-red-100 bg-red-50 shadow-sm'
+          ? 'h-full w-full rounded-[1.25rem] border border-white/15 bg-white/[0.07] shadow-sm'
+          : 'h-full w-full rounded-[1.25rem] border border-red-100 bg-red-50 shadow-sm'
       }
     />
   );
@@ -52,7 +53,7 @@ function LeadershipCategory({ category }) {
         {category?.title || 'Project Leadership'}
       </SectionTitle>
 
-      <div className="mx-auto mt-12 grid max-w-4xl gap-5 md:grid-cols-2">
+      <div className="mx-auto mt-10 grid max-w-4xl gap-5 md:mt-12 md:grid-cols-2">
         {category?.members?.length ? (
           category.members.map((member, index) => (
             <motion.article
@@ -81,6 +82,28 @@ function LeadershipCategory({ category }) {
   );
 }
 
+function DevelopmentMemberCard({ member, index }) {
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-70px' }}
+      transition={{ duration: 0.45, delay: index * 0.06 }}
+      className={`flex h-full min-h-[9.5rem] flex-col gap-4 rounded-[1.5rem] border border-white/10 bg-white/[0.07] p-4 transition duration-300 hover:bg-white/[0.11] sm:flex-row sm:items-stretch sm:gap-5 sm:p-5 ${
+        member.isActive ? '' : 'opacity-60'
+      }`}
+    >
+      <div className="w-full shrink-0 sm:w-36 md:w-40">
+        <TeamPhotoSlot member={member} tone="dark" aspectRatio="aspect-square" compact />
+      </div>
+      <div className="flex min-w-0 flex-1 flex-col justify-center text-left">
+        <p className="truncate whitespace-nowrap text-sm font-semibold text-red-100">{member.designation}</p>
+        <h4 className="mt-1.5 truncate whitespace-nowrap text-xl font-semibold text-white">{member.fullName}</h4>
+      </div>
+    </motion.article>
+  );
+}
+
 function DarkCategory({ category }) {
   const isDevelopmentTeam = category.slug === 'development-team';
 
@@ -94,19 +117,17 @@ function DarkCategory({ category }) {
         category.isActive ? '' : 'opacity-70'
       }`}
     >
-      <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-        <div>
-          <p className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.16em] text-red-200">
-            <Sparkles size={15} aria-hidden="true" />
-            Project Bharti
-          </p>
-          <h3 className="mt-3 text-3xl font-semibold">
-            {isDevelopmentTeam ? `Meet the ${category.title}` : category.title}
-          </h3>
-          {category.description ? (
-            <p className="mt-3 max-w-3xl leading-7 text-slate-300">{category.description}</p>
-          ) : null}
-        </div>
+      <div className="mx-auto max-w-3xl text-center md:mx-0 md:max-w-3xl md:text-left">
+        <p className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.16em] text-red-200">
+          <Sparkles size={15} aria-hidden="true" />
+          Project Bharti
+        </p>
+        <h3 className="mt-2.5 text-3xl font-semibold leading-tight md:mt-3">
+          {isDevelopmentTeam ? `Meet the ${category.title}` : category.title}
+        </h3>
+        {category.description ? (
+          <p className="mt-3 max-w-3xl text-base leading-7 text-slate-300 md:mt-3.5">{category.description}</p>
+        ) : null}
       </div>
 
       {isDevelopmentTeam ? (
@@ -121,30 +142,44 @@ function DarkCategory({ category }) {
         />
       ) : null}
 
-      <div className="mt-6 grid gap-4 md:grid-cols-3">
-        {category.members.length ? (
-          category.members.map((member, index) => (
-            <motion.article
-              key={member.id}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-70px' }}
-              transition={{ duration: 0.45, delay: index * 0.08 }}
-              className={`rounded-[1.5rem] border border-white/10 bg-white/[0.07] p-5 transition duration-300 hover:bg-white/[0.11] ${
-                member.isActive ? '' : 'opacity-60'
-              }`}
-            >
-              <TeamPhotoSlot member={member} tone="dark" />
-              <h4 className="mt-5 text-xl font-semibold text-white">{member.fullName}</h4>
-              <p className="mt-2 text-sm font-semibold text-red-100">{member.designation}</p>
-            </motion.article>
-          ))
-        ) : (
-          <div className="md:col-span-3">
-            <EmptyState tone="dark" />
-          </div>
-        )}
-      </div>
+      {isDevelopmentTeam ? (
+        <div className="mt-6 grid gap-4 md:grid-cols-1 lg:grid-cols-2">
+          {category.members.length ? (
+            category.members.map((member, index) => (
+              <DevelopmentMemberCard key={member.id} member={member} index={index} />
+            ))
+          ) : (
+            <div className="lg:col-span-2">
+              <EmptyState tone="dark" />
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="mt-6 grid gap-4 md:grid-cols-3">
+          {category.members.length ? (
+            category.members.map((member, index) => (
+              <motion.article
+                key={member.id}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-70px' }}
+                transition={{ duration: 0.45, delay: index * 0.08 }}
+                className={`rounded-[1.5rem] border border-white/10 bg-white/[0.07] p-5 transition duration-300 hover:bg-white/[0.11] ${
+                  member.isActive ? '' : 'opacity-60'
+                }`}
+              >
+                <TeamPhotoSlot member={member} tone="dark" />
+                <h4 className="mt-5 text-xl font-semibold text-white">{member.fullName}</h4>
+                <p className="mt-2 text-sm font-semibold text-red-100">{member.designation}</p>
+              </motion.article>
+            ))
+          ) : (
+            <div className="md:col-span-3">
+              <EmptyState tone="dark" />
+            </div>
+          )}
+        </div>
+      )}
     </motion.div>
   );
 }

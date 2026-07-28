@@ -1,6 +1,5 @@
 import {
   BadgeIndianRupee,
-  Banknote,
   BookOpenCheck,
   Building2,
   ChartNoAxesCombined,
@@ -81,6 +80,19 @@ export const aboutProjectContent = {
       'Through the IIT Delhi and EXL collaboration, Project Bharti combines academic research, data-informed thinking, and community-oriented implementation to create measurable impact for women-led enterprises.',
     ],
     highlights: ['Women SHGs', 'Financial literacy', 'Digital literacy', 'Capacity building'],
+  },
+  aboutIntro: {
+    paragraphs: [
+      'Project Bharti is guided by a clear vision: to enable SHG-linked women entrepreneurs to participate in local economies with stronger financial confidence, digital readiness, and enterprise capability. The initiative is research-led by IIT Delhi and implemented in collaboration with EXL, connecting academic insight with practical field delivery.',
+      'At its core, the project builds financial and digital literacy for women-led micro-enterprises. Learning is applied to everyday decisions—savings, payments, record keeping, customer access, and responsible use of digital tools—so participants can strengthen SHG entrepreneurship with skills that transfer directly into livelihood practice.',
+      'Through community-centered capacity building across project states, Project Bharti translates research into measurable community impact. The approach supports women entrepreneurs, reinforces local enterprise networks, and creates pathways for sustained participation in markets and digital financial systems.',
+    ],
+    highlights: [
+      { label: '5 States' },
+      { label: '700+ Women Trained' },
+      { label: 'IIT Delhi + EXL Collaboration' },
+      { label: 'Financial & Digital Literacy' },
+    ],
   },
   visionMission: [
     {
@@ -198,13 +210,6 @@ export const resources = [
     description: 'Practical checklists, facilitator guides, and enterprise support materials.',
     Icon: ShieldCheck,
   },
-];
-
-export const partners = [
-  { name: 'IIT Delhi', Icon: Building2 },
-  { name: 'Community Institutions', Icon: Network },
-  { name: 'Financial Ecosystem', Icon: Banknote },
-  { name: 'Implementation Partners', Icon: Handshake },
 ];
 
 export const contactChannels = [

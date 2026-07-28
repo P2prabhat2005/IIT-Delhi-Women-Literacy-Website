@@ -6,38 +6,40 @@ import ProjectLeadership from '../components/ProjectLeadership.jsx';
 import RouteLoadingState from '../components/RouteLoadingState.jsx';
 import SectionTitle from '../components/SectionTitle.jsx';
 import { aboutProjectContent } from '../data/homepage.js';
-import { getSiteImage } from '../data/siteImages.js';
 
 const InteractiveIndiaMap = lazy(() => import('../components/InteractiveIndiaMap.jsx'));
 
 export default function About() {
-  const aboutProjectImage = getSiteImage('about-overview');
-
   return (
     <>
       <section className="section bg-white" aria-labelledby="about-project-bharti-intro-title">
         <div className="site-container">
           <SectionTitle
+            align="center"
             eyebrow="About"
             id="about-project-bharti-intro-title"
             description={aboutProjectContent.section.description}
           >
             About Project Bharti
           </SectionTitle>
-          <p className="mx-auto mt-8 max-w-3xl text-center leading-8 text-slate-600">
-            {aboutProjectContent.overview.paragraphs[0]}
-          </p>
-          {aboutProjectImage ? (
-            <img
-              src={aboutProjectImage}
-              alt="IIT Delhi and Project Bharti team group photograph"
-              width="2048"
-              height="1365"
-              loading="lazy"
-              decoding="async"
-              className="mt-10 w-full rounded-[1.75rem] shadow-xl shadow-slate-200/60"
-            />
-          ) : null}
+          <div className="mx-auto mt-6 max-w-3xl space-y-5 text-center text-base leading-8 text-slate-600 md:mt-7 md:space-y-6 md:text-[1.05rem] md:leading-8">
+            {aboutProjectContent.aboutIntro.paragraphs.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
+          <ul
+            className="mx-auto mt-8 flex max-w-4xl flex-wrap items-center justify-center gap-2.5 md:mt-9 md:gap-3"
+            aria-label="Project Bharti highlights"
+          >
+            {aboutProjectContent.aboutIntro.highlights.map((item) => (
+              <li
+                key={item.label}
+                className="rounded-full border border-slate-200 bg-slate-50 px-3.5 py-2 text-xs font-semibold tracking-wide text-slate-700 shadow-sm md:px-4 md:text-sm"
+              >
+                {item.label}
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 

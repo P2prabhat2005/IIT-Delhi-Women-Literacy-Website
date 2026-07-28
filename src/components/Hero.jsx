@@ -1,9 +1,11 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { ArrowRight, ShieldCheck } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
+import inauguralEventPhoto from '../assets/images/hero/inaugural-event.png';
+import profGouravDwivediPhoto from '../assets/images/hero/prof-gourav-dwivedi.png';
+import profSeemaSharmaPhoto from '../assets/images/hero/prof-seema-sharma.png';
 import { heroContent } from '../data/homepage.js';
-import { getHeroDocument, labelToDocumentKey, openHeroDocument } from '../data/heroDocuments.js';
 
 const heroBackgroundAssets = import.meta.glob('../assets/images/hero/*.{png,jpg,jpeg,webp,avif}', {
   eager: true,
@@ -28,6 +30,28 @@ const heroBackgroundImage =
   (heroArtworkImage ? null : firstAsset(heroBackgroundAssets));
 const heroSectionBackgroundImage = heroBackgroundImage || heroArtworkImage;
 
+const heroShowcase = {
+  professors: [
+    {
+      id: 'prof-seema-sharma',
+      src: profSeemaSharmaPhoto,
+      name: 'Prof. Seema Sharma',
+      alt: 'Portrait of Prof. Seema Sharma, Project & Our Guide for Project Bharti',
+    },
+    {
+      id: 'prof-gourav-dwivedi',
+      src: profGouravDwivediPhoto,
+      name: 'Prof. Gourav Dwivedi',
+      alt: 'Portrait of Prof. Gourav Dwivedi, Project & Our Guide for Project Bharti',
+    },
+  ],
+  inaugural: {
+    src: inauguralEventPhoto,
+    alt: 'Project Bharti inaugural event group photograph at IIT Delhi',
+  },
+  sharedRole: 'Project & Our Guide',
+};
+
 export default function Hero() {
   const sectionRef = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -35,7 +59,7 @@ export default function Hero() {
     offset: ['start start', 'end start'],
   });
   const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '12%']);
-  const visualY = useTransform(scrollYProgress, [0, 1], ['0%', '-7%']);
+  const visualY = useTransform(scrollYProgress, [0, 1], ['0%', '8%']);
 
   return (
     <div className="bg-white px-4 pb-8 pt-4 sm:px-6 sm:pb-10 sm:pt-6 lg:px-10 lg:pb-12 lg:pt-10">
@@ -56,7 +80,7 @@ export default function Hero() {
             className="h-full w-full object-cover object-center opacity-[0.36] saturate-75"
           />
         ) : null}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(153,27,27,0.11),transparent_30%),radial-gradient(circle_at_82%_16%,rgba(15,118,110,0.08),transparent_28%),linear-gradient(135deg,rgba(255,250,247,0.75)_0%,rgba(255,255,255,0.67)_48%,rgba(246,248,251,0.72)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_12% 18%,rgba(153,27,27,0.11),transparent_30%),radial-gradient(circle_at_82%_16%,rgba(15,118,110,0.08),transparent_28%),linear-gradient(135deg,rgba(255,250,247,0.75)_0%,rgba(255,255,255,0.67)_48%,rgba(246,248,251,0.72)_100%)]" />
       </motion.div>
 
       <motion.div
@@ -72,12 +96,11 @@ export default function Hero() {
         className="absolute right-[8%] top-36 -z-10 h-36 w-36 rounded-full border border-cyan-200/80 bg-cyan-50/40"
       />
 
-      <div className="site-container relative grid min-h-[calc(100vh-88px)] items-center gap-12 py-16 md:py-20 lg:grid-cols-[1.08fr_0.92fr] lg:py-24">
+      <div className="site-container relative grid min-h-[calc(100vh-88px)] items-center gap-10 py-16 md:gap-12 md:py-20 lg:grid-cols-[1.08fr_0.92fr] lg:gap-12 lg:py-24">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.65, ease: 'easeOut' }}
-          className="max-w-4xl"
         >
           <p className="mb-4 text-sm font-bold uppercase tracking-[0.16em] text-red-900">
             {heroContent.eyebrow}
@@ -120,71 +143,55 @@ export default function Hero() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.96 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.7, delay: 0.15, ease: 'easeOut' }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.65, delay: 0.12, ease: 'easeOut' }}
           style={{ y: visualY }}
-          className="relative flex min-h-0 w-full self-stretch items-center justify-center overflow-hidden lg:min-h-[calc(100vh-88px)]"
-          aria-label="Project Bharti research focus summary"
+          className="w-full"
+          aria-label="Project Bharti leadership and inaugural event"
         >
-          <div className="relative z-10">
-            <div className="rounded-[2rem] border border-slate-200 bg-white/90 p-5 shadow-2xl shadow-slate-200/70 backdrop-blur">
-              <div className="rounded-[1.5rem] bg-slate-950 p-6 text-white shadow-inner shadow-white/5">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-sm font-medium text-red-200">{heroContent.visual.eyebrow}</p>
-                    <h2 className="mt-2 max-w-sm text-2xl font-semibold">
-                      {heroContent.visual.title}
-                    </h2>
-                  </div>
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-red-900">
-                    <ShieldCheck size={24} aria-hidden="true" />
-                  </div>
-                </div>
-
-                <div className="mt-8 grid gap-4">
-                  {heroContent.pillars.map(({ Icon, label }, index) => {
-                    const documentKey = labelToDocumentKey(label);
-                    const documentEntry = getHeroDocument(documentKey);
-                    const hasDocument = Boolean(documentEntry?.url);
-
-                    return (
-                      <motion.div
-                        key={label}
-                        initial={{ opacity: 0, x: 16 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.45, delay: 0.28 + index * 0.08 }}
-                        role={hasDocument ? 'button' : undefined}
-                        tabIndex={hasDocument ? 0 : undefined}
-                        onClick={() => {
-                          if (hasDocument) openHeroDocument(documentKey);
-                        }}
-                        onKeyDown={(event) => {
-                          if (!hasDocument) return;
-                          if (event.key === 'Enter' || event.key === ' ') {
-                            event.preventDefault();
-                            openHeroDocument(documentKey);
-                          }
-                        }}
-                        className={`group flex items-center gap-4 rounded-2xl bg-white/10 p-4 transition hover:bg-white/[0.16]${hasDocument ? ' cursor-pointer' : ''}`}
-                      >
-                        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-red-900 transition group-hover:scale-105">
-                          <Icon size={20} aria-hidden="true" />
-                        </span>
-                        <span className="font-medium">{label}</span>
-                      </motion.div>
-                    );
-                  })}
-                </div>
+          <div className="grid gap-3 sm:gap-4">
+            <div>
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                {heroShowcase.professors.map((professor) => (
+                  <figure key={professor.id} className="min-w-0">
+                    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white/90 shadow-sm shadow-slate-200/60">
+                      <img
+                        src={professor.src}
+                        alt={professor.alt}
+                        width="480"
+                        height="480"
+                        loading="eager"
+                        decoding="async"
+                        className="aspect-square w-full object-cover object-top"
+                      />
+                    </div>
+                    <figcaption className="mt-3.5 px-1 text-center">
+                      <p className="text-sm font-semibold leading-snug text-slate-950 sm:text-base">
+                        {professor.name}
+                      </p>
+                    </figcaption>
+                  </figure>
+                ))}
               </div>
+              <p className="mt-2.5 text-center text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 sm:mt-3 sm:text-xs">
+                {heroShowcase.sharedRole}
+              </p>
             </div>
 
-            <div className="absolute -bottom-6 -left-5 hidden rounded-2xl border border-emerald-200 bg-white p-4 shadow-xl shadow-slate-200/80 md:block">
-              <div className="flex items-center gap-3">
-                <ShieldCheck className="text-emerald-600" size={24} aria-hidden="true" />
-                <p className="text-sm font-semibold text-slate-800">{heroContent.visual.footerNote}</p>
+            <figure className="min-w-0">
+              <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white/90 shadow-sm shadow-slate-200/60">
+                <img
+                  src={heroShowcase.inaugural.src}
+                  alt={heroShowcase.inaugural.alt}
+                  width="1200"
+                  height="800"
+                  loading="eager"
+                  decoding="async"
+                  className="aspect-[16/10] w-full object-cover object-center"
+                />
               </div>
-            </div>
+            </figure>
           </div>
         </motion.div>
       </div>
