@@ -21,6 +21,7 @@ import {
   projectBhartiStates,
 } from '../data/stateImpact.js';
 import EditableImageSlot from './EditableImageSlot.jsx';
+import MediaLightbox from './MediaLightbox.jsx';
 import SectionTitle from './SectionTitle.jsx';
 
 const metricIconMap = {
@@ -69,8 +70,24 @@ const createEntryId = (groupKey) => `${groupKey}-${Date.now()}-${mediaEntrySeque
 function createMediaEntry(groupKey, item = {}) {
   const id = item.id || createEntryId(groupKey);
 
-  if (groupKey === 'gallery') return { id, image: item.image || item.url || null };
-  if (groupKey === 'activities') return { id, title: item.title || '', date: item.date || '', description: item.description || '', image: item.image || null };
+  if (groupKey === 'gallery') {
+    return {
+      id,
+      image: item.image || item.url || null,
+      alt: item.alt || '',
+      caption: item.caption || '',
+    };
+  }
+  if (groupKey === 'activities') {
+    return {
+      id,
+      title: item.title || '',
+      date: item.date || '',
+      description: item.description || '',
+      image: item.image || null,
+      alt: item.alt || '',
+    };
+  }
   if (groupKey === 'videos') return { id, title: item.title || '', url: item.url || '' };
   if (groupKey === 'research') return { id, title: item.title || '', fileName: item.fileName || '', url: item.url || '' };
   return { id, title: item.title || '', date: item.date || '', description: item.description || '', link: item.link || '' };
@@ -91,45 +108,77 @@ function EmptyMediaState({ label }) {
   );
 }
 
-function GalleryViewer({ entries, stateName }) {
+function toLightboxItems(entries, stateName, fallbackCaption = 'Media') {
+  return entries
+    .filter((entry) => entry.image)
+    .map((entry, index) => ({
+      id: entry.id,
+      src: entry.image,
+      alt: entry.alt || `${stateName} ${fallbackCaption.toLowerCase()} ${index + 1}`,
+      caption: entry.caption || entry.title || `${fallbackCaption} ${index + 1}`,
+    }));
+}
+
+function GalleryViewer({ entries, stateName, onOpenLightbox }) {
   if (!entries.length) return <EmptyMediaState label="Gallery images" />;
 
   return (
     <div className="grid gap-3 sm:grid-cols-2">
       {entries.map((entry, index) => (
-        <EditableImageSlot
+        <button
           key={entry.id}
-          image={entry.image}
-          title={`Gallery image ${index + 1}`}
-          alt={`${stateName} gallery image ${index + 1}`}
-          aspectRatio="aspect-[4/3]"
-          className="rounded-xl border border-slate-200 bg-white shadow-sm"
-        />
+          type="button"
+          onClick={() => onOpenLightbox?.(toLightboxItems(entries, stateName, 'Gallery'), index)}
+          className="group overflow-hidden rounded-xl border border-slate-200 bg-white text-left shadow-sm transition hover:border-red-100 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-900/40"
+          aria-label={`Open gallery image ${index + 1}`}
+        >
+          <EditableImageSlot
+            image={entry.image}
+            title={`Gallery image ${index + 1}`}
+            alt={entry.alt || `${stateName} gallery image ${index + 1}`}
+            aspectRatio="aspect-[4/3]"
+            className="rounded-xl bg-white"
+          />
+        </button>
       ))}
     </div>
   );
 }
 
-function ActivityViewer({ entries, stateName }) {
+function ActivityViewer({ entries, stateName, onOpenLightbox }) {
   if (!entries.length) return <EmptyMediaState label="Activities" />;
+
+  const lightboxItems = toLightboxItems(entries, stateName, 'Activity');
 
   return (
     <div className="space-y-3">
-      {entries.map((entry, index) => (
-        <div key={entry.id} className="rounded-[1.1rem] border border-slate-200 bg-white p-3 shadow-sm">
-          <p className="text-sm font-semibold text-slate-800">Activity {index + 1}</p>
-          {entry.title ? <h4 className="mt-3 text-base font-semibold text-slate-900">{entry.title}</h4> : null}
-          {entry.date ? <p className="mt-2 text-xs font-semibold text-slate-500">{entry.date}</p> : null}
-          {entry.description ? <p className="mt-3 text-sm leading-7 text-slate-600">{entry.description}</p> : null}
-          <EditableImageSlot
-            image={entry.image}
-            title="Optional activity image"
-            alt={`${stateName} activity ${index + 1}`}
-            aspectRatio="aspect-[4/3]"
-            className="mt-3 rounded-xl border border-slate-200 bg-slate-50"
-          />
-        </div>
-      ))}
+      {entries.map((entry) => {
+        const lightboxIndex = lightboxItems.findIndex((item) => item.id === entry.id);
+
+        return (
+          <article key={entry.id} className="rounded-[1.1rem] border border-slate-200 bg-white p-3 shadow-sm">
+            {entry.title ? <h4 className="text-base font-semibold text-slate-900">{entry.title}</h4> : null}
+            {entry.date ? <p className="mt-2 text-xs font-semibold text-slate-500">{entry.date}</p> : null}
+            {entry.description ? <p className="mt-3 text-sm leading-7 text-slate-600">{entry.description}</p> : null}
+            {entry.image ? (
+              <button
+                type="button"
+                onClick={() => onOpenLightbox?.(lightboxItems, Math.max(lightboxIndex, 0))}
+                className="mt-3 block w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-50 text-left transition hover:border-red-100 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-900/40"
+                aria-label={`Open image for ${entry.title || 'activity'}`}
+              >
+                <EditableImageSlot
+                  image={entry.image}
+                  title={entry.title || 'Activity image'}
+                  alt={entry.alt || `${stateName} activity image`}
+                  aspectRatio="aspect-[4/3]"
+                  className="rounded-xl bg-slate-50"
+                />
+              </button>
+            ) : null}
+          </article>
+        );
+      })}
     </div>
   );
 }
@@ -221,9 +270,13 @@ function NewsViewer({ entries }) {
   );
 }
 
-function MediaGroupViewer({ entries, group, stateName }) {
-  if (group.key === 'gallery') return <GalleryViewer entries={entries} stateName={stateName} />;
-  if (group.key === 'activities') return <ActivityViewer entries={entries} stateName={stateName} />;
+function MediaGroupViewer({ entries, group, stateName, onOpenLightbox }) {
+  if (group.key === 'gallery') {
+    return <GalleryViewer entries={entries} stateName={stateName} onOpenLightbox={onOpenLightbox} />;
+  }
+  if (group.key === 'activities') {
+    return <ActivityViewer entries={entries} stateName={stateName} onOpenLightbox={onOpenLightbox} />;
+  }
   if (group.key === 'videos') return <VideosViewer entries={entries} />;
   if (group.key === 'research') return <ResearchDocumentViewer entries={entries} />;
   return <NewsViewer entries={entries} />;
@@ -231,6 +284,7 @@ function MediaGroupViewer({ entries, group, stateName }) {
 
 function StatePanel({ onClose, selectedState }) {
   const [openSection, setOpenSection] = useState('gallery');
+  const [lightbox, setLightbox] = useState({ isOpen: false, items: [], index: 0 });
   const mediaContent = useMemo(
     () => createMediaContent(selectedState?.mediaGroups),
     [selectedState],
@@ -238,9 +292,20 @@ function StatePanel({ onClose, selectedState }) {
   const closeButtonRef = useRef(null);
   const dialogRef = useRef(null);
   const shouldReduceMotion = useReducedMotion();
+  const isLightboxOpen = lightbox.isOpen;
+
+  const openLightbox = (items, index = 0) => {
+    if (!items?.length) return;
+    setLightbox({ isOpen: true, items, index });
+  };
+
+  const closeLightbox = () => {
+    setLightbox((current) => ({ ...current, isOpen: false }));
+  };
 
   useEffect(() => {
     setOpenSection('gallery');
+    setLightbox({ isOpen: false, items: [], index: 0 });
   }, [selectedState]);
 
   useEffect(() => {
@@ -266,6 +331,8 @@ function StatePanel({ onClose, selectedState }) {
     ].join(',');
 
     const handleKeyDown = (event) => {
+      if (isLightboxOpen) return;
+
       if (event.key === 'Escape') {
         event.preventDefault();
         onClose();
@@ -306,13 +373,14 @@ function StatePanel({ onClose, selectedState }) {
       body.style.overflow = previousOverflow;
       body.style.paddingRight = previousPaddingRight;
     };
-  }, [onClose]);
+  }, [onClose, isLightboxOpen]);
 
   if (!selectedState) return null;
 
   const accordionSections = selectedState.mediaGroups;
 
   return (
+    <>
     <AnimatePresence>
       <motion.div
         className="fixed inset-0 z-[70] bg-slate-950/30 backdrop-blur-sm"
@@ -482,6 +550,7 @@ function StatePanel({ onClose, selectedState }) {
                             entries={entries}
                             group={group}
                             stateName={selectedState.stateName}
+                            onOpenLightbox={openLightbox}
                           />
                         </div>
                       ) : null}
@@ -503,6 +572,14 @@ function StatePanel({ onClose, selectedState }) {
         </motion.aside>
       </motion.div>
     </AnimatePresence>
+
+    <MediaLightbox
+      items={lightbox.items}
+      initialIndex={lightbox.index}
+      isOpen={lightbox.isOpen}
+      onClose={closeLightbox}
+    />
+    </>
   );
 }
 

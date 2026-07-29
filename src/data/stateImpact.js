@@ -1,3 +1,9 @@
+import { delhiMedia } from './stateMedia/delhi.js';
+import { haryanaMedia } from './stateMedia/haryana.js';
+import { himachalPradeshMedia } from './stateMedia/himachalPradesh.js';
+import { uttarakhandMedia } from './stateMedia/uttarakhand.js';
+import { uttarPradeshMedia } from './stateMedia/uttarPradesh.js';
+
 const buildPlaceholderMediaGroup = (key, label, countLabel) => ({
   key,
   label,
@@ -16,9 +22,18 @@ const createStateProfile = ({
   focusAreas,
   implementationSnapshot,
   districts,
+  media = {},
 }) => {
   const totalDistricts = districts.length;
   const totalWomenTrained = districts.reduce((total, district) => total + district.womenTrained, 0);
+
+  const defaultMediaGroups = [
+    buildPlaceholderMediaGroup('gallery', 'Gallery', 'Gallery'),
+    buildPlaceholderMediaGroup('activities', 'Activities', 'Activities'),
+    buildPlaceholderMediaGroup('videos', 'Videos', 'Videos'),
+    buildPlaceholderMediaGroup('research', 'Research Documents', 'Research'),
+    buildPlaceholderMediaGroup('news', 'News', 'News'),
+  ];
 
   return {
     id,
@@ -69,13 +84,10 @@ const createStateProfile = ({
       },
     ],
     implementationSnapshot,
-    mediaGroups: [
-      buildPlaceholderMediaGroup('gallery', 'Gallery', 'Gallery'),
-      buildPlaceholderMediaGroup('activities', 'Activities', 'Activities'),
-      buildPlaceholderMediaGroup('videos', 'Videos', 'Videos'),
-      buildPlaceholderMediaGroup('research', 'Research Documents', 'Research'),
-      buildPlaceholderMediaGroup('news', 'News', 'News'),
-    ],
+    mediaGroups: defaultMediaGroups.map((group) => ({
+      ...group,
+      items: media[group.key] || group.items,
+    })),
     cta: {
       title: 'Join the next phase of Project Bharti',
       description: 'Collaborate with the team as new field content, reports, and media are added for this state.',
@@ -107,6 +119,7 @@ export const projectBhartiStates = [
       partners: ['IIT Delhi', 'Community field partners'],
       focus: ['Field engagement', 'Capacity building'],
     },
+    media: delhiMedia,
   }),
   createStateProfile({
     id: 'haryana',
@@ -130,6 +143,7 @@ export const projectBhartiStates = [
       partners: ['IIT Delhi', 'Regional facilitators'],
       focus: ['Workshop planning', 'Field partnerships'],
     },
+    media: haryanaMedia,
   }),
   createStateProfile({
     id: 'himachal-pradesh',
@@ -155,6 +169,7 @@ export const projectBhartiStates = [
       partners: ['IIT Delhi', 'Local implementation teams'],
       focus: ['Remote access', 'Local adaptation'],
     },
+    media: himachalPradeshMedia,
   }),
   createStateProfile({
     id: 'uttarakhand',
@@ -175,6 +190,7 @@ export const projectBhartiStates = [
       partners: ['IIT Delhi', 'Community facilitators'],
       focus: ['Community learning', 'Digital access'],
     },
+    media: uttarakhandMedia,
   }),
   createStateProfile({
     id: 'uttar-pradesh',
@@ -198,6 +214,7 @@ export const projectBhartiStates = [
       partners: ['IIT Delhi', 'Programme collaborators'],
       focus: ['Market access', 'Field evidence'],
     },
+    media: uttarPradeshMedia,
   }),
 ];
 

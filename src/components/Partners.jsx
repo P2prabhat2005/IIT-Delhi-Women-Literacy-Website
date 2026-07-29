@@ -1,3 +1,4 @@
+import { motion, useReducedMotion } from 'framer-motion';
 import { useState } from 'react';
 import { partnersMediaContent } from '../data/partnersMedia.js';
 import MediaLightbox from './MediaLightbox.jsx';
@@ -6,19 +7,19 @@ import SectionTitle from './SectionTitle.jsx';
 const SIZE_CLASSES = {
   feature: {
     cell: 'sm:col-span-2 lg:col-span-8',
-    frame: 'min-h-[15rem] sm:min-h-[17rem] lg:min-h-[19rem]',
+    frame: 'min-h-[15rem] sm:min-h-[17rem] lg:min-h-[18.5rem]',
   },
   wide: {
     cell: 'sm:col-span-2 lg:col-span-12',
-    frame: 'min-h-[11rem] sm:min-h-[13rem] lg:min-h-[15rem]',
+    frame: 'min-h-[11rem] sm:min-h-[12.5rem] lg:min-h-[14.5rem]',
   },
   lg: {
     cell: 'lg:col-span-5',
-    frame: 'min-h-[13rem] sm:min-h-[14rem] lg:min-h-[15.5rem]',
+    frame: 'min-h-[12.5rem] sm:min-h-[13.5rem] lg:min-h-[15rem]',
   },
   md: {
     cell: 'lg:col-span-4',
-    frame: 'min-h-[11.5rem] sm:min-h-[12.5rem] lg:min-h-[13.5rem]',
+    frame: 'min-h-[11rem] sm:min-h-[12rem] lg:min-h-[13rem]',
   },
   sm: {
     cell: 'lg:col-span-3',
@@ -26,17 +27,27 @@ const SIZE_CLASSES = {
   },
 };
 
-function MediaWallCard({ item, onOpen }) {
+function MediaWallCard({ item, onOpen, index, reduceMotion }) {
   const size = SIZE_CLASSES[item.size] || SIZE_CLASSES.md;
   const isPress = item.kind === 'press';
   const isWide = item.size === 'wide';
 
   return (
-    <div className={size.cell}>
+    <motion.div
+      className={size.cell}
+      initial={reduceMotion ? false : { opacity: 0, y: 28 }}
+      whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.18, margin: '0px 0px -40px 0px' }}
+      transition={
+        reduceMotion
+          ? { duration: 0 }
+          : { duration: 0.45, ease: 'easeOut', delay: Math.min(index * 0.045, 0.36) }
+      }
+    >
       <button
         type="button"
         onClick={() => onOpen(item.id)}
-        className={`group relative flex h-full w-full overflow-hidden rounded-[1.25rem] border border-slate-200/90 text-left shadow-sm shadow-slate-200/40 hover:border-red-100 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-900/40 ${
+        className={`group relative flex h-full w-full overflow-hidden rounded-[1.25rem] border border-slate-200/90 text-left shadow-sm shadow-slate-200/40 transition-[box-shadow,border-color] duration-300 ease-out hover:border-red-100 hover:shadow-lg hover:shadow-slate-300/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-900/40 ${
           isPress ? 'bg-white p-2 sm:p-2.5' : 'bg-slate-100'
         } ${size.frame}`}
         aria-label={`Open ${item.caption || (isPress ? 'press cutting' : 'photo')}: ${item.alt}`}
@@ -51,28 +62,36 @@ function MediaWallCard({ item, onOpen }) {
             alt=""
             loading="lazy"
             decoding="async"
-            className={
+            className={`transition-transform duration-300 ease-out motion-safe:group-hover:scale-[1.04] ${
               isPress
                 ? 'h-auto max-h-full w-full object-contain'
                 : isWide
                   ? 'h-full w-full object-cover object-center'
                   : 'h-full w-full object-cover object-[center_28%]'
-            }
+            }`}
           />
         </div>
       </button>
-    </div>
+    </motion.div>
   );
 }
 
 function MediaWall({ items, onOpen }) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <div
-      className="mt-4 grid auto-rows-min grid-cols-1 gap-2 sm:grid-cols-2 md:mt-5 lg:grid-flow-dense lg:grid-cols-12 lg:gap-2"
+      className="mt-4 grid auto-rows-min grid-cols-1 gap-2 sm:grid-cols-2 md:mt-5 lg:grid-flow-dense lg:grid-cols-12 lg:gap-2.5"
       aria-label="Project Bharti press coverage and field photography"
     >
-      {items.map((item) => (
-        <MediaWallCard key={item.id} item={item} onOpen={onOpen} />
+      {items.map((item, index) => (
+        <MediaWallCard
+          key={item.id}
+          item={item}
+          onOpen={onOpen}
+          index={index}
+          reduceMotion={reduceMotion}
+        />
       ))}
     </div>
   );
