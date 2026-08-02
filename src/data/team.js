@@ -4,6 +4,9 @@
 
 import profGouravDwivediPhoto from '../assets/images/team/prof-gourav-dwivedi.png';
 import profSeemaSharmaPhoto from '../assets/images/team/prof-seema-sharma.png';
+import purariSharmaPhoto from '../assets/images/team/purari-sharma.png';
+import shashankKumarPhoto from '../assets/images/team/shashank-kumar.png';
+import uditMaheshwariPhoto from '../assets/images/team/udit-maheshwari.png';
 
 const teamCategories = [
   {
@@ -44,13 +47,12 @@ const teamCategories = [
     isActive: true,
     members: [
       {
-        id: 'research-scholar-placeholder-1',
-        fullName: 'To be announced',
+        id: 'udit-maheshwari',
+        fullName: 'Udit Maheshwari',
         designation: 'Research Scholar',
-        photo: null,
+        photo: { url: uditMaheshwariPhoto },
         isActive: true,
-        isPlaceholder: true,
-        displayOrder: 0,
+        displayOrder: 2,
         categoryId: 'development-team',
       },
       {
@@ -60,25 +62,25 @@ const teamCategories = [
         photo: null,
         isActive: true,
         isPlaceholder: true,
-        displayOrder: 1,
+        displayOrder: 3,
         categoryId: 'development-team',
       },
       {
         id: 'purari-sharma',
         fullName: 'Purari Sharma',
         designation: 'Research Associate',
-        photo: null,
+        photo: { url: purariSharmaPhoto },
         isActive: true,
-        displayOrder: 2,
+        displayOrder: 0,
         categoryId: 'development-team',
       },
       {
         id: 'shashank-kumar',
         fullName: 'Shashank Kumar',
         designation: 'Research Associate',
-        photo: null,
+        photo: { url: shashankKumarPhoto },
         isActive: true,
-        displayOrder: 3,
+        displayOrder: 1,
         categoryId: 'development-team',
       },
     ],
