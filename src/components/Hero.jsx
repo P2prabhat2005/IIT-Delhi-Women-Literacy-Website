@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
@@ -6,6 +6,7 @@ import inauguralEventPhoto from '../assets/images/hero/inaugural-event.png';
 import profGouravDwivediPhoto from '../assets/images/hero/prof-gourav-dwivedi.png';
 import profSeemaSharmaPhoto from '../assets/images/hero/prof-seema-sharma.png';
 import { heroContent } from '../data/homepage.js';
+import { fadeUpTransition, staggerDelay } from '../utils/motion.js';
 
 const heroBackgroundAssets = import.meta.glob('../assets/images/hero/*.{png,jpg,jpeg,webp,avif}', {
   eager: true,
@@ -36,30 +37,31 @@ const heroShowcase = {
       id: 'prof-seema-sharma',
       src: profSeemaSharmaPhoto,
       name: 'Prof. Seema Sharma',
-      alt: 'Portrait of Prof. Seema Sharma, Project & Our Guide for Project Bharti',
+      alt: 'Portrait of Prof. Seema Sharma, Project Lead, Project Bharti',
     },
     {
       id: 'prof-gourav-dwivedi',
       src: profGouravDwivediPhoto,
       name: 'Prof. Gourav Dwivedi',
-      alt: 'Portrait of Prof. Gourav Dwivedi, Project & Our Guide for Project Bharti',
+      alt: 'Portrait of Prof. Gourav Dwivedi, Co-Project Lead, Project Bharti',
     },
   ],
   inaugural: {
     src: inauguralEventPhoto,
     alt: 'Project Bharti inaugural event group photograph at IIT Delhi',
   },
-  sharedRole: 'Project & Our Guide',
+  sharedRole: 'Faculty Leadership',
 };
 
 export default function Hero() {
   const sectionRef = useRef(null);
+  const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start start', 'end start'],
   });
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '12%']);
-  const visualY = useTransform(scrollYProgress, [0, 1], ['0%', '8%']);
+  const backgroundY = useTransform(scrollYProgress, [0, 1], reduceMotion ? ['0%', '0%'] : ['0%', '12%']);
+  const visualY = useTransform(scrollYProgress, [0, 1], reduceMotion ? ['0%', '0%'] : ['0%', '8%']);
 
   return (
     <div className="bg-white px-4 pb-8 pt-4 sm:px-6 sm:pb-10 sm:pt-6 lg:px-10 lg:pb-12 lg:pt-10">
@@ -85,22 +87,22 @@ export default function Hero() {
 
       <motion.div
         aria-hidden="true"
-        animate={{ y: [0, -12, 0], opacity: [0.5, 0.85, 0.5] }}
-        transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+        animate={reduceMotion ? undefined : { y: [0, -12, 0], opacity: [0.5, 0.85, 0.5] }}
+        transition={reduceMotion ? { duration: 0 } : { duration: 9, repeat: Infinity, ease: 'easeInOut' }}
         className="absolute left-[6%] top-28 -z-10 h-24 w-24 rounded-full border border-red-200/80 bg-white/30 blur-[1px]"
       />
       <motion.div
         aria-hidden="true"
-        animate={{ y: [0, 14, 0], x: [0, -8, 0] }}
-        transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
+        animate={reduceMotion ? undefined : { y: [0, 14, 0], x: [0, -8, 0] }}
+        transition={reduceMotion ? { duration: 0 } : { duration: 11, repeat: Infinity, ease: 'easeInOut' }}
         className="absolute right-[8%] top-36 -z-10 h-36 w-36 rounded-full border border-cyan-200/80 bg-cyan-50/40"
       />
 
       <div className="site-container relative grid min-h-[calc(100vh-88px)] items-center gap-10 py-16 md:gap-12 md:py-20 lg:grid-cols-[1.08fr_0.92fr] lg:gap-12 lg:py-24">
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.65, ease: 'easeOut' }}
+          initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+          animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+          transition={reduceMotion ? { duration: 0 } : fadeUpTransition(0, 0.5)}
         >
           <p className="mb-4 text-sm font-bold uppercase tracking-[0.16em] text-red-900">
             {heroContent.eyebrow}
@@ -129,10 +131,10 @@ export default function Hero() {
             {heroContent.stats.map((metric, index) => (
               <motion.div
                 key={metric.label}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.45, delay: 0.16 + index * 0.06 }}
-                className="rounded-2xl border border-slate-200 bg-white/82 p-4 shadow-sm backdrop-blur transition duration-300 hover:-translate-y-1 hover:border-red-100 hover:shadow-xl"
+                initial={reduceMotion ? false : { opacity: 0, y: 14 }}
+                animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+                transition={reduceMotion ? { duration: 0 } : fadeUpTransition(0.12 + staggerDelay(index, 0.06), 0.4)}
+                className="rounded-2xl border border-slate-200 bg-white/82 p-4 shadow-sm backdrop-blur transition duration-300 hover:-translate-y-1 hover:border-red-100 hover:shadow-xl motion-safe:hover:scale-[1.02]"
               >
                 <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">{metric.label}</dt>
                 <dd className="mt-2 text-2xl font-semibold text-slate-950">{metric.value}</dd>
@@ -143,9 +145,9 @@ export default function Hero() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.65, delay: 0.12, ease: 'easeOut' }}
+          initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+          animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+          transition={reduceMotion ? { duration: 0 } : fadeUpTransition(0.1, 0.5)}
           style={{ y: visualY }}
           className="w-full"
           aria-label="Project Bharti leadership and inaugural event"
@@ -155,7 +157,7 @@ export default function Hero() {
               <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 {heroShowcase.professors.map((professor) => (
                   <figure key={professor.id} className="min-w-0">
-                    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white/90 shadow-sm shadow-slate-200/60">
+                    <div className="group overflow-hidden rounded-2xl border border-slate-200 bg-white/90 shadow-sm shadow-slate-200/60">
                       <img
                         src={professor.src}
                         alt={professor.alt}
@@ -163,7 +165,7 @@ export default function Hero() {
                         height="480"
                         loading="eager"
                         decoding="async"
-                        className="aspect-square w-full object-cover object-top"
+                        className="aspect-square w-full object-cover object-top transition-transform duration-300 ease-out motion-safe:group-hover:scale-[1.03]"
                       />
                     </div>
                     <figcaption className="mt-3.5 px-1 text-center">
@@ -180,7 +182,7 @@ export default function Hero() {
             </div>
 
             <figure className="min-w-0">
-              <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white/90 shadow-sm shadow-slate-200/60">
+              <div className="group overflow-hidden rounded-2xl border border-slate-200 bg-white/90 shadow-sm shadow-slate-200/60">
                 <img
                   src={heroShowcase.inaugural.src}
                   alt={heroShowcase.inaugural.alt}
@@ -188,7 +190,7 @@ export default function Hero() {
                   height="800"
                   loading="eager"
                   decoding="async"
-                  className="aspect-[16/10] w-full object-cover object-center"
+                  className="aspect-[16/10] w-full object-cover object-center transition-transform duration-300 ease-out motion-safe:group-hover:scale-[1.03]"
                 />
               </div>
             </figure>

@@ -37,13 +37,13 @@ export const resourceCollections = [
   {
     id: 'downloadable-pdfs',
     title: 'Downloadable PDFs',
-    description: 'Practical handouts and reference guides for facilitators, trainers, and field partners.',
+    description: 'Reference guides and handouts for facilitators, trainers, and field partners.',
     Icon: FileText,
     accent: 'bg-red-50 text-red-900 border-red-100',
     items: [
       {
         title: 'Women Entrepreneurs Financial Basics',
-        description: 'A concise guide covering savings, budgeting, and safe financial habits.',
+        description: 'A concise guide covering savings, budgeting, and responsible financial habits.',
         href: null,
         meta: 'PDF • 3 pages',
         category: 'downloadable-pdfs',
@@ -55,7 +55,7 @@ export const resourceCollections = [
       },
       {
         title: 'Digital Safety for Small Business Owners',
-        description: 'A quick reference for responsible use of phones, payments, and online tools.',
+        description: 'A reference note on responsible use of phones, payments, and online tools.',
         href: null,
         meta: 'PDF • 2 pages',
         category: 'downloadable-pdfs',
@@ -70,13 +70,13 @@ export const resourceCollections = [
   {
     id: 'videos',
     title: 'Videos',
-    description: 'Short explainers and demonstrations designed for community learning and outreach.',
+    description: 'Short instructional videos for community learning and outreach sessions.',
     Icon: CirclePlay,
     accent: 'bg-amber-50 text-amber-900 border-amber-100',
     items: [
       {
         title: 'How to Start a Simple Budget',
-        description: 'A simple video lesson for women-led micro-enterprises to organise everyday cash flow.',
+        description: 'An instructional video on organising everyday cash flow for women-led micro-enterprises.',
         href: null,
         meta: 'Video • 6 min',
         category: 'videos',
@@ -88,7 +88,7 @@ export const resourceCollections = [
       },
       {
         title: 'Digital Payments in Daily Business',
-        description: 'A practical walkthrough on using UPI and secure payment habits in the field.',
+        description: 'A practical demonstration of UPI use and secure payment habits in field settings.',
         href: null,
         meta: 'Video • 8 min',
         category: 'videos',
@@ -103,7 +103,7 @@ export const resourceCollections = [
   {
     id: 'government-schemes',
     title: 'Government Schemes',
-    description: 'Relevant public schemes that can support entrepreneurship, access to credit, and digital inclusion.',
+    description: 'Public schemes relevant to entrepreneurship, credit access, and digital inclusion.',
     Icon: ShieldCheck,
     accent: 'bg-emerald-50 text-emerald-900 border-emerald-100',
     items: [
@@ -121,7 +121,7 @@ export const resourceCollections = [
       },
       {
         title: 'Pradhan Mantri Jan Dhan Yojana',
-        description: 'Broadens access to banking services and financial inclusion for underserved communities.',
+        description: 'Expands access to banking services and financial inclusion for underserved communities.',
         href: null,
         meta: 'Portal • Government of India',
         category: 'government-schemes',
@@ -136,13 +136,13 @@ export const resourceCollections = [
   {
     id: 'training-material',
     title: 'Training Material',
-    description: 'Curriculum-ready material for workshops, facilitator notes, and field sessions.',
+    description: 'Curriculum materials for workshops, facilitator preparation, and field sessions.',
     Icon: BookOpenCheck,
     accent: 'bg-sky-50 text-sky-900 border-sky-100',
     items: [
       {
         title: 'Facilitator Guide for Financial Literacy',
-        description: 'Workshop notes designed for trainers leading interactive sessions in community settings.',
+        description: 'Workshop notes for trainers conducting interactive sessions in community settings.',
         href: null,
         meta: 'Training module',
         category: 'training-material',
@@ -154,7 +154,7 @@ export const resourceCollections = [
       },
       {
         title: 'Digital Literacy Session Plan',
-        description: 'An adaptable lesson plan for teaching basic smartphone and digital payment usage.',
+        description: 'An adaptable lesson plan for basic smartphone use and digital payment instruction.',
         href: null,
         meta: 'Training module',
         category: 'training-material',
@@ -169,13 +169,13 @@ export const resourceCollections = [
   {
     id: 'financial-literacy',
     title: 'Financial Literacy Resources',
-    description: 'Tools and references for budgeting, savings, banking, and everyday money decisions.',
+    description: 'Tools and references for budgeting, savings, banking, and everyday financial decisions.',
     Icon: Landmark,
     accent: 'bg-violet-50 text-violet-900 border-violet-100',
     items: [
       {
         title: 'Savings and Budgeting Checklist',
-        description: 'A simple checklist to help women entrepreneurs track income, expenses, and savings.',
+        description: 'A checklist to help women entrepreneurs track income, expenses, and savings.',
         href: null,
         meta: 'Checklist',
         category: 'financial-literacy',
@@ -202,13 +202,13 @@ export const resourceCollections = [
   {
     id: 'digital-literacy',
     title: 'Digital Literacy Resources',
-    description: 'Resources for navigating smartphones, digital payments, and online services with confidence.',
+    description: 'Materials on smartphone use, digital payments, and safe engagement with online services.',
     Icon: Smartphone,
     accent: 'bg-cyan-50 text-cyan-900 border-cyan-100',
     items: [
       {
         title: 'Safe Use of Digital Payments',
-        description: 'A short practical guide to secure transactions, PIN safety, and fraud awareness.',
+        description: 'A practical guide to secure transactions, PIN safety, and fraud awareness.',
         href: null,
         meta: 'Guide',
         category: 'digital-literacy',
@@ -220,7 +220,7 @@ export const resourceCollections = [
       },
       {
         title: 'Digital Skills for Everyday Business',
-        description: 'A resource that introduces basic online tools for customer communication and record keeping.',
+        description: 'An introduction to basic online tools for customer communication and record keeping.',
         href: null,
         meta: 'Reference',
         category: 'digital-literacy',

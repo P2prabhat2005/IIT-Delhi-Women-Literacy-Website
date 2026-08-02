@@ -20,7 +20,7 @@ function getPageMeta(pathname) {
     return {
       title: `${siteName} | ${siteTitleSuffix}`,
       description:
-        'Project Bharti focuses on digital and financial literacy, women-led entrepreneurship, and community-led capacity building.',
+        'Project Bharti is an IIT Delhi research and outreach initiative on financial literacy, digital literacy, and women entrepreneurship.',
     };
   }
 
@@ -28,7 +28,7 @@ function getPageMeta(pathname) {
     return {
       title: `About ${siteName} | ${siteTitleSuffix}`,
       description:
-        'Learn about Project Bharti, its objectives, and the institutional partnerships supporting women-led literacy and entrepreneurship work.',
+        'About Project Bharti: research objectives, institutional leadership at IIT Delhi, and the pathway from evidence to field impact.',
     };
   }
 
@@ -36,7 +36,7 @@ function getPageMeta(pathname) {
     return {
       title: `Activities | ${siteName} | ${siteTitleSuffix}`,
       description:
-        'Explore Project Bharti activities, training programmes, field engagement, and implementation milestones.',
+        'Project Bharti field activities, training programmes, community engagement, and implementation milestones.',
     };
   }
 
@@ -44,7 +44,7 @@ function getPageMeta(pathname) {
     return {
       title: `Resources | ${siteName} | ${siteTitleSuffix}`,
       description:
-        'Access Project Bharti resources, training materials, policy briefs, toolkits, and learning content for community partners.',
+        'Training materials, policy briefs, toolkits, and learning resources developed under Project Bharti.',
     };
   }
 
@@ -52,7 +52,7 @@ function getPageMeta(pathname) {
     return {
       title: `Contact ${siteName} | ${siteTitleSuffix}`,
       description:
-        'Get in touch with Project Bharti for collaboration, outreach, and institutional engagement opportunities.',
+        'Contact Project Bharti for academic collaboration, institutional partnerships, and community engagement.',
     };
   }
 

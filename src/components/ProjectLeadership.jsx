@@ -48,7 +48,7 @@ function LeadershipCategory({ category }) {
         align="center"
         eyebrow="Project Bharti"
         id="project-leadership-title"
-        description={category?.description || 'Academic and implementation leadership guiding Project Bharti.'}
+        description={category?.description || 'Faculty leadership at IIT Delhi providing academic direction for Project Bharti.'}
       >
         {category?.title || 'Project Leadership'}
       </SectionTitle>
@@ -123,7 +123,7 @@ function DarkCategory({ category }) {
           Project Bharti
         </p>
         <h3 className="mt-2.5 text-3xl font-semibold leading-tight md:mt-3">
-          {isDevelopmentTeam ? `Meet the ${category.title}` : category.title}
+          {category.title}
         </h3>
         {category.description ? (
           <p className="mt-3 max-w-3xl text-base leading-7 text-slate-300 md:mt-3.5">{category.description}</p>
@@ -134,7 +134,7 @@ function DarkCategory({ category }) {
         <PersistentImageSlot
           ownerId="dev-team-group"
           title="Official Project Photograph"
-          alt="Development team group photograph"
+          alt="Research and implementation team group photograph"
           aspectRatio="aspect-[16/7]"
           emptyClassName="bg-white/[0.07]"
           emptyTextClassName="text-slate-200"
@@ -211,7 +211,7 @@ export default function ProjectLeadership() {
               align="center"
               eyebrow="Project Bharti"
               id="project-leadership-title"
-              description="Team categories and members will appear here once they are added."
+              description="Team categories and members will appear here once they are published."
             >
               Project Team
             </SectionTitle>

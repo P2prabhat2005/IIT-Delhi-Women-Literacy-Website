@@ -648,11 +648,11 @@ export default function InteractiveIndiaMap() {
         <div className="grid gap-12 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
           <div>
             <SectionTitle
-              eyebrow="Impact Across India"
+              eyebrow="Geographic Coverage"
               id="india-map-title"
-              description="A scalable state-wise engine for Project Bharti field activity, media, research documents, and future impact reporting."
+              description="State-wise profiles of Project Bharti field activity, media documentation, research outputs, and impact reporting."
             >
-              Interactive map foundation for project expansion.
+              Interactive map of project implementation.
             </SectionTitle>
 
             <div className="mt-8 grid gap-3 sm:grid-cols-2">

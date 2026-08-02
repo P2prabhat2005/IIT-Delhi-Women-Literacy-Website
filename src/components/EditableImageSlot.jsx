@@ -43,7 +43,7 @@ export default function EditableImageSlot({
               setPreviewUrl(null);
               setIsPreviewVisible(false);
             }}
-            className={`h-full w-full object-cover transition-opacity duration-500 ${
+            className={`h-full w-full object-cover transition-[opacity,transform] duration-300 ease-out motion-safe:group-hover:scale-[1.03] ${
               isPreviewVisible ? 'opacity-100' : 'opacity-0'
             }`}
           />

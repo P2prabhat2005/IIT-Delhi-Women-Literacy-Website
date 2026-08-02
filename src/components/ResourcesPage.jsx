@@ -20,10 +20,11 @@ function ResourceSection({ collection, onOpenModal, onOpenVideo, resources }) {
         </div>
       </div>
       <div className="mt-8 grid gap-4 lg:grid-cols-2">
-        {resources.map((resource) => (
+        {resources.map((resource, index) => (
           <ResourceCard
             key={resource.id}
             collection={collection}
+            index={index}
             resource={resource}
             onOpenModal={onOpenModal}
             onOpenVideo={onOpenVideo}
@@ -92,23 +93,23 @@ export default function ResourcesPage() {
           <div>
             <p className="text-sm font-bold uppercase tracking-[0.18em] text-red-200">Resources</p>
             <h1 className="mt-4 text-4xl font-semibold leading-tight md:text-5xl">
-              Practical resources for learning, implementation, and scale.
+              Training materials, research outputs, and field references.
             </h1>
             <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-300">
-              Explore downloadable material, short videos, scheme references, and training content aligned to Project Bharti’s financial and digital literacy goals.
+              Downloadable guides, instructional videos, scheme references, and training content aligned with Project Bharti’s financial and digital literacy mandate.
             </p>
           </div>
           <div className="rounded-[1.6rem] border border-white/10 bg-white/10 p-5 backdrop-blur">
             <div className="inline-flex w-fit items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-red-100">
-              Content will be added by the Project Bharti team.
+              Materials are published as Project Bharti releases them.
             </div>
             <div className="mt-4 flex items-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15 text-white">
                 <Search size={20} aria-hidden="true" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-white">Quick discovery</p>
-                <p className="text-sm text-slate-300">Search by topic, category, or resource type.</p>
+                <p className="text-sm font-semibold text-white">Browse resources</p>
+                <p className="text-sm text-slate-300">Filter by topic, category, or resource type.</p>
               </div>
             </div>
             <div className="mt-6 flex flex-col gap-3">
@@ -159,7 +160,7 @@ export default function ResourcesPage() {
           ))
         ) : (
           <div className="rounded-[2rem] border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-sm font-semibold text-slate-600">
-            No resources matched your search. Try a broader keyword or switch filters.
+            No resources matched your search. Try a broader keyword or adjust the filters.
           </div>
         )}
       </div>
@@ -194,10 +195,10 @@ export default function ResourcesPage() {
               </button>
             </div>
             <p className="mt-4 text-sm leading-7 text-slate-600">
-              This {activeModal.kind === 'video' ? 'video' : 'resource'} will be shared by the Project Bharti Team once the final content is ready.
+              This {activeModal.kind === 'video' ? 'video' : 'resource'} will be published by Project Bharti once the final content is ready.
             </p>
             <div className="mt-6 rounded-2xl border border-red-100 bg-red-50 p-4 text-sm font-semibold text-red-900">
-              Official resources will be added by the Project Bharti Team.
+              Official resources will be published by Project Bharti as materials are released.
             </div>
             <button
               type="button"

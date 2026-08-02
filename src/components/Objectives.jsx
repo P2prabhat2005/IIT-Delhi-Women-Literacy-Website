@@ -1,4 +1,4 @@
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { Camera, ClipboardList, FileText, Newspaper } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { objectiveImpactHighlights, objectives } from '../data/homepage.js';
@@ -7,14 +7,19 @@ import SectionTitle from './SectionTitle.jsx';
 function AnimatedCounter({ metric }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
+  const reduceMotion = useReducedMotion();
   const [count, setCount] = useState(0);
   const hasNumericValue = typeof metric.value === 'number';
 
   useEffect(() => {
     if (!isInView || !hasNumericValue) return;
+    if (reduceMotion) {
+      setCount(metric.value);
+      return;
+    }
 
     let frameId;
-    const duration = 1100;
+    const duration = 500;
     const start = performance.now();
 
     const animate = (timestamp) => {
@@ -29,16 +34,16 @@ function AnimatedCounter({ metric }) {
 
     frameId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(frameId);
-  }, [hasNumericValue, isInView, metric.value]);
+  }, [hasNumericValue, isInView, metric.value, reduceMotion]);
 
   return (
     <motion.article
       ref={ref}
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={reduceMotion ? false : { opacity: 0, y: 14 }}
+      whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-70px' }}
-      transition={{ duration: 0.45 }}
-      className="rounded-2xl border border-white/10 bg-white/[0.07] p-5"
+      transition={reduceMotion ? { duration: 0 } : { duration: 0.4, ease: 'easeOut' }}
+      className="rounded-2xl border border-white/10 bg-white/[0.07] p-5 transition duration-300 hover:bg-white/[0.1]"
     >
       <p className="text-sm font-medium text-slate-300">{metric.label}</p>
       <p className="mt-3 text-3xl font-semibold text-white">
@@ -76,11 +81,11 @@ export default function Objectives() {
       <div className="site-container relative">
         <SectionTitle
           align="center"
-          eyebrow="Project Objectives / Mandate"
+          eyebrow="Project Objectives"
           id="objectives-title"
-          description="Project Bharti focuses on practical literacy, enterprise capability, and evidence-led community impact for women-led micro-enterprises."
+          description="Project Bharti advances financial literacy, digital literacy, women entrepreneurship, capacity building, and evidence for scalable programme design."
         >
-          Clear objectives for inclusive entrepreneurship.
+          Research objectives and programme mandate.
         </SectionTitle>
 
         <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
@@ -91,9 +96,9 @@ export default function Objectives() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-70px' }}
               transition={{ duration: 0.45, delay: index * 0.05 }}
-              className={`group rounded-[1.5rem] border bg-gradient-to-br p-6 shadow-sm shadow-slate-200/70 transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/90 ${tone}`}
+              className={`group rounded-[1.5rem] border bg-gradient-to-br p-6 shadow-sm shadow-slate-200/70 transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/90 motion-safe:hover:scale-[1.01] ${tone}`}
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-current/10 bg-white/80 shadow-sm transition group-hover:scale-105">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-current/10 bg-white/80 shadow-sm transition duration-300 group-hover:scale-105">
                 <Icon size={22} aria-hidden="true" />
               </div>
               <h3 className="mt-6 text-xl font-semibold text-slate-950">{title}</h3>

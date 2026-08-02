@@ -65,7 +65,7 @@ export default function ContactPage() {
             <p className="text-sm font-bold uppercase tracking-[0.18em] text-red-200">Contact</p>
             <h1 className="mt-4 text-4xl font-semibold leading-tight md:text-5xl">Contact Project Bharti</h1>
             <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-300">
-              We welcome connections from NGOs, volunteers, institutions, and community members who wish to collaborate, learn, or support Project Bharti’s work in women’s literacy and entrepreneurship.
+              Academic institutions, government agencies, CSR partners, NGOs, and community organisations may contact Project Bharti regarding research collaboration, field partnership, and capacity-building engagement.
             </p>
           </div>
           <div className="rounded-[1.6rem] border border-white/10 bg-white/10 p-5 backdrop-blur">
@@ -74,8 +74,8 @@ export default function ContactPage() {
                 <Sparkles size={20} aria-hidden="true" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-white">Community collaboration</p>
-                <p className="text-sm text-slate-300">Reach out to start a conversation with the Project Bharti team.</p>
+                <p className="text-sm font-semibold text-white">Institutional engagement</p>
+                <p className="text-sm text-slate-300">Reach the project office for collaboration and programme enquiries.</p>
               </div>
             </div>
           </div>
@@ -98,7 +98,7 @@ export default function ContactPage() {
             </div>
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.16em] text-red-800">Send a message</p>
-              <h2 className="text-2xl font-semibold text-slate-950">Get in touch</h2>
+              <h2 className="text-2xl font-semibold text-slate-950">Submit an enquiry</h2>
             </div>
           </div>
 
@@ -112,7 +112,7 @@ export default function ContactPage() {
                   value={formState.name}
                   onChange={handleChange}
                   className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-red-300 focus:bg-white"
-                  placeholder="Your name"
+                  placeholder="Full name"
                   required
                 />
               </label>
@@ -142,7 +142,7 @@ export default function ContactPage() {
                   value={formState.phone}
                   onChange={handleChange}
                   className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-red-300 focus:bg-white"
-                  placeholder="Your phone number"
+                  placeholder="Phone number"
                 />
               </label>
               <label className="flex flex-col gap-2 text-sm font-semibold text-slate-700">
@@ -153,7 +153,7 @@ export default function ContactPage() {
                   value={formState.organization}
                   onChange={handleChange}
                   className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-red-300 focus:bg-white"
-                  placeholder="NGO, institution, or community group"
+                  placeholder="Institution, agency, or organisation"
                 />
               </label>
             </div>
@@ -165,7 +165,7 @@ export default function ContactPage() {
                 value={formState.subject}
                 onChange={handleChange}
                 className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-red-300 focus:bg-white"
-                placeholder="How can we help?"
+                placeholder="Subject of enquiry"
                 required
               />
             </label>
@@ -178,7 +178,7 @@ export default function ContactPage() {
                 onChange={handleChange}
                 rows="6"
                 className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-red-300 focus:bg-white"
-                placeholder="Share your enquiry, interest, or collaboration idea."
+                placeholder="Describe your enquiry, partnership interest, or request."
                 required
               />
             </label>
@@ -200,7 +200,7 @@ export default function ContactPage() {
             </div>
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.16em] text-red-800">Who can connect</p>
-              <h2 className="text-2xl font-semibold text-slate-950">Support the project</h2>
+              <h2 className="text-2xl font-semibold text-slate-950">Engagement pathways</h2>
             </div>
           </div>
           <div className="mt-8 grid gap-4">
@@ -222,7 +222,7 @@ export default function ContactPage() {
       <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/70 md:p-8">
         <div className="max-w-3xl">
           <p className="text-sm font-bold uppercase tracking-[0.16em] text-red-800">Frequently asked questions</p>
-          <h2 className="mt-3 text-2xl font-semibold text-slate-950">Questions about collaboration and engagement</h2>
+          <h2 className="mt-3 text-2xl font-semibold text-slate-950">Collaboration and engagement</h2>
         </div>
         <div className="mt-8 space-y-3">
           {contactFaqItems.map((item, index) => {
@@ -260,7 +260,7 @@ export default function ContactPage() {
             </div>
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.16em] text-red-800">Location</p>
-              <h2 className="text-2xl font-semibold text-slate-950">Visit the project base</h2>
+              <h2 className="text-2xl font-semibold text-slate-950">Project office</h2>
             </div>
           </div>
           <div className="mt-8 h-[320px] overflow-hidden rounded-[1.75rem] border border-slate-200 bg-slate-50 shadow-sm md:h-[380px]">
@@ -286,13 +286,13 @@ export default function ContactPage() {
         </div>
 
         <div className="rounded-[2rem] border border-slate-200 bg-slate-950 p-6 text-white shadow-2xl shadow-slate-300/70 md:p-8">
-          <p className="text-sm font-bold uppercase tracking-[0.16em] text-red-200">Join the movement</p>
-          <h2 className="mt-3 text-3xl font-semibold">Become a volunteer or partner</h2>
+          <p className="text-sm font-bold uppercase tracking-[0.16em] text-red-200">Partner with the project</p>
+          <h2 className="mt-3 text-3xl font-semibold">Research, outreach, and field collaboration</h2>
           <p className="mt-4 max-w-2xl text-base leading-8 text-slate-300">
-            Project Bharti invites volunteers, partner organizations, and community champions to support women’s literacy, entrepreneurship, and capacity building initiatives.
+            Project Bharti welcomes partnerships with academic institutions, public agencies, CSR programmes, NGOs, and community organisations to advance financial literacy, digital literacy, and women entrepreneurship.
           </p>
           <div className="mt-6 inline-flex items-center rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-slate-100">
-            Collaboration opportunities will be shared as the project expands.
+            Collaboration opportunities are reviewed as the programme expands.
           </div>
         </div>
       </section>

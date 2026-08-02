@@ -3,5 +3,5 @@ export const navItems = [
   { label: 'Activities', to: '/activities' },
   { label: 'Resources', to: '/resources' },
   { label: 'Contact', to: '/contact' },
-  { label: 'Get Involved', to: '/#get-involved' },
+  { label: 'Collaborate', to: '/#get-involved' },
 ];

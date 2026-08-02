@@ -5,7 +5,6 @@ import {
   FileText,
   Handshake,
   Landmark,
-  MapPinned,
   Network,
   ShieldCheck,
   Smartphone,
@@ -15,35 +14,19 @@ import {
 export const activitiesPageContent = {
   overview: {
     eyebrow: 'Activities',
-    title: 'Field engagement for literacy, enterprise readiness, and research learning.',
+    title: 'Field programmes linking research, literacy training, and enterprise readiness.',
     description:
-      'Project Bharti activities are designed to connect academic research with field practice. Each programme is structured around women Self Help Groups, micro-level entrepreneurship, financial literacy, digital literacy, and capacity building.',
-    cards: [
-      {
-        title: 'Community-centered delivery',
-        description:
-          'Activities are shaped around SHG participation, local enterprise realities, and practical learning needs.',
-        Icon: UsersRound,
-      },
-      {
-        title: 'Practice-led training',
-        description:
-          'Sessions focus on usable financial and digital skills that can support daily enterprise decisions.',
-        Icon: Smartphone,
-      },
-      {
-        title: 'Research documentation',
-        description:
-          'Field interactions are structured to capture insights for future training design, policy learning, and implementation refinement.',
-        Icon: FileText,
-      },
-    ],
+      'Project Bharti activities connect academic research with structured field practice. Programmes are organised around women Self Help Groups and micro-level entrepreneurship, combining community-centred delivery, practice-oriented financial and digital literacy training, and systematic research documentation to inform curriculum design and implementation.',
+    imageKey: 'community-centered-delivery',
+    summaryTitle: 'Field programme approach',
+    summary:
+      'Across project states, field engagement moves from needs assessment to training delivery and evidence capture—linking SHG participation, enterprise-ready skills, and research learning in a single implementation pathway.',
   },
   inauguralProgramme: {
     eyebrow: 'Inaugural Programme',
-    title: 'A formal launch for a research-led field initiative.',
+    title: 'Formal launch of a research-led field initiative.',
     description:
-      'The inaugural programme introduces Project Bharti as a collaborative initiative between IIT Delhi and EXL. It frames the project purpose, field priorities, partner roles, and the pathway from literacy-building to community impact.',
+      'The inaugural programme presents Project Bharti as an IIT Delhi research and outreach initiative implemented in collaboration with EXL. It sets out the project purpose, field priorities, institutional roles, and the pathway from literacy training to community impact.',
     imageKey: 'inaugural',
     highlights: [
       'Project introduction and institutional context',
@@ -54,36 +37,36 @@ export const activitiesPageContent = {
   },
   focusGroupDiscussions: {
     eyebrow: 'Focus Group Discussions',
-    title: 'Listening sessions to understand needs before intervention design.',
+    title: 'Needs assessment preceding intervention design.',
     description:
-      'FGDs help the team understand women entrepreneurs, SHG dynamics, digital access, financial decision-making, barriers to enterprise growth, and community-specific training needs.',
+      'Focus group discussions gather evidence on women entrepreneurs’ experiences, SHG dynamics, digital access, financial decision-making, barriers to enterprise growth, and community-specific training requirements.',
     imageKey: 'fgd',
     cards: [
       {
         title: 'Participant insights',
         description:
-          'Capture lived experiences around savings, credit, digital payments, smartphones, and enterprise operations.',
+          'Document lived experience relating to savings, credit, digital payments, smartphone use, and enterprise operations.',
         Icon: UsersRound,
       },
       {
         title: 'Training needs',
         description:
-          'Identify gaps in financial literacy, digital confidence, business practices, and market readiness.',
+          'Identify gaps in financial literacy, digital competence, business practices, and market readiness.',
         Icon: ClipboardCheck,
       },
       {
         title: 'Research inputs',
         description:
-          'Document recurring themes that can inform curriculum design, field strategy, and policy-oriented outputs.',
+          'Capture recurring themes that inform curriculum design, field strategy, and policy-oriented outputs.',
         Icon: ChartNoAxesCombined,
       },
     ],
   },
   districtTrainingProgrammes: {
     eyebrow: 'District-wise Training Programmes',
-    title: 'A scalable model for state and district level implementation.',
+    title: 'A scalable model for state and district implementation.',
     description:
-      'District-wise programmes will translate the Project Bharti curriculum into practical sessions for women entrepreneurs and SHG-linked communities across the current project states.',
+      'District-level programmes translate the Project Bharti curriculum into practical sessions for women entrepreneurs and SHG-linked communities across the current project states.',
     imageKey: 'district-training',
     states: [
       'Delhi',
@@ -94,27 +77,27 @@ export const activitiesPageContent = {
     ],
     trainingFocus: [
       'Financial literacy and responsible decision-making',
-      'Digital literacy, safe transactions, and smartphone usage',
+      'Digital literacy, safe transactions, and smartphone use',
       'Enterprise readiness, record keeping, and market access',
-      'Community-led learning through SHGs and field partners',
+      'Community learning through SHGs and field partners',
     ],
   },
   methodology: {
     eyebrow: 'Training Methodology',
-    title: 'A structured learning pathway from awareness to application.',
+    title: 'A structured pathway from needs assessment to application.',
     description:
-      'The methodology prioritizes simple language, local context, hands-on exercises, peer learning, and documentation of outcomes for continuous improvement.',
+      'The methodology uses clear language, local context, practical exercises, peer learning, and systematic documentation of outcomes for continuous improvement.',
     steps: [
       {
         title: 'Diagnose',
         description:
-          'Use FGDs and field interactions to understand digital access, financial practices, enterprise needs, and confidence gaps.',
+          'Use focus group discussions and field interactions to assess digital access, financial practices, enterprise needs, and competence gaps.',
         Icon: ClipboardCheck,
       },
       {
         title: 'Design',
         description:
-          'Create training modules that connect financial literacy, digital literacy, and entrepreneurship to everyday business decisions.',
+          'Develop training modules that connect financial literacy, digital literacy, and entrepreneurship to everyday business decisions.',
         Icon: BookOpenCheck,
       },
       {
@@ -126,16 +109,16 @@ export const activitiesPageContent = {
       {
         title: 'Document',
         description:
-          'Capture participation, learnings, field observations, and evidence for research outputs and future programme refinement.',
+          'Record participation, learning outcomes, field observations, and evidence for research outputs and programme refinement.',
         Icon: FileText,
       },
     ],
   },
   impactHighlights: {
     eyebrow: 'Impact Highlights',
-    title: 'What the activities are designed to strengthen.',
+    title: 'Intended outcomes of the activity design.',
     description:
-      'Verified quantitative outcomes will be added after field implementation. The current highlights reflect the intended impact areas of the activity design.',
+      'Verified quantitative outcomes are reported as field implementation progresses. The highlights below describe the primary impact areas guiding activity design.',
     cards: [
       {
         title: 'Financial confidence',
@@ -146,19 +129,19 @@ export const activitiesPageContent = {
       {
         title: 'Digital readiness',
         description:
-          'Greater confidence in smartphones, digital payments, online services, and safer digital behavior.',
+          'Greater competence in smartphone use, digital payments, online services, and safer digital practices.',
         Icon: Smartphone,
       },
       {
         title: 'Enterprise capability',
         description:
-          'Better readiness for record keeping, customer engagement, market access, and micro-enterprise decision-making.',
+          'Stronger readiness for record keeping, customer engagement, market access, and micro-enterprise decision-making.',
         Icon: Network,
       },
       {
         title: 'Research evidence',
         description:
-          'Field documentation that can support future policy learning, training design, and scalable literacy models.',
+          'Field documentation that informs curriculum design, scalable literacy models, and policy learning.',
         Icon: ShieldCheck,
       },
     ],
@@ -167,8 +150,8 @@ export const activitiesPageContent = {
     eyebrow: 'Collaborate',
     title: 'Support the next phase of Project Bharti activities.',
     description:
-      'The activities page is ready to receive official images, district data, training reports, and field documentation as the project implementation progresses.',
-    primaryLabel: 'Contact the Team',
+      'Academic collaborators, government agencies, CSR partners, and field organisations can contribute to documentation, training delivery, and evidence generation as implementation expands.',
+    primaryLabel: 'Contact Project Bharti',
     primaryTo: '/contact',
     secondaryLabel: 'View Resources',
     secondaryTo: '/resources',
@@ -182,7 +165,7 @@ export const activitiesPageContent = {
     {
       label: 'Phase 02',
       title: 'Focus Group Discussions',
-      description: 'Community listening and field research to identify needs and barriers.',
+      description: 'Community consultation and field research to identify needs and barriers.',
     },
     {
       label: 'Phase 03',

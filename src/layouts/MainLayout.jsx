@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Footer from '../components/Footer.jsx';
 import Navbar from '../components/Navbar.jsx';
+import PageTransition from '../components/PageTransition.jsx';
 
 function scrollToHashTarget(targetId) {
   const element = document.getElementById(targetId);
@@ -39,7 +40,9 @@ export default function MainLayout() {
     <div className="app-shell">
       <Navbar />
       <main>
-        <Outlet />
+        <PageTransition>
+          <Outlet />
+        </PageTransition>
       </main>
       <Footer />
     </div>

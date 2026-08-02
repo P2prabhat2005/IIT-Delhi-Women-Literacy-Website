@@ -9,7 +9,7 @@ const buildPlaceholderMediaGroup = (key, label, countLabel) => ({
   label,
   countLabel,
   items: [],
-  placeholder: 'Official content will be added by the Project Bharti Team.',
+  placeholder: 'Official content will be added as Project Bharti documentation is published.',
 });
 
 const createStateProfile = ({
@@ -44,7 +44,7 @@ const createStateProfile = ({
     totalDistricts,
     totalWomenTrained,
     status,
-    lastUpdated: 'Updated recently',
+    lastUpdated: 'Recently updated',
     overview,
     objectives: focusAreas,
     metrics: [
@@ -55,13 +55,13 @@ const createStateProfile = ({
       {
         label: 'Planning',
         title: 'Planning',
-        description: 'State-level engagement planning and field readiness preparation.',
+        description: 'State-level engagement planning and preparation for field delivery.',
         status: 'completed',
       },
       {
         label: 'Survey',
         title: 'Survey',
-        description: 'Baseline engagement and stakeholder mapping for focused outreach.',
+        description: 'Baseline engagement and stakeholder mapping to guide focused outreach.',
         status: 'current',
       },
       {
@@ -89,9 +89,9 @@ const createStateProfile = ({
       items: media[group.key] || group.items,
     })),
     cta: {
-      title: 'Join the next phase of Project Bharti',
-      description: 'Collaborate with the team as new field content, reports, and media are added for this state.',
-      label: 'Explore collaboration opportunities',
+      title: 'Contribute to Project Bharti’s next phase',
+      description: 'Collaborate on field documentation, training delivery, and research outputs as this state profile expands.',
+      label: 'Discuss collaboration',
     },
   };
 };
@@ -105,9 +105,9 @@ export const projectBhartiStates = [
     status: 'Active',
     overview: 'Urban and peri-urban engagement focused on women-led micro-enterprises, SHG networks, and practical adoption of financial and digital tools.',
     focusAreas: [
-      'Strengthen digital payment confidence',
+      'Strengthen digital payment competence',
       'Support financial record keeping',
-      'Enable enterprise readiness through community training',
+      'Build enterprise readiness through community training',
     ],
     districts: [
       { name: 'North Delhi', womenTrained: 42 },
@@ -115,7 +115,7 @@ export const projectBhartiStates = [
     ],
     implementationSnapshot: {
       title: 'Implementation snapshot',
-      description: 'The state profile is being prepared to support upcoming field outreach, training design, and community engagement.',
+      description: 'The Delhi profile documents institutional engagement, training design, and community outreach under Project Bharti’s urban implementation stream.',
       partners: ['IIT Delhi', 'Community field partners'],
       focus: ['Field engagement', 'Capacity building'],
     },
@@ -127,7 +127,7 @@ export const projectBhartiStates = [
     stateName: 'Haryana',
     color: '#16a34a',
     status: 'Pilot',
-    overview: 'Community-oriented literacy interventions planned around SHGs, local enterprise activity, and access to formal financial services.',
+    overview: 'Community-oriented literacy interventions organised around SHGs, local enterprise activity, and access to formal financial services.',
     focusAreas: [
       'Improve banking and savings awareness',
       'Build safe smartphone usage habits',
@@ -139,7 +139,7 @@ export const projectBhartiStates = [
     ],
     implementationSnapshot: {
       title: 'Implementation snapshot',
-      description: 'The state experience will soon include field notes, activity records, and implementation milestones.',
+      description: 'The Haryana profile records pilot workshops, community mobilisation, and field partnerships supporting literacy and enterprise readiness.',
       partners: ['IIT Delhi', 'Regional facilitators'],
       focus: ['Workshop planning', 'Field partnerships'],
     },
@@ -151,9 +151,9 @@ export const projectBhartiStates = [
     stateName: 'Himachal Pradesh',
     color: '#9333ea',
     status: 'Planned',
-    overview: 'A hill-state implementation context for strengthening digital confidence, financial awareness, and enterprise support in local communities.',
+    overview: 'A hill-state implementation context for strengthening digital competence, financial awareness, and enterprise support in local communities.',
     focusAreas: [
-      'Adapt literacy content for local access realities',
+      'Adapt literacy content for local access conditions',
       'Support women entrepreneurs in remote geographies',
       'Document field insights for scalable models',
     ],
@@ -165,7 +165,7 @@ export const projectBhartiStates = [
     ],
     implementationSnapshot: {
       title: 'Implementation snapshot',
-      description: 'The state profile will expand to include local case studies, practitioner notes, and community resources.',
+      description: 'The Himachal Pradesh profile captures outreach, training-centre engagement, and locally adapted capacity-building activity.',
       partners: ['IIT Delhi', 'Local implementation teams'],
       focus: ['Remote access', 'Local adaptation'],
     },
@@ -186,7 +186,7 @@ export const projectBhartiStates = [
     districts: [{ name: 'Haridwar', womenTrained: 116 }],
     implementationSnapshot: {
       title: 'Implementation snapshot',
-      description: 'The state profile will continue to grow as new field documentation and training materials become available.',
+      description: 'The Uttarakhand profile documents community mobilisation, training workshops, and facilitator-led capacity building.',
       partners: ['IIT Delhi', 'Community facilitators'],
       focus: ['Community learning', 'Digital access'],
     },
@@ -202,7 +202,7 @@ export const projectBhartiStates = [
     focusAreas: [
       'Support market-facing micro-enterprises',
       'Strengthen digital and financial literacy outcomes',
-      'Generate field evidence for wider policy and program design',
+      'Generate field evidence for wider programme and policy design',
     ],
     districts: [
       { name: 'Lucknow', womenTrained: 50 },
@@ -210,7 +210,7 @@ export const projectBhartiStates = [
     ],
     implementationSnapshot: {
       title: 'Implementation snapshot',
-      description: 'The state page is being prepared to host future activity updates, research outputs, and media documentation.',
+      description: 'The Uttar Pradesh profile will expand with activity updates, research outputs, and media documentation as field programmes progress.',
       partners: ['IIT Delhi', 'Programme collaborators'],
       focus: ['Market access', 'Field evidence'],
     },

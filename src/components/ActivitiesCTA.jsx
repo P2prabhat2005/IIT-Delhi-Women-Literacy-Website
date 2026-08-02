@@ -6,7 +6,7 @@ export default function ActivitiesCTA() {
   const { callToAction } = activitiesPageContent;
 
   return (
-    <section className="section bg-white">
+    <section className="bg-white py-[clamp(3rem,6vw,5.25rem)]">
       <div className="site-container">
         <div className="rounded-[2rem] bg-red-900 p-8 text-white shadow-2xl shadow-red-950/20 md:p-12">
           <div className="grid gap-8 lg:grid-cols-2 lg:items-center">

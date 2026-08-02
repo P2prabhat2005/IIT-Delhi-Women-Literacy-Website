@@ -4,13 +4,13 @@ export const contactInfoCards = [
   {
     title: 'Email',
     value: 'contact@projectbharti.org',
-    detail: 'Primary contact for collaboration and general enquiries.',
+    detail: 'Primary channel for collaboration and general enquiries.',
     Icon: Mail,
   },
   {
     title: 'Phone',
     value: '+91 XXXXX XXXXX',
-    detail: 'Available for project coordination by phone.',
+    detail: 'Available for project coordination by appointment.',
     Icon: Phone,
   },
   {
@@ -22,14 +22,14 @@ Shaheed Jeet Singh Marg
 Hauz Khas
 New Delhi – 110016
 India`,
-    detail: 'Administrative coordination and institutional engagement.',
+    detail: 'Institutional base for academic coordination and project administration.',
     Icon: MapPin,
     isAddress: true,
   },
   {
     title: 'Research Collaboration',
     value: '[Official research email — to be confirmed by Project Bharti]',
-    detail: 'Connect with the Project Bharti team for academic collaboration, research partnerships, institutional engagement, and project-related enquiries.',
+    detail: 'For academic collaboration, research partnerships, institutional engagement, and project-related enquiries.',
     Icon: Handshake,
   },
 ];
@@ -38,44 +38,44 @@ export const contactFaqItems = [
   {
     question: 'How can I volunteer with Project Bharti?',
     answer:
-      'Volunteers can connect with the team for field support, outreach, workshop facilitation, and awareness activities that align with project goals.',
+      'Prospective volunteers may contact the project office regarding field support, outreach, workshop facilitation, and awareness activities aligned with Project Bharti’s research and capacity-building goals.',
   },
   {
     question: 'How can institutions partner with the project?',
     answer:
-      'Institutions can discuss academic collaboration, field engagement, training design, research support, and community partnerships through the contact channel.',
+      'Academic institutions, government agencies, and implementing organisations may discuss research collaboration, field engagement, training design, and community partnerships through the contact channels listed on this page.',
   },
   {
     question: 'Can I request training material or resources?',
     answer:
-      'Resource requests can be shared through the contact form and will be reviewed by the Project Bharti Team as materials are developed.',
+      'Resource requests may be submitted through the contact form and will be reviewed by Project Bharti as materials are developed and released.',
   },
   {
-    question: 'How can I contribute or support the project?',
+    question: 'How can organisations support the project?',
     answer:
-      'Support can be expressed through collaboration, outreach, institutional partnership, volunteer participation, and community engagement.',
+      'Support may take the form of research collaboration, field partnership, institutional engagement, volunteer participation, or community outreach aligned with the project mandate.',
   },
   {
-    question: 'How will I know when new resources are released?',
+    question: 'How will new resources be announced?',
     answer:
-      'Updates will be shared through the official project channels and the resources section as the project content expands.',
+      'Updates will be published through official project channels and the Resources section as new materials become available.',
   },
 ];
 
 export const contactHighlights = [
   {
     title: 'NGOs',
-    description: 'Connect for community outreach and implementation support.',
+    description: 'Partner on community outreach, field delivery, and local implementation support.',
     Icon: UsersRound,
   },
   {
     title: 'Volunteers',
-    description: 'Join the project as a support partner for field work and awareness activities.',
+    description: 'Contribute to field work, facilitation support, and community awareness activities.',
     Icon: Building2,
   },
   {
     title: 'Institutions',
-    description: 'Discuss research partnerships, capacity building, and programme design.',
+    description: 'Collaborate on research, capacity building, curriculum design, and programme evaluation.',
     Icon: Building2,
   },
 ];

@@ -139,7 +139,7 @@ export const delhiMedia = {
       id: 'dl-activity-team-collaboration',
       title: 'Team Collaboration',
       description:
-        'Collaborative team gatherings documenting the shared work of faculty, facilitators, and community participants advancing literacy and enterprise support in Delhi.',
+        'Collaborative gatherings documenting the shared work of faculty, facilitators, and community participants advancing literacy and enterprise support in Delhi.',
       image: teamCollaborationGroup,
       alt: 'Team collaboration group photograph in Delhi',
     },
@@ -147,7 +147,7 @@ export const delhiMedia = {
       id: 'dl-activity-keynote-launch',
       title: 'Keynote & Official Launch',
       description:
-        'Official launch and keynote engagements with institutional leadership, establishing public commitment to empowering micro-level women entrepreneurs in Delhi.',
+        'Official launch and keynote engagements with institutional leadership, affirming Project Bharti’s commitment to financial literacy, digital literacy, and women entrepreneurship in Delhi.',
       image: keynoteOfficialLaunch,
       alt: 'Keynote and official launch event in Delhi',
     },
@@ -155,7 +155,7 @@ export const delhiMedia = {
       id: 'dl-activity-handbook-launch',
       title: 'Handbook Launch',
       description:
-        'Formal launch of the Project Bharti handbook, presenting curated financial and digital literacy resources developed for women entrepreneurs and field facilitators.',
+        'Formal launch of the Project Bharti handbook, presenting financial and digital literacy resources developed for women entrepreneurs and field facilitators.',
       image: handbookLaunch,
       alt: 'Handbook launch ceremony in Delhi',
     },

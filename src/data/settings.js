@@ -1,9 +1,9 @@
 export const siteSettings = {
   siteName: 'Project Bharti',
-  siteTitleSuffix: 'Women\'s Entrepreneurship',
-  tagline: 'Digital and Financial Literacy in the Context of Women\'s Entrepreneurship.',
+  siteTitleSuffix: 'IIT Delhi',
+  tagline: 'An IIT Delhi research and outreach initiative on financial and digital literacy for women entrepreneurship.',
   description:
-    'Project Bharti strengthens SHG-linked women entrepreneurs through financial literacy, digital literacy, entrepreneurship support, and capacity building for community impact.',
+    'Project Bharti is an IIT Delhi research and outreach initiative that strengthens SHG-linked women entrepreneurs through financial literacy, digital literacy, capacity building, and community engagement.',
   copyrightOwner: 'Project Bharti',
   copyrightText: 'All Rights Reserved.',
   // Optional fallback when window.location is unavailable (SSR/prerender).

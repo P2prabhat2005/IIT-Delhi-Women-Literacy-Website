@@ -10,7 +10,7 @@ const teamCategories = [
     id: 'project-leadership',
     title: 'Project Leadership',
     slug: 'project-leadership',
-    description: 'Academic and implementation leadership guiding Project Bharti.',
+    description: 'Faculty leadership at IIT Delhi providing academic direction for Project Bharti’s research and outreach mandate.',
     displayOrder: 0,
     isActive: true,
     members: [
@@ -36,10 +36,10 @@ const teamCategories = [
   },
   {
     id: 'development-team',
-    title: 'Development Team',
+    title: 'Research & Implementation Team',
     slug: 'development-team',
     description:
-      'A multidisciplinary team contributing to research, technology, documentation, and implementation of Project Bharti.',
+      'Researchers and associates supporting research design, field documentation, technology, and programme implementation under Project Bharti.',
     displayOrder: 1,
     isActive: true,
     members: [

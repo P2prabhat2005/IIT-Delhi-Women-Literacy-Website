@@ -47,7 +47,7 @@ export const uttarPradeshMedia = {
     {
       id: 'up-gallery-expert-panel',
       image: expertPanelDiscussion,
-      alt: 'Expert panel discussion on empowering micro-level women entrepreneurs in Uttar Pradesh',
+      alt: 'Expert panel discussion on financial and digital literacy for micro-level women entrepreneurs in Uttar Pradesh',
     },
   ],
   activities: [

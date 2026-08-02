@@ -1,26 +1,29 @@
 /**
- * Unified media wall for the Home partnerships section.
- * Add items here only — Partners.jsx lays them out from size hints.
+ * Home partnerships media — organised as a visual story.
+ * Partners.jsx renders each chapter with featured + supporting layout.
  *
  * kind: 'press' | 'photo'
  * size: 'feature' | 'wide' | 'lg' | 'md' | 'sm'
  */
 
-import auditoriumAudience from '../assets/images/partners/gallery/auditorium-audience.png';
-import circleDiscussion from '../assets/images/partners/gallery/circle-discussion.png';
-import communitySession from '../assets/images/partners/gallery/community-session.png';
-import exlTrainingWorkshop from '../assets/images/partners/gallery/exl-training-workshop.png';
-import fieldVisitMaal from '../assets/images/partners/gallery/field-visit-maal.png';
+import artisanMarketVisit from '../assets/images/partners/gallery/artisan-market-visit.jpg';
+import campusProgrammeGathering from '../assets/images/partners/gallery/campus-programme-gathering.jpg';
+import collaborationSigning from '../assets/images/partners/gallery/collaboration-signing.jpg';
+import communityMarketShowcase from '../assets/images/partners/gallery/community-market-showcase.jpg';
+import communityProductShowcase from '../assets/images/partners/gallery/community-product-showcase.jpg';
+import communityTrainingCentreGroup from '../assets/images/partners/gallery/community-training-centre-group.jpg';
+import communityOutletVisit from '../assets/images/partners/gallery/community-outlet-visit.jpg';
+import enterpriseStallVisit from '../assets/images/partners/gallery/enterprise-stall-visit.jpg';
 import fieldVisitTeam from '../assets/images/partners/gallery/field-visit-team.png';
 import handbookLaunchCeremony from '../assets/images/partners/gallery/handbook-launch-ceremony.png';
-import indoorParticipantsGroup from '../assets/images/partners/gallery/indoor-participants-group.png';
-import indoorTrainingGroup from '../assets/images/partners/gallery/indoor-training-group.png';
-import mountainFieldGroupA from '../assets/images/partners/gallery/mountain-field-group-a.png';
-import mountainFieldGroupB from '../assets/images/partners/gallery/mountain-field-group-b.png';
-import mountainHandbookGroupA from '../assets/images/partners/gallery/mountain-handbook-group-a.png';
-import mountainHandbookGroupB from '../assets/images/partners/gallery/mountain-handbook-group-b.png';
-import recognitionCeremony from '../assets/images/partners/gallery/recognition-ceremony.png';
+import officialInteraction from '../assets/images/partners/gallery/official-interaction.jpg';
+import participantRecognition from '../assets/images/partners/gallery/participant-recognition.jpg';
+import programmeAddress from '../assets/images/partners/gallery/programme-address.jpg';
+import programmeRecognition from '../assets/images/partners/gallery/programme-recognition.jpg';
+import programmeSessionMoment from '../assets/images/partners/gallery/programme-session-moment.jpg';
+import programmeStageSession from '../assets/images/partners/gallery/programme-stage-session.jpg';
 import skillsWorkshop from '../assets/images/partners/gallery/skills-workshop.png';
+import stakeholderMeeting from '../assets/images/partners/gallery/stakeholder-meeting.jpg';
 import amarUjalaDelhi from '../assets/images/partners/newspapers/amar-ujala-delhi.png';
 import arunachalTimesMou from '../assets/images/partners/newspapers/arunachal-times-mou.png';
 import etGovernmentEmpower from '../assets/images/partners/newspapers/et-government-empower.png';
@@ -31,193 +34,257 @@ import timesOfIndiaLiteracy from '../assets/images/partners/newspapers/times-of-
 import womenEntrepreneursReview from '../assets/images/partners/newspapers/women-entrepreneurs-review.png';
 
 export const partnersMediaContent = {
-  wall: {
-    id: 'media-wall',
-    items: [
-      {
-        id: 'times-of-india-literacy',
-        src: timesOfIndiaLiteracy,
-        alt: 'Times of India article on IIT Delhi joining a project to boost financial and digital literacy among women entrepreneurs',
-        caption: 'The Times of India',
-        kind: 'press',
-        size: 'feature',
-      },
-      {
-        id: 'skills-workshop',
-        src: skillsWorkshop,
-        alt: 'Women participating in a hands-on skills workshop during a Project Bharti capacity-building session',
-        caption: 'Skills workshop',
-        kind: 'photo',
-        size: 'md',
-      },
-      {
-        id: 'mountain-field-group-a',
-        src: mountainFieldGroupA,
-        alt: 'Project team and women entrepreneurs gathered on a mountain terrace during a field visit',
-        caption: 'Mountain field visit',
-        kind: 'photo',
-        size: 'wide',
-      },
-      {
-        id: 'et-government-empower',
-        src: etGovernmentEmpower,
-        alt: 'ET Government article on IIT Delhi and EXL empowering 500 micro-level women entrepreneurs through action research',
-        caption: 'ET Government',
-        kind: 'press',
-        size: 'lg',
-      },
-      {
-        id: 'circle-discussion',
-        src: circleDiscussion,
-        alt: 'Facilitators leading a circle discussion with women entrepreneurs in a community training room',
-        caption: 'Circle discussion',
-        kind: 'photo',
-        size: 'sm',
-      },
-      {
-        id: 'amar-ujala-delhi',
-        src: amarUjalaDelhi,
-        alt: 'Amar Ujala Delhi newspaper cutting about IIT Delhi Project Bharti training for women entrepreneurs',
-        caption: 'Amar Ujala',
-        kind: 'press',
-        size: 'md',
-      },
-      {
-        id: 'field-visit-maal',
-        src: fieldVisitMaal,
-        alt: 'Project team and women entrepreneurs gathered outside a Mission Shakti centre in Maal, Lalitpur',
-        caption: 'Field visit',
-        kind: 'photo',
-        size: 'lg',
-      },
-      {
-        id: 'women-entrepreneurs-review',
-        src: womenEntrepreneursReview,
-        alt: 'Women Entrepreneurs Review article on IIT Delhi and EXL MoU to empower female entrepreneurs through digital and financial literacy',
-        caption: 'Women Entrepreneurs Review',
-        kind: 'press',
-        size: 'md',
-      },
-      {
-        id: 'indoor-training-group',
-        src: indoorTrainingGroup,
-        alt: 'Project facilitators and women participants posing together after an indoor training session',
-        caption: 'Training group',
-        kind: 'photo',
-        size: 'sm',
-      },
-      {
-        id: 'mountain-handbook-group-a',
-        src: mountainHandbookGroupA,
-        alt: 'Large group of women entrepreneurs holding Project Bharti handbooks against a mountain backdrop',
-        caption: 'Handbook distribution',
-        kind: 'photo',
-        size: 'feature',
-      },
-      {
-        id: 'arunachal-times-mou',
-        src: arunachalTimesMou,
-        alt: 'The Arunachal Times article on IIT Delhi and ArSRLM MoU to empower women entrepreneurs',
-        caption: 'The Arunachal Times',
-        kind: 'press',
-        size: 'md',
-      },
-      {
-        id: 'exl-training-workshop',
-        src: exlTrainingWorkshop,
-        alt: 'Project Bharti training workshop with IIT Delhi and EXL facilitators addressing women entrepreneurs',
-        caption: 'Training workshop',
-        kind: 'photo',
-        size: 'sm',
-      },
-      {
-        id: 'the-tribune-gumma',
-        src: theTribuneGumma,
-        alt: 'The Tribune article on forty women entrepreneurs enhancing business skills in Gumma, Shimla under IIT Delhi and EXL',
-        caption: 'The Tribune',
-        kind: 'press',
-        size: 'lg',
-      },
-      {
-        id: 'recognition-ceremony',
-        src: recognitionCeremony,
-        alt: 'Project Bharti recognition ceremony with participants and facilitators in a training hall',
-        caption: 'Recognition ceremony',
-        kind: 'photo',
-        size: 'sm',
-      },
-      {
-        id: 'auditorium-audience',
-        src: auditoriumAudience,
-        alt: 'Women entrepreneurs seated in an auditorium during a Project Bharti programme',
-        caption: 'Programme audience',
-        kind: 'photo',
-        size: 'wide',
-      },
-      {
-        id: 'nation-press-launch',
-        src: nationPressLaunch,
-        alt: 'Nation Press article on IIT Delhi and EXL empowering women entrepreneurs through action research',
-        caption: 'Nation Press',
-        kind: 'press',
-        size: 'md',
-      },
-      {
-        id: 'handbook-launch-ceremony',
-        src: handbookLaunchCeremony,
-        alt: 'Large group at the Project Bharti handbook launch ceremony in an auditorium with IIT Delhi and EXL teams',
-        caption: 'Handbook launch',
-        kind: 'photo',
-        size: 'feature',
-      },
-      {
-        id: 'narsan-financial-training',
-        src: narsanFinancialTraining,
-        alt: 'Hindi newspaper report on IIT Delhi financial management training for self-help group women in Narsan',
-        caption: 'Regional Press',
-        kind: 'press',
-        size: 'md',
-      },
-      {
-        id: 'community-session',
-        src: communitySession,
-        alt: 'Community training session with women entrepreneurs seated in a hall listening to a facilitator',
-        caption: 'Community session',
-        kind: 'photo',
-        size: 'sm',
-      },
-      {
-        id: 'indoor-participants-group',
-        src: indoorParticipantsGroup,
-        alt: 'Women participants and facilitators gathered indoors after a Project Bharti training activity',
-        caption: 'Participants group',
-        kind: 'photo',
-        size: 'md',
-      },
-      {
-        id: 'mountain-handbook-group-b',
-        src: mountainHandbookGroupB,
-        alt: 'Women entrepreneurs celebrating outdoors with Project Bharti handbooks in a mountain region',
-        caption: 'Field celebration',
-        kind: 'photo',
-        size: 'wide',
-      },
-      {
-        id: 'field-visit-team',
-        src: fieldVisitTeam,
-        alt: 'Project team with women entrepreneurs outside a community centre during a field visit',
-        caption: 'Community visit',
-        kind: 'photo',
-        size: 'lg',
-      },
-      {
-        id: 'mountain-field-group-b',
-        src: mountainFieldGroupB,
-        alt: 'Community group with project facilitators on a mountain terrace overlooking green hills',
-        caption: 'Hill community visit',
-        kind: 'photo',
-        size: 'md',
-      },
-    ],
-  },
+  chapters: [
+    {
+      id: 'institutional-leadership',
+      title: 'Institutional Leadership',
+      description:
+        'Formal programme documentation reflecting IIT Delhi’s academic leadership and institutional collaboration with EXL.',
+      items: [
+        {
+          id: 'handbook-launch-ceremony',
+          src: handbookLaunchCeremony,
+          alt: 'Large group at the Project Bharti handbook launch ceremony in an auditorium with IIT Delhi and EXL teams',
+          caption: 'Handbook launch',
+          kind: 'photo',
+          size: 'feature',
+        },
+        {
+          id: 'collaboration-signing',
+          src: collaborationSigning,
+          alt: 'Representatives signing documents during a formal project interaction',
+          caption: 'Institutional collaboration',
+          kind: 'photo',
+          size: 'md',
+        },
+        {
+          id: 'programme-stage-session',
+          src: programmeStageSession,
+          alt: 'Speakers and facilitators on stage during a Project Bharti programme',
+          caption: 'Programme session',
+          kind: 'photo',
+          size: 'md',
+        },
+        {
+          id: 'programme-address',
+          src: programmeAddress,
+          alt: 'A speaker addressing participants from a lectern during a Project Bharti programme',
+          caption: 'Programme address',
+          kind: 'photo',
+          size: 'sm',
+        },
+        {
+          id: 'stakeholder-meeting',
+          src: stakeholderMeeting,
+          alt: 'Stakeholders seated around a conference table during a project discussion',
+          caption: 'Stakeholder consultation',
+          kind: 'photo',
+          size: 'sm',
+        },
+        {
+          id: 'campus-programme-gathering',
+          src: campusProgrammeGathering,
+          alt: 'Project participants and organisers gathered outside the Department of Management Studies building',
+          caption: 'Campus programme',
+          kind: 'photo',
+          size: 'sm',
+        },
+      ],
+    },
+    {
+      id: 'field-workshops',
+      title: 'Field Workshops',
+      description:
+        'Capacity-building sessions delivering financial literacy, digital literacy, and enterprise skills with community participants.',
+      items: [
+        {
+          id: 'skills-workshop',
+          src: skillsWorkshop,
+          alt: 'Women participating in a hands-on skills workshop during a Project Bharti capacity-building session',
+          caption: 'Skills workshop',
+          kind: 'photo',
+          size: 'feature',
+        },
+        {
+          id: 'programme-session-moment',
+          src: programmeSessionMoment,
+          alt: 'A facilitator and participant during a Project Bharti session',
+          caption: 'Training session',
+          kind: 'photo',
+          size: 'md',
+        },
+        {
+          id: 'official-interaction',
+          src: officialInteraction,
+          alt: 'Project representatives during a formal interaction',
+          caption: 'Institutional interaction',
+          kind: 'photo',
+          size: 'md',
+        },
+        {
+          id: 'community-product-showcase',
+          src: communityProductShowcase,
+          alt: 'Women participants gathered around handmade products and learning materials during a Project Bharti session',
+          caption: 'Learning materials',
+          kind: 'photo',
+          size: 'sm',
+        },
+      ],
+    },
+    {
+      id: 'community-outreach',
+      title: 'Community Outreach',
+      description:
+        'Field visits and market engagements connecting Project Bharti with local enterprises, SHG networks, and community spaces.',
+      items: [
+        {
+          id: 'enterprise-stall-visit',
+          src: enterpriseStallVisit,
+          alt: 'Project representatives visiting a local enterprise stall',
+          caption: 'Enterprise visit',
+          kind: 'photo',
+          size: 'feature',
+        },
+        {
+          id: 'community-outlet-visit',
+          src: communityOutletVisit,
+          alt: 'A project representative visiting a community sales outlet',
+          caption: 'Community outlet',
+          kind: 'photo',
+          size: 'md',
+        },
+        {
+          id: 'artisan-market-visit',
+          src: artisanMarketVisit,
+          alt: 'A project representative viewing handcrafted products at a market stall',
+          caption: 'Market engagement',
+          kind: 'photo',
+          size: 'md',
+        },
+        {
+          id: 'field-visit-team',
+          src: fieldVisitTeam,
+          alt: 'Project team with women entrepreneurs outside a community centre during a field visit',
+          caption: 'Community visit',
+          kind: 'photo',
+          size: 'sm',
+        },
+        {
+          id: 'community-market-showcase',
+          src: communityMarketShowcase,
+          alt: 'A project representative and producer at a community market display',
+          caption: 'Enterprise showcase',
+          kind: 'photo',
+          size: 'sm',
+        },
+        {
+          id: 'community-training-centre-group',
+          src: communityTrainingCentreGroup,
+          alt: 'Project participants gathered outside a Community Managed Training Centre',
+          caption: 'Training centre',
+          kind: 'photo',
+          size: 'sm',
+        },
+      ],
+    },
+    {
+      id: 'media-coverage',
+      title: 'Media Coverage',
+      description:
+        'Selected press coverage documenting Project Bharti’s institutional partnerships, field programmes, and public reporting.',
+      layout: 'press',
+      items: [
+        {
+          id: 'times-of-india-literacy',
+          src: timesOfIndiaLiteracy,
+          alt: 'Times of India article on IIT Delhi joining a project to boost financial and digital literacy among women entrepreneurs',
+          caption: 'The Times of India',
+          kind: 'press',
+          size: 'feature',
+        },
+        {
+          id: 'et-government-empower',
+          src: etGovernmentEmpower,
+          alt: 'ET Government article on IIT Delhi and EXL empowering 500 micro-level women entrepreneurs through action research',
+          caption: 'ET Government',
+          kind: 'press',
+          size: 'md',
+        },
+        {
+          id: 'arunachal-times-mou',
+          src: arunachalTimesMou,
+          alt: 'The Arunachal Times article on IIT Delhi and ArSRLM MoU to empower women entrepreneurs',
+          caption: 'The Arunachal Times',
+          kind: 'press',
+          size: 'md',
+        },
+        {
+          id: 'the-tribune-gumma',
+          src: theTribuneGumma,
+          alt: 'The Tribune article on forty women entrepreneurs enhancing business skills in Gumma, Shimla under IIT Delhi and EXL',
+          caption: 'The Tribune',
+          kind: 'press',
+          size: 'md',
+        },
+        {
+          id: 'nation-press-launch',
+          src: nationPressLaunch,
+          alt: 'Nation Press article on IIT Delhi and EXL empowering women entrepreneurs through action research',
+          caption: 'Nation Press',
+          kind: 'press',
+          size: 'md',
+        },
+        {
+          id: 'women-entrepreneurs-review',
+          src: womenEntrepreneursReview,
+          alt: 'Women Entrepreneurs Review article on IIT Delhi and EXL MoU to empower female entrepreneurs through digital and financial literacy',
+          caption: 'Women Entrepreneurs Review',
+          kind: 'press',
+          size: 'md',
+        },
+        {
+          id: 'amar-ujala-delhi',
+          src: amarUjalaDelhi,
+          alt: 'Amar Ujala Delhi newspaper cutting about IIT Delhi Project Bharti training for women entrepreneurs',
+          caption: 'Amar Ujala',
+          kind: 'press',
+          size: 'sm',
+        },
+        {
+          id: 'narsan-financial-training',
+          src: narsanFinancialTraining,
+          alt: 'Hindi newspaper report on IIT Delhi financial management training for self-help group women in Narsan',
+          caption: 'Regional Press',
+          kind: 'press',
+          size: 'sm',
+        },
+      ],
+    },
+    {
+      id: 'impact-highlights',
+      title: 'Impact Highlights',
+      description:
+        'Recognition and participation milestones documenting outcomes from Project Bharti’s field engagement.',
+      items: [
+        {
+          id: 'programme-recognition',
+          src: programmeRecognition,
+          alt: 'A project representative presenting a bouquet and acknowledgement to a participant during a programme event',
+          caption: 'Programme recognition',
+          kind: 'photo',
+          size: 'feature',
+        },
+        {
+          id: 'participant-recognition',
+          src: participantRecognition,
+          alt: 'A participant receiving acknowledgement during a training session',
+          caption: 'Participant recognition',
+          kind: 'photo',
+          size: 'lg',
+        },
+      ],
+    },
+  ],
 };
+
+export const partnersMediaItems = partnersMediaContent.chapters.flatMap((chapter) => chapter.items);
