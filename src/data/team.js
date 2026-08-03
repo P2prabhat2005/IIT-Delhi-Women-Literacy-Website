@@ -2,6 +2,8 @@
  * Static team directory matching the former seed data.
  */
 
+import apporvaPhoto from '../assets/images/team/apporva.png';
+import pranjaliSoniPhoto from '../assets/images/team/pranjali-soni.png';
 import profGouravDwivediPhoto from '../assets/images/team/prof-gourav-dwivedi.png';
 import profSeemaSharmaPhoto from '../assets/images/team/prof-seema-sharma.png';
 import purariSharmaPhoto from '../assets/images/team/purari-sharma.png';
@@ -47,28 +49,9 @@ const teamCategories = [
     isActive: true,
     members: [
       {
-        id: 'udit-maheshwari',
-        fullName: 'Udit Maheshwari',
-        designation: 'Research Scholar',
-        photo: { url: uditMaheshwariPhoto },
-        isActive: true,
-        displayOrder: 2,
-        categoryId: 'development-team',
-      },
-      {
-        id: 'research-scholar-placeholder-2',
-        fullName: 'To be announced',
-        designation: 'Research Scholar',
-        photo: null,
-        isActive: true,
-        isPlaceholder: true,
-        displayOrder: 3,
-        categoryId: 'development-team',
-      },
-      {
         id: 'purari-sharma',
         fullName: 'Purari Sharma',
-        designation: 'Research Associate',
+        designation: 'Research Scholar',
         photo: { url: purariSharmaPhoto },
         isActive: true,
         displayOrder: 0,
@@ -81,6 +64,33 @@ const teamCategories = [
         photo: { url: shashankKumarPhoto },
         isActive: true,
         displayOrder: 1,
+        categoryId: 'development-team',
+      },
+      {
+        id: 'udit-maheshwari',
+        fullName: 'Udit Maheshwari',
+        designation: 'Research Scholar',
+        photo: { url: uditMaheshwariPhoto },
+        isActive: true,
+        displayOrder: 2,
+        categoryId: 'development-team',
+      },
+      {
+        id: 'pranjali-soni',
+        fullName: 'Pranjali Soni',
+        designation: 'Research Associate',
+        photo: { url: pranjaliSoniPhoto },
+        isActive: true,
+        displayOrder: 3,
+        categoryId: 'development-team',
+      },
+      {
+        id: 'apporva',
+        fullName: 'Apoorva',
+        designation: 'Research Scholar',
+        photo: { url: apporvaPhoto },
+        isActive: true,
+        displayOrder: 4,
         categoryId: 'development-team',
       },
     ],

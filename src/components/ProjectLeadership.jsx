@@ -82,7 +82,7 @@ function LeadershipCategory({ category }) {
   );
 }
 
-function DevelopmentMemberCard({ member, index }) {
+function DevelopmentMemberCard({ className = '', member, index }) {
   return (
     <motion.article
       initial={{ opacity: 0, y: 16 }}
@@ -91,7 +91,7 @@ function DevelopmentMemberCard({ member, index }) {
       transition={{ duration: 0.45, delay: index * 0.06 }}
       className={`flex h-full min-h-[9.5rem] flex-col gap-4 rounded-[1.5rem] border border-white/10 bg-white/[0.07] p-4 transition duration-300 hover:bg-white/[0.11] sm:flex-row sm:items-stretch sm:gap-5 sm:p-5 ${
         member.isActive ? '' : 'opacity-60'
-      }`}
+      } ${className}`}
     >
       <div className="w-full shrink-0 sm:w-36 md:w-40">
         <TeamPhotoSlot member={member} tone="dark" aspectRatio="aspect-square" compact />
@@ -143,13 +143,31 @@ function DarkCategory({ category }) {
       ) : null}
 
       {isDevelopmentTeam ? (
-        <div className="mt-6 grid gap-4 md:grid-cols-1 lg:grid-cols-2">
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
           {category.members.length ? (
-            category.members.map((member, index) => (
-              <DevelopmentMemberCard key={member.id} member={member} index={index} />
-            ))
+            category.members.map((member, index) => {
+              const isFiveMemberLayout = category.members.length === 5;
+              const balancedClassName = isFiveMemberLayout
+                ? index < 3
+                  ? 'lg:col-span-2'
+                  : index === 3
+                    ? 'lg:col-span-2 lg:col-start-2'
+                    : 'lg:col-span-2'
+                : category.members.length % 2 === 1 && index === category.members.length - 1
+                  ? 'lg:col-span-3 lg:col-start-2 sm:col-span-2'
+                  : 'lg:col-span-3';
+
+              return (
+                <DevelopmentMemberCard
+                  key={member.id}
+                  member={member}
+                  index={index}
+                  className={balancedClassName}
+                />
+              );
+            })
           ) : (
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-6">
               <EmptyState tone="dark" />
             </div>
           )}

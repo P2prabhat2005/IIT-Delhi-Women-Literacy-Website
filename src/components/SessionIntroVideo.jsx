@@ -283,7 +283,7 @@ export default function SessionIntroVideo() {
   return createPortal(
     <div
       className={`fixed inset-0 z-[100] transform-gpu transition-opacity duration-[850ms] ease-out will-change-[opacity] ${
-        isPlaying ? 'bg-transparent' : 'bg-black'
+        isPlaying ? 'bg-black lg:bg-transparent' : 'bg-black'
       } ${
         isFading ? 'opacity-0' : 'opacity-100'
       }`}
@@ -293,7 +293,7 @@ export default function SessionIntroVideo() {
     >
       <video
         ref={videoRef}
-        className={`h-full w-full transform-gpu object-cover will-change-[opacity] ${
+        className={`h-full w-full max-h-full max-w-full transform-gpu object-contain object-center will-change-[opacity] lg:object-cover ${
           isPlaying ? 'opacity-100' : 'opacity-0'
         }`}
         src={INTRO_VIDEO_SRC}
