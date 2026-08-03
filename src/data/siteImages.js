@@ -7,6 +7,7 @@ import participantInsightsPhoto from '../assets/images/activities/participant-in
 import trainingNeedsPhoto from '../assets/images/activities/training-needs.jpg';
 import researchInputsPhoto from '../assets/images/activities/research-inputs.jpg';
 import designPhoto from '../assets/images/activities/design.jpg';
+import diagnosePhoto from '../assets/images/activities/diagnose.png';
 import deliverPhoto from '../assets/images/activities/deliver.jpg';
 import documentPhoto from '../assets/images/activities/document.jpg';
 import financialConfidencePhoto from '../assets/images/activities/financial-confidence.jpg';
@@ -39,7 +40,7 @@ const siteImages = {
   'activity-card-participant-insights': participantInsightsPhoto,
   'activity-card-training-needs': trainingNeedsPhoto,
   'activity-card-research-inputs': researchInputsPhoto,
-  'activity-card-diagnose': null,
+  'activity-card-diagnose': diagnosePhoto,
   'activity-card-design': designPhoto,
   'activity-card-deliver': deliverPhoto,
   'activity-card-document': documentPhoto,
