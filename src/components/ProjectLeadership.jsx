@@ -82,25 +82,60 @@ function LeadershipCategory({ category }) {
   );
 }
 
-function DevelopmentMemberCard({ className = '', member, index }) {
+function DevelopmentMemberCard({ member, index }) {
   return (
     <motion.article
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-70px' }}
       transition={{ duration: 0.45, delay: index * 0.06 }}
-      className={`flex h-full min-h-[9.5rem] flex-col gap-4 rounded-[1.5rem] border border-white/10 bg-white/[0.07] p-4 transition duration-300 hover:bg-white/[0.11] sm:flex-row sm:items-stretch sm:gap-5 sm:p-5 ${
+      className={`rounded-[1.5rem] border border-white/10 bg-white/[0.07] p-5 text-center transition duration-300 hover:bg-white/[0.11] ${
         member.isActive ? '' : 'opacity-60'
-      } ${className}`}
+      }`}
     >
-      <div className="w-full shrink-0 sm:w-36 md:w-40">
+      <div className="mx-auto w-full max-w-[11rem]">
         <TeamPhotoSlot member={member} tone="dark" aspectRatio="aspect-square" compact />
       </div>
-      <div className="flex min-w-0 flex-1 flex-col justify-center text-left">
-        <p className="truncate whitespace-nowrap text-sm font-semibold text-red-100">{member.designation}</p>
-        <h4 className="mt-1.5 truncate whitespace-nowrap text-xl font-semibold text-white">{member.fullName}</h4>
-      </div>
+      <h4 className="mt-4 text-xl font-semibold text-white">{member.fullName}</h4>
+      <p className="mt-1.5 text-sm font-semibold text-red-100">{member.designation}</p>
     </motion.article>
+  );
+}
+
+function DevelopmentTeamGroups({ category }) {
+  const membersById = Object.fromEntries(category.members.map((member) => [member.id, member]));
+  const groups = category.memberGroups?.length
+    ? category.memberGroups.map((group) => ({
+        ...group,
+        members: group.memberIds.map((id) => membersById[id]).filter(Boolean),
+      }))
+    : [{ id: 'all', title: null, members: category.members }];
+
+  if (!category.members.length) {
+    return (
+      <div className="mt-6">
+        <EmptyState tone="dark" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-8 space-y-10">
+      {groups.map((group) => (
+        <div key={group.id}>
+          {group.title ? (
+            <h4 className="text-center text-lg font-semibold tracking-wide text-red-100 md:text-left">
+              {group.title}
+            </h4>
+          ) : null}
+          <div className={`grid gap-4 sm:grid-cols-2 lg:grid-cols-3 ${group.title ? 'mt-5' : ''}`}>
+            {group.members.map((member, index) => (
+              <DevelopmentMemberCard key={member.id} member={member} index={index} />
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -143,35 +178,7 @@ function DarkCategory({ category }) {
       ) : null}
 
       {isDevelopmentTeam ? (
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
-          {category.members.length ? (
-            category.members.map((member, index) => {
-              const isFiveMemberLayout = category.members.length === 5;
-              const balancedClassName = isFiveMemberLayout
-                ? index < 3
-                  ? 'lg:col-span-2'
-                  : index === 3
-                    ? 'lg:col-span-2 lg:col-start-2'
-                    : 'lg:col-span-2'
-                : category.members.length % 2 === 1 && index === category.members.length - 1
-                  ? 'lg:col-span-3 lg:col-start-2 sm:col-span-2'
-                  : 'lg:col-span-3';
-
-              return (
-                <DevelopmentMemberCard
-                  key={member.id}
-                  member={member}
-                  index={index}
-                  className={balancedClassName}
-                />
-              );
-            })
-          ) : (
-            <div className="lg:col-span-6">
-              <EmptyState tone="dark" />
-            </div>
-          )}
-        </div>
+        <DevelopmentTeamGroups category={category} />
       ) : (
         <div className="mt-6 grid gap-4 md:grid-cols-3">
           {category.members.length ? (
