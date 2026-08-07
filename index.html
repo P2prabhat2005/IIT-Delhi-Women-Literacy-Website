@@ -15,11 +15,40 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/favicon.svg" />
     <link rel="manifest" href="/manifest.webmanifest" />
-    <link rel="preload" href="/videos/project-bharti-opening.mp4" as="video" type="video/mp4" />
     <title>Project Bharti | IIT Delhi</title>
   </head>
   <body>
     <div id="root"></div>
+    <!-- Early media buffer via a real <video> element (Chromium ignores as="video" link preload). -->
+    <video
+      id="project-bharti-intro-preload"
+      muted
+      playsinline
+      preload="auto"
+      aria-hidden="true"
+      tabindex="-1"
+      style="position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;left:-9999px;top:0"
+    ></video>
+    <script>
+      (function () {
+        try {
+          if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+          if (navigator.connection && navigator.connection.saveData) return;
+          if (window.sessionStorage.getItem('project-bharti-opening-intro-played') === 'true') return;
+
+          var poster = new Image();
+          poster.fetchPriority = 'high';
+          poster.src = '/videos/project-bharti-opening-poster.jpg';
+
+          var video = document.getElementById('project-bharti-intro-preload');
+          if (!video) return;
+          video.src = '/videos/project-bharti-opening.mp4';
+          video.load();
+        } catch (error) {
+          // Intro preload must never block page startup.
+        }
+      })();
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

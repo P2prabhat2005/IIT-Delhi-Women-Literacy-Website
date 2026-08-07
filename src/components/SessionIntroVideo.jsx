@@ -1,41 +1,47 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import {
+  INTRO_POSTER_SRC,
+  INTRO_VIDEO_SRC,
+  bootstrapIntroVideoPreload,
+  markIntroSplashPlayed,
+  setIntroSplashActive,
+  shouldPlayIntroSplash,
+} from '../utils/introSplash.js';
 
-const INTRO_VIDEO_SRC = '/videos/project-bharti-opening.mp4';
-const INTRO_SESSION_KEY = 'project-bharti-opening-intro-played';
 const FADE_SECONDS = 0.85;
 const FADE_MS = 850;
 const HERO_REVEAL_START_PROGRESS = 0.62;
 const FINAL_DISSOLVE_SECONDS = 1;
-const START_BUFFER_SECONDS = 0.35;
-const READY_FALLBACK_MS = 900;
 
-function shouldShowIntro() {
-  if (typeof window === 'undefined') {
-    return false;
-  }
+const OVERLAY_STYLE = {
+  position: 'fixed',
+  inset: 0,
+  zIndex: 100,
+  backgroundColor: '#000',
+  opacity: 1,
+  transform: 'translateZ(0)',
+  willChange: 'opacity',
+  transition: 'opacity 850ms ease-out',
+  contain: 'strict',
+};
 
-  const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-  const prefersReducedData = navigator.connection?.saveData;
+const VIDEO_STYLE = {
+  display: 'block',
+  width: '100%',
+  height: '100%',
+  maxWidth: '100%',
+  maxHeight: '100%',
+  objectFit: 'contain',
+  objectPosition: 'center',
+  opacity: 1,
+  transform: 'translateZ(0)',
+  backfaceVisibility: 'hidden',
+  willChange: 'opacity',
+};
 
-  if (prefersReducedMotion || prefersReducedData) {
-    return false;
-  }
-
-  try {
-    return window.sessionStorage.getItem(INTRO_SESSION_KEY) !== 'true';
-  } catch {
-    return true;
-  }
-}
-
-function markIntroPlayed() {
-  try {
-    window.sessionStorage.setItem(INTRO_SESSION_KEY, 'true');
-  } catch {
-    // The intro should never trap the user if sessionStorage is unavailable.
-  }
-}
+const SKIP_BUTTON_CLASS =
+  'absolute right-4 top-4 rounded-full border border-white/30 bg-slate-950/70 px-4 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-slate-950 sm:right-6 sm:top-6';
 
 function easeOutCubic(value) {
   return 1 - (1 - value) ** 3;
@@ -64,37 +70,57 @@ function getVideoOpacity(currentTime, duration) {
   return Math.max(0, opacityBeforeFinalDissolve * (1 - finalDissolveProgress));
 }
 
-export default function SessionIntroVideo() {
+function applyDesktopCoverMode(overlay, video) {
+  if (!window.matchMedia('(min-width: 1024px)').matches) {
+    return;
+  }
+
+  if (overlay) {
+    overlay.style.backgroundColor = 'transparent';
+  }
+
+  if (video) {
+    video.style.objectFit = 'cover';
+  }
+}
+
+function SessionIntroVideo() {
   const overlayRef = useRef(null);
   const videoRef = useRef(null);
   const fadeStartedRef = useRef(false);
   const playbackStartedRef = useRef(false);
   const usesFrameCallbackRef = useRef(false);
   const frameCallbackRef = useRef(null);
-  const readyFallbackTimerRef = useRef(null);
   const removeTimerRef = useRef(null);
-  const [isVisible, setIsVisible] = useState(shouldShowIntro);
+
+  const [isEligible] = useState(shouldPlayIntroSplash);
+  const [isDismissed, setIsDismissed] = useState(false);
+
+  const cleanupMediaCallbacks = useCallback(() => {
+    const video = videoRef.current;
+
+    if (video && frameCallbackRef.current && 'cancelVideoFrameCallback' in video) {
+      video.cancelVideoFrameCallback(frameCallbackRef.current);
+    }
+
+    frameCallbackRef.current = null;
+    window.clearTimeout(removeTimerRef.current);
+    removeTimerRef.current = null;
+  }, []);
 
   const removeIntro = useCallback(() => {
     const video = videoRef.current;
 
-    markIntroPlayed();
+    markIntroSplashPlayed();
+    setIntroSplashActive(false);
 
     if (video) {
       video.pause();
-
-      if (frameCallbackRef.current && 'cancelVideoFrameCallback' in video) {
-        video.cancelVideoFrameCallback(frameCallbackRef.current);
-      }
     }
 
-    window.clearTimeout(removeTimerRef.current);
-    window.clearTimeout(readyFallbackTimerRef.current);
-    frameCallbackRef.current = null;
-    removeTimerRef.current = null;
-    readyFallbackTimerRef.current = null;
-    setIsVisible(false);
-  }, []);
+    cleanupMediaCallbacks();
+    setIsDismissed(true);
+  }, [cleanupMediaCallbacks]);
 
   const startFade = useCallback(() => {
     if (fadeStartedRef.current) {
@@ -134,11 +160,9 @@ export default function SessionIntroVideo() {
   }, [startFade]);
 
   const handleVideoEnd = useCallback(() => {
-    if (fadeStartedRef.current) {
-      return;
+    if (!fadeStartedRef.current) {
+      startFade();
     }
-
-    startFade();
   }, [startFade]);
 
   const monitorVideoFrames = useCallback(() => {
@@ -171,62 +195,50 @@ export default function SessionIntroVideo() {
     handleVideoProgress();
   }, [handleVideoProgress, startFade]);
 
-  const startPlayback = useCallback((force = false) => {
+  const startPlayback = useCallback(() => {
     const video = videoRef.current;
     const overlay = overlayRef.current;
 
-    if (!video || playbackStartedRef.current) {
+    if (!video || playbackStartedRef.current || fadeStartedRef.current) {
       return;
     }
 
-    const hasDuration = Number.isFinite(video.duration) && video.duration > 0;
-    const bufferedEnd = video.buffered.length > 0 ? video.buffered.end(video.buffered.length - 1) : 0;
-    const bufferedAhead = bufferedEnd - video.currentTime;
-    const preferredBuffer = hasDuration ? Math.min(START_BUFFER_SECONDS, video.duration * 0.2) : START_BUFFER_SECONDS;
-
-    if (!force && video.readyState < 2) {
-      return;
-    }
-
-    if (!force && video.readyState < 3 && bufferedAhead < preferredBuffer) {
+    if (video.readyState < 2) {
       return;
     }
 
     playbackStartedRef.current = true;
-    window.clearTimeout(readyFallbackTimerRef.current);
-    readyFallbackTimerRef.current = null;
-
-    // Reveal via DOM to avoid a React re-render on the critical play path.
+    applyDesktopCoverMode(overlay, video);
     video.style.opacity = '1';
-    if (overlay && window.matchMedia('(min-width: 1024px)').matches) {
-      overlay.style.backgroundColor = 'transparent';
-    }
 
     const playPromise = video.play();
 
     if (playPromise && typeof playPromise.then === 'function') {
-      playPromise.then(monitorVideoFrames).catch(removeIntro);
+      playPromise.then(monitorVideoFrames).catch(() => {
+        // Autoplay can be blocked in some browsers; keep the poster visible and allow Skip.
+        playbackStartedRef.current = false;
+      });
     } else {
       monitorVideoFrames();
     }
   }, [monitorVideoFrames, removeIntro]);
 
-  const startPlaybackWhenReady = useCallback(() => {
-    startPlayback();
-
-    if (readyFallbackTimerRef.current || playbackStartedRef.current) {
-      return;
+  useEffect(() => {
+    if (!isEligible || isDismissed) {
+      setIntroSplashActive(false);
+      return undefined;
     }
 
-    readyFallbackTimerRef.current = window.setTimeout(() => {
-      if (!playbackStartedRef.current && videoRef.current?.readyState >= 2) {
-        startPlayback(true);
-      }
-    }, READY_FALLBACK_MS);
-  }, [startPlayback]);
+    setIntroSplashActive(true);
+    bootstrapIntroVideoPreload();
+
+    return () => {
+      setIntroSplashActive(false);
+    };
+  }, [isDismissed, isEligible]);
 
   useEffect(() => {
-    if (!isVisible) {
+    if (!isEligible || isDismissed) {
       return undefined;
     }
 
@@ -250,78 +262,48 @@ export default function SessionIntroVideo() {
       body.style.overflow = previousBodyOverflow;
       documentElement.style.overflow = previousHtmlOverflow;
       window.removeEventListener('keydown', handleKeyDown);
-      window.clearTimeout(removeTimerRef.current);
-      window.clearTimeout(readyFallbackTimerRef.current);
+      cleanupMediaCallbacks();
     };
-  }, [isVisible, removeIntro]);
+  }, [cleanupMediaCallbacks, isDismissed, isEligible, removeIntro]);
 
-  useEffect(() => {
-    if (!isVisible) {
-      return undefined;
-    }
-
-    const video = videoRef.current;
-
-    if (!video) {
-      return undefined;
-    }
-
-    // Avoid video.load() — it aborts and restarts media fetch (especially costly under StrictMode).
-    if (video.readyState === 0) {
-      video.preload = 'auto';
-    }
-
-    startPlaybackWhenReady();
-    return undefined;
-  }, [isVisible, startPlaybackWhenReady]);
-
-  useEffect(() => {
-    const video = videoRef.current;
-
-    return () => {
-      if (video && frameCallbackRef.current && 'cancelVideoFrameCallback' in video) {
-        video.cancelVideoFrameCallback(frameCallbackRef.current);
-      }
-    };
-  }, []);
-
-  if (!isVisible) {
+  if (!isEligible || isDismissed) {
     return null;
   }
 
   return createPortal(
     <div
       ref={overlayRef}
-      className="fixed inset-0 z-[100] transform-gpu bg-black opacity-100 transition-opacity duration-[850ms] ease-out will-change-[opacity]"
+      style={OVERLAY_STYLE}
       role="dialog"
       aria-label="Project introduction video"
       aria-modal="true"
     >
+      {/* Poster is visible immediately; playback starts once enough media is buffered. */}
       <video
         ref={videoRef}
-        className="h-full w-full max-h-full max-w-full transform-gpu object-contain object-center opacity-0 will-change-[opacity] lg:object-cover"
+        style={VIDEO_STYLE}
         src={INTRO_VIDEO_SRC}
+        poster={INTRO_POSTER_SRC}
         muted
         playsInline
         preload="auto"
+        autoPlay={false}
+        fetchPriority="high"
         disablePictureInPicture
         controlsList="nodownload nofullscreen noremoteplayback"
-        onLoadedData={startPlaybackWhenReady}
-        onCanPlay={startPlaybackWhenReady}
-        onCanPlayThrough={startPlaybackWhenReady}
+        onLoadedData={startPlayback}
+        onCanPlay={startPlayback}
+        onCanPlayThrough={startPlayback}
         onTimeUpdate={handleVideoProgress}
         onEnded={handleVideoEnd}
         onError={removeIntro}
       />
-      <button
-        type="button"
-        onClick={removeIntro}
-        autoFocus
-        className="absolute right-4 top-4 rounded-full border border-white/30 bg-slate-950/70 px-4 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-slate-950 sm:right-6 sm:top-6"
-      >
+      <button type="button" onClick={removeIntro} autoFocus className={SKIP_BUTTON_CLASS}>
         Skip introduction
       </button>
     </div>,
     document.body,
   );
 }
+
+export default memo(SessionIntroVideo);
