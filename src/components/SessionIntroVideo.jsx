@@ -7,8 +7,8 @@ const FADE_SECONDS = 0.85;
 const FADE_MS = 850;
 const HERO_REVEAL_START_PROGRESS = 0.62;
 const FINAL_DISSOLVE_SECONDS = 1;
-const START_BUFFER_SECONDS = 1.5;
-const READY_FALLBACK_MS = 2500;
+const START_BUFFER_SECONDS = 0.35;
+const READY_FALLBACK_MS = 900;
 
 function shouldShowIntro() {
   if (typeof window === 'undefined') {
@@ -65,15 +65,15 @@ function getVideoOpacity(currentTime, duration) {
 }
 
 export default function SessionIntroVideo() {
+  const overlayRef = useRef(null);
   const videoRef = useRef(null);
   const fadeStartedRef = useRef(false);
   const playbackStartedRef = useRef(false);
+  const usesFrameCallbackRef = useRef(false);
   const frameCallbackRef = useRef(null);
   const readyFallbackTimerRef = useRef(null);
   const removeTimerRef = useRef(null);
   const [isVisible, setIsVisible] = useState(shouldShowIntro);
-  const [isFading, setIsFading] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
 
   const removeIntro = useCallback(() => {
     const video = videoRef.current;
@@ -102,14 +102,25 @@ export default function SessionIntroVideo() {
     }
 
     fadeStartedRef.current = true;
-    setIsFading(true);
+
+    const overlay = overlayRef.current;
+    if (overlay) {
+      overlay.style.opacity = '0';
+    }
+
     removeTimerRef.current = window.setTimeout(removeIntro, FADE_MS);
   }, [removeIntro]);
 
   const handleVideoProgress = useCallback(() => {
     const video = videoRef.current;
 
-    if (!video || !Number.isFinite(video.duration) || video.duration <= 0) {
+    if (
+      !video ||
+      usesFrameCallbackRef.current ||
+      !Number.isFinite(video.duration) ||
+      video.duration <= 0 ||
+      fadeStartedRef.current
+    ) {
       return;
     }
 
@@ -138,7 +149,12 @@ export default function SessionIntroVideo() {
     }
 
     if ('requestVideoFrameCallback' in video) {
+      usesFrameCallbackRef.current = true;
       frameCallbackRef.current = video.requestVideoFrameCallback((_, metadata) => {
+        if (fadeStartedRef.current) {
+          return;
+        }
+
         video.style.opacity = String(getVideoOpacity(metadata.mediaTime, video.duration));
 
         if (Number.isFinite(video.duration) && video.duration - metadata.mediaTime <= FADE_SECONDS) {
@@ -157,6 +173,7 @@ export default function SessionIntroVideo() {
 
   const startPlayback = useCallback((force = false) => {
     const video = videoRef.current;
+    const overlay = overlayRef.current;
 
     if (!video || playbackStartedRef.current) {
       return;
@@ -165,13 +182,13 @@ export default function SessionIntroVideo() {
     const hasDuration = Number.isFinite(video.duration) && video.duration > 0;
     const bufferedEnd = video.buffered.length > 0 ? video.buffered.end(video.buffered.length - 1) : 0;
     const bufferedAhead = bufferedEnd - video.currentTime;
-    const preferredBuffer = hasDuration ? Math.min(START_BUFFER_SECONDS, video.duration * 0.25) : START_BUFFER_SECONDS;
+    const preferredBuffer = hasDuration ? Math.min(START_BUFFER_SECONDS, video.duration * 0.2) : START_BUFFER_SECONDS;
 
-    if (!force && (video.readyState < 3 || (video.readyState < 4 && bufferedAhead < preferredBuffer))) {
+    if (!force && video.readyState < 2) {
       return;
     }
 
-    if (force && video.readyState < 2) {
+    if (!force && video.readyState < 3 && bufferedAhead < preferredBuffer) {
       return;
     }
 
@@ -179,35 +196,30 @@ export default function SessionIntroVideo() {
     window.clearTimeout(readyFallbackTimerRef.current);
     readyFallbackTimerRef.current = null;
 
-    requestAnimationFrame(() => {
-      const playPromise = video.play();
+    // Reveal via DOM to avoid a React re-render on the critical play path.
+    video.style.opacity = '1';
+    if (overlay && window.matchMedia('(min-width: 1024px)').matches) {
+      overlay.style.backgroundColor = 'transparent';
+    }
 
-      if (playPromise && typeof playPromise.then === 'function') {
-        playPromise
-          .then(() => {
-            setIsPlaying(true);
-            monitorVideoFrames();
-          })
-          .catch(removeIntro);
-      } else {
-        setIsPlaying(true);
-        monitorVideoFrames();
-      }
-    });
+    const playPromise = video.play();
+
+    if (playPromise && typeof playPromise.then === 'function') {
+      playPromise.then(monitorVideoFrames).catch(removeIntro);
+    } else {
+      monitorVideoFrames();
+    }
   }, [monitorVideoFrames, removeIntro]);
 
   const startPlaybackWhenReady = useCallback(() => {
     startPlayback();
 
-    if (readyFallbackTimerRef.current) {
+    if (readyFallbackTimerRef.current || playbackStartedRef.current) {
       return;
     }
 
     readyFallbackTimerRef.current = window.setTimeout(() => {
-      const video = videoRef.current;
-
-      if (video && video.readyState >= 2) {
-        playbackStartedRef.current = false;
+      if (!playbackStartedRef.current && videoRef.current?.readyState >= 2) {
         startPlayback(true);
       }
     }, READY_FALLBACK_MS);
@@ -219,14 +231,11 @@ export default function SessionIntroVideo() {
     }
 
     const { body, documentElement } = document;
-    const root = document.getElementById('root');
     const previousBodyOverflow = body.style.overflow;
     const previousHtmlOverflow = documentElement.style.overflow;
-    const previouslyInert = root?.hasAttribute('inert') ?? false;
 
     body.style.overflow = 'hidden';
     documentElement.style.overflow = 'hidden';
-    root?.setAttribute('inert', '');
 
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') {
@@ -240,9 +249,6 @@ export default function SessionIntroVideo() {
     return () => {
       body.style.overflow = previousBodyOverflow;
       documentElement.style.overflow = previousHtmlOverflow;
-      if (root && !previouslyInert) {
-        root.removeAttribute('inert');
-      }
       window.removeEventListener('keydown', handleKeyDown);
       window.clearTimeout(removeTimerRef.current);
       window.clearTimeout(readyFallbackTimerRef.current);
@@ -260,9 +266,12 @@ export default function SessionIntroVideo() {
       return undefined;
     }
 
-    video.load();
-    startPlaybackWhenReady();
+    // Avoid video.load() — it aborts and restarts media fetch (especially costly under StrictMode).
+    if (video.readyState === 0) {
+      video.preload = 'auto';
+    }
 
+    startPlaybackWhenReady();
     return undefined;
   }, [isVisible, startPlaybackWhenReady]);
 
@@ -282,20 +291,15 @@ export default function SessionIntroVideo() {
 
   return createPortal(
     <div
-      className={`fixed inset-0 z-[100] transform-gpu transition-opacity duration-[850ms] ease-out will-change-[opacity] ${
-        isPlaying ? 'bg-black lg:bg-transparent' : 'bg-black'
-      } ${
-        isFading ? 'opacity-0' : 'opacity-100'
-      }`}
+      ref={overlayRef}
+      className="fixed inset-0 z-[100] transform-gpu bg-black opacity-100 transition-opacity duration-[850ms] ease-out will-change-[opacity]"
       role="dialog"
       aria-label="Project introduction video"
       aria-modal="true"
     >
       <video
         ref={videoRef}
-        className={`h-full w-full max-h-full max-w-full transform-gpu object-contain object-center will-change-[opacity] lg:object-cover ${
-          isPlaying ? 'opacity-100' : 'opacity-0'
-        }`}
+        className="h-full w-full max-h-full max-w-full transform-gpu object-contain object-center opacity-0 will-change-[opacity] lg:object-cover"
         src={INTRO_VIDEO_SRC}
         muted
         playsInline
@@ -303,10 +307,9 @@ export default function SessionIntroVideo() {
         disablePictureInPicture
         controlsList="nodownload nofullscreen noremoteplayback"
         onLoadedData={startPlaybackWhenReady}
-        onLoadedMetadata={handleVideoProgress}
         onCanPlay={startPlaybackWhenReady}
         onCanPlayThrough={startPlaybackWhenReady}
-        onTimeUpdate={frameCallbackRef.current ? undefined : handleVideoProgress}
+        onTimeUpdate={handleVideoProgress}
         onEnded={handleVideoEnd}
         onError={removeIntro}
       />
