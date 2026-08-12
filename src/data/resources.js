@@ -5,7 +5,9 @@ import {
   Landmark,
   ShieldCheck,
   Smartphone,
+  UsersRound,
 } from 'lucide-react';
+import { caseStudies } from './caseStudies.js';
 
 function slugifyTitle(title) {
   return String(title || '')
@@ -34,6 +36,30 @@ function shapeResource(item, collectionId) {
 }
 
 export const resourceCollections = [
+  {
+    id: 'case-studies',
+    title: 'Case Studies',
+    description: 'Official field case studies of women entrepreneurs featured in Stories from the Field.',
+    Icon: UsersRound,
+    accent: 'bg-rose-50 text-rose-900 border-rose-100',
+    items: caseStudies.map((study) => ({
+      id: `case-study-${study.slug}`,
+      title: study.name,
+      subtitle: study.title,
+      description: `Official case-study PDF. Read the online story under Stories from the Field (${study.location.display}).`,
+      href: `/stories/${study.slug}`,
+      meta: 'PDF • Case study',
+      category: 'case-studies',
+      kind: 'pdf',
+      tags: ['case study', 'field story', study.name.toLowerCase()],
+      thumbnail: study.image ? { url: study.image.src } : null,
+      document: {
+        url: study.pdfUrl,
+        fileName: study.pdfFileName,
+      },
+      video: null,
+    })),
+  },
   {
     id: 'downloadable-pdfs',
     title: 'Downloadable PDFs',
@@ -242,6 +268,7 @@ export function getStaticResourceLibrary() {
 
 export const resourceCategoryOptions = [
   { value: 'all', label: 'All Resources' },
+  { value: 'case-studies', label: 'Case Studies' },
   { value: 'downloadable-pdfs', label: 'Downloadable PDFs' },
   { value: 'videos', label: 'Videos' },
   { value: 'government-schemes', label: 'Government Schemes' },

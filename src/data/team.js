@@ -3,11 +3,13 @@
  */
 
 import apporvaPhoto from '../assets/images/team/apporva.png';
+import akritiChandraPhoto from '../assets/images/team/akriti-chandra.png';
 import harshiGuptaPhoto from '../assets/images/team/harshi-gupta.png';
 import pranjaliSoniPhoto from '../assets/images/team/pranjali-soni.png';
 import profGouravDwivediPhoto from '../assets/images/team/prof-gourav-dwivedi.png';
 import profSeemaSharmaPhoto from '../assets/images/team/prof-seema-sharma.png';
 import purariKumarPhoto from '../assets/images/team/purari-kumar.png';
+import shaliniShuklaPhoto from '../assets/images/team/shalini-shukla.png';
 import shashankKumarPhoto from '../assets/images/team/shashank-kumar.png';
 import uditMaheshwariPhoto from '../assets/images/team/udit-maheshwari.png';
 
@@ -52,12 +54,12 @@ const teamCategories = [
       {
         id: 'doctoral-scholars',
         title: 'Doctoral Scholars',
-        memberIds: ['purari-kumar', 'apporva', 'udit-maheshwari'],
+        memberIds: ['purari-kumar', 'apporva', 'udit-maheshwari', 'akriti-chandra'],
       },
       {
         id: 'research-associates',
         title: 'Research Associates',
-        memberIds: ['shashank-kumar', 'pranjali-soni', 'harshi-gupta'],
+        memberIds: ['shashank-kumar', 'pranjali-soni', 'harshi-gupta', 'shalini-shukla'],
       },
     ],
     members: [
@@ -89,12 +91,21 @@ const teamCategories = [
         categoryId: 'development-team',
       },
       {
+        id: 'akriti-chandra',
+        fullName: 'Akriti Chandra',
+        designation: 'Doctoral Scholar',
+        photo: { url: akritiChandraPhoto },
+        isActive: true,
+        displayOrder: 3,
+        categoryId: 'development-team',
+      },
+      {
         id: 'shashank-kumar',
         fullName: 'Shashank Kumar',
         designation: 'Research Associate',
         photo: { url: shashankKumarPhoto },
         isActive: true,
-        displayOrder: 3,
+        displayOrder: 4,
         categoryId: 'development-team',
       },
       {
@@ -103,7 +114,7 @@ const teamCategories = [
         designation: 'Research Associate',
         photo: { url: pranjaliSoniPhoto },
         isActive: true,
-        displayOrder: 4,
+        displayOrder: 5,
         categoryId: 'development-team',
       },
       {
@@ -112,7 +123,16 @@ const teamCategories = [
         designation: 'Research Associate',
         photo: { url: harshiGuptaPhoto },
         isActive: true,
-        displayOrder: 5,
+        displayOrder: 6,
+        categoryId: 'development-team',
+      },
+      {
+        id: 'shalini-shukla',
+        fullName: 'Shalini Shukla',
+        designation: 'Research Associate',
+        photo: { url: shaliniShuklaPhoto },
+        isActive: true,
+        displayOrder: 7,
         categoryId: 'development-team',
       },
     ],

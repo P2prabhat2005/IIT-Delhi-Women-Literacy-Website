@@ -14,6 +14,7 @@ import {
   X,
 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
 import indiaGeographyUrl from '../assets/maps/india-states.geojson?url';
 import {
@@ -284,6 +285,7 @@ function MediaGroupViewer({ entries, group, stateName, onOpenLightbox }) {
 
 function StatePanel({ onClose, selectedState }) {
   const [openSection, setOpenSection] = useState('gallery');
+  const [expandedDistrictId, setExpandedDistrictId] = useState('');
   const [lightbox, setLightbox] = useState({ isOpen: false, items: [], index: 0 });
   const mediaContent = useMemo(
     () => createMediaContent(selectedState?.mediaGroups),
@@ -291,6 +293,9 @@ function StatePanel({ onClose, selectedState }) {
   );
   const closeButtonRef = useRef(null);
   const dialogRef = useRef(null);
+  const panelHeaderRef = useRef(null);
+  const presentableContentRef = useRef(null);
+  const gallerySectionRef = useRef(null);
   const shouldReduceMotion = useReducedMotion();
   const isLightboxOpen = lightbox.isOpen;
 
@@ -305,8 +310,47 @@ function StatePanel({ onClose, selectedState }) {
 
   useEffect(() => {
     setOpenSection('gallery');
+    setExpandedDistrictId('');
     setLightbox({ isOpen: false, items: [], index: 0 });
   }, [selectedState]);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog || !selectedState) return undefined;
+
+    const behavior = shouldReduceMotion ? 'auto' : 'smooth';
+    let timeoutId = 0;
+
+    const bringPresentableContentIntoView = () => {
+      const headerHeight = panelHeaderRef.current?.offsetHeight ?? 0;
+      const presentable = presentableContentRef.current;
+      const gallery = gallerySectionRef.current;
+      const availableHeight = Math.max(0, dialog.clientHeight - headerHeight);
+
+      // Prefer the start of the presentable block (summary + stats + gallery).
+      // On short mobile viewports, nudge so the open Gallery section clears the sticky header.
+      let nextTop = presentable ? Math.max(0, presentable.offsetTop - headerHeight - 8) : 0;
+
+      if (gallery && presentable) {
+        const presentableHeight = gallery.offsetTop + gallery.offsetHeight - presentable.offsetTop;
+        if (presentableHeight > availableHeight) {
+          nextTop = Math.max(0, gallery.offsetTop - headerHeight - 8);
+        }
+      }
+
+      dialog.scrollTo({ top: nextTop, behavior });
+    };
+
+    // Wait for panel layout / spring entrance before scrolling the overflow container.
+    const frameId = window.requestAnimationFrame(() => {
+      timeoutId = window.setTimeout(bringPresentableContentIntoView, shouldReduceMotion ? 0 : 80);
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      window.clearTimeout(timeoutId);
+    };
+  }, [selectedState, shouldReduceMotion]);
 
   useEffect(() => {
     const { body, documentElement } = document;
@@ -403,7 +447,10 @@ function StatePanel({ onClose, selectedState }) {
           transition={shouldReduceMotion ? { duration: 0 } : { type: 'spring', stiffness: 260, damping: 28 }}
           onClick={(event) => event.stopPropagation()}
         >
-          <div className="sticky top-0 z-10 -mx-6 border-b border-slate-200 bg-white/95 px-6 pb-4 pt-2 backdrop-blur">
+          <div
+            ref={panelHeaderRef}
+            className="sticky top-0 z-10 -mx-6 border-b border-slate-200 bg-white/95 px-6 pb-4 pt-2 backdrop-blur"
+          >
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-sm font-bold uppercase tracking-[0.16em] text-red-800">Project Bharti</p>
@@ -431,24 +478,67 @@ function StatePanel({ onClose, selectedState }) {
           </div>
 
           <div className="space-y-6 pb-4 pt-5">
-            <section>
-              <p className="leading-7 text-slate-600">{selectedState.overview}</p>
-            </section>
+            <div ref={presentableContentRef} className="space-y-6">
+              <section>
+                <p className="leading-7 text-slate-600">{selectedState.overview}</p>
+              </section>
 
-            <section className={`grid gap-3 ${selectedState.metrics.length === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2'}`}>
-              {selectedState.metrics.map((metric) => {
-                const Icon = metricIconMap[metric.icon] || Sparkles;
-                return (
-                  <div key={metric.label} className="rounded-[1.25rem] border border-slate-200 bg-white p-4 shadow-sm">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-red-50 text-red-900">
-                      <Icon size={18} aria-hidden="true" />
+              <section className={`grid gap-3 ${selectedState.metrics.length === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2'}`}>
+                {selectedState.metrics.map((metric) => {
+                  const Icon = metricIconMap[metric.icon] || Sparkles;
+                  return (
+                    <div key={metric.label} className="rounded-[1.25rem] border border-slate-200 bg-white p-4 shadow-sm">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-red-50 text-red-900">
+                        <Icon size={18} aria-hidden="true" />
+                      </div>
+                      <p className="mt-4 text-lg font-semibold text-slate-950">{metric.value}</p>
+                      <p className="mt-1 text-sm text-slate-500">{metric.label}</p>
                     </div>
-                    <p className="mt-4 text-lg font-semibold text-slate-950">{metric.value}</p>
-                    <p className="mt-1 text-sm text-slate-500">{metric.label}</p>
-                  </div>
-                );
-              })}
-            </section>
+                  );
+                })}
+              </section>
+
+              <section
+                ref={gallerySectionRef}
+                className="rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm"
+                aria-label="State media"
+              >
+                <div className="space-y-3">
+                  {accordionSections.map((group) => {
+                    const isOpen = openSection === group.key;
+                    const entries = mediaContent[group.key] || [];
+
+                    return (
+                      <div key={group.key} className="rounded-[1.15rem] border border-slate-200 bg-slate-50">
+                        <button
+                          type="button"
+                          id={`state-media-trigger-${group.key}`}
+                          className="flex w-full items-center justify-between gap-3 px-4 py-4 text-left"
+                          onClick={() => setOpenSection(isOpen ? '' : group.key)}
+                          aria-expanded={isOpen}
+                          aria-controls={`state-media-panel-${group.key}`}
+                        >
+                          <span className="text-sm font-semibold text-slate-900">
+                            {group.label} ({entries.length})
+                          </span>
+                          <ChevronDown size={16} className={`shrink-0 text-slate-600 transition ${isOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
+                        </button>
+                        {isOpen ? (
+                          <div id={`state-media-panel-${group.key}`} className="px-4 pb-4" role="region" aria-labelledby={`state-media-trigger-${group.key}`}>
+                            <MediaGroupViewer
+                              entries={entries}
+                              group={group}
+                              stateName={selectedState.stateName}
+                              onOpenLightbox={openLightbox}
+                            />
+                          </div>
+                        ) : null}
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+            </div>
 
             <section className="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5">
               <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-red-800">
@@ -471,12 +561,65 @@ function StatePanel({ onClose, selectedState }) {
                 District list
               </div>
               <div className="mt-4 space-y-2">
-                {selectedState.districts.map((district) => (
-                  <div key={district.name} className="flex items-center justify-between gap-3 rounded-2xl bg-slate-50 px-4 py-3">
-                    <span className="text-sm font-semibold text-slate-800">{district.name}</span>
-                    <span className="text-sm font-semibold text-slate-600">{district.womenTrained.toLocaleString('en-IN')} women trained</span>
-                  </div>
-                ))}
+                {selectedState.districts.map((district) => {
+                  const isExpanded = expandedDistrictId === district.id;
+
+                  return (
+                    <div key={district.id} className="overflow-hidden rounded-2xl bg-slate-50">
+                      <button
+                        type="button"
+                        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition hover:bg-slate-100/80"
+                        onClick={() => setExpandedDistrictId(isExpanded ? '' : district.id)}
+                        aria-expanded={isExpanded}
+                        aria-controls={`district-places-${district.id}`}
+                      >
+                        <span className="min-w-0">
+                          <span className="block text-sm font-semibold text-slate-800">{district.name}</span>
+                          <span className="mt-0.5 block text-xs text-slate-500">
+                            {district.placeCount.toLocaleString('en-IN')}{' '}
+                            {district.placeCount === 1 ? 'place' : 'places'}
+                          </span>
+                        </span>
+                        <span className="flex shrink-0 items-center gap-2">
+                          <span className="text-sm font-semibold text-slate-600">
+                            {district.womenTrained.toLocaleString('en-IN')} women trained
+                          </span>
+                          <ChevronDown
+                            size={16}
+                            className={`shrink-0 text-slate-500 transition ${isExpanded ? 'rotate-180' : ''}`}
+                            aria-hidden="true"
+                          />
+                        </span>
+                      </button>
+
+                      {isExpanded ? (
+                        <div
+                          id={`district-places-${district.id}`}
+                          className="border-t border-slate-200/80 px-4 py-3"
+                          role="region"
+                          aria-label={`Places in ${district.name}`}
+                        >
+                          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                            Places
+                          </p>
+                          <ul className="mt-2 space-y-2">
+                            {district.places.map((place) => (
+                              <li
+                                key={place.id}
+                                className="flex items-center justify-between gap-3 rounded-xl bg-white px-3 py-2.5"
+                              >
+                                <span className="text-sm font-semibold text-slate-800">{place.name}</span>
+                                <span className="text-sm font-semibold text-slate-600">
+                                  {place.womenTrained.toLocaleString('en-IN')} women trained
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ) : null}
+                    </div>
+                  );
+                })}
               </div>
             </section>
 
@@ -523,43 +666,6 @@ function StatePanel({ onClose, selectedState }) {
               </div>
             </section>
 
-            <section className="rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm">
-              <div className="space-y-3">
-                {accordionSections.map((group) => {
-                  const isOpen = openSection === group.key;
-                  const entries = mediaContent[group.key] || [];
-
-                  return (
-                    <div key={group.key} className="rounded-[1.15rem] border border-slate-200 bg-slate-50">
-                      <button
-                        type="button"
-                        id={`state-media-trigger-${group.key}`}
-                        className="flex w-full items-center justify-between gap-3 px-4 py-4 text-left"
-                        onClick={() => setOpenSection(isOpen ? '' : group.key)}
-                        aria-expanded={isOpen}
-                        aria-controls={`state-media-panel-${group.key}`}
-                      >
-                        <span className="text-sm font-semibold text-slate-900">
-                          {group.label} ({entries.length})
-                        </span>
-                        <ChevronDown size={16} className={`shrink-0 text-slate-600 transition ${isOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
-                      </button>
-                      {isOpen ? (
-                        <div id={`state-media-panel-${group.key}`} className="px-4 pb-4" role="region" aria-labelledby={`state-media-trigger-${group.key}`}>
-                          <MediaGroupViewer
-                            entries={entries}
-                            group={group}
-                            stateName={selectedState.stateName}
-                            onOpenLightbox={openLightbox}
-                          />
-                        </div>
-                      ) : null}
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
-
             <section className="rounded-[1.5rem] bg-slate-950 p-5 text-white shadow-2xl shadow-slate-300/70">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-red-200">Professional collaboration</p>
               <h4 className="mt-3 text-xl font-semibold">{selectedState.cta.title}</h4>
@@ -583,7 +689,101 @@ function StatePanel({ onClose, selectedState }) {
   );
 }
 
-export default function InteractiveIndiaMap() {
+function IndiaMapCanvas({
+  activeStateName,
+  compact = false,
+  indiaGeography,
+  mapError,
+  onStateSelect,
+  shouldReduceMotion,
+}) {
+  const mapScale = 980;
+  const frameClassName = compact
+    ? 'relative min-h-[340px] overflow-visible bg-transparent p-0 sm:min-h-[380px] lg:min-h-[440px]'
+    : 'relative min-h-[360px] overflow-hidden rounded-[1.5rem] bg-[radial-gradient(circle_at_30%_20%,rgba(153,27,27,0.10),transparent_28%),linear-gradient(145deg,#ffffff,#f8fafc)] p-3 md:min-h-[520px] md:p-6';
+  const mapClassName = compact
+    ? 'h-full min-h-[340px] w-full sm:min-h-[380px] lg:min-h-[440px]'
+    : 'h-full min-h-[330px] w-full md:min-h-[500px]';
+  const statusClassName = compact
+    ? 'flex min-h-[340px] items-center justify-center text-sm font-semibold text-slate-500 sm:min-h-[380px] lg:min-h-[440px]'
+    : 'flex min-h-[320px] items-center justify-center text-sm font-semibold text-slate-500';
+  const errorClassName = compact
+    ? 'flex min-h-[340px] items-center justify-center border border-dashed border-red-200/70 bg-transparent px-4 text-center text-sm font-semibold text-red-900 sm:min-h-[380px] lg:min-h-[440px]'
+    : 'flex min-h-[320px] items-center justify-center rounded-2xl border border-dashed border-red-200 bg-red-50 px-6 text-center text-sm font-semibold text-red-900';
+
+  return (
+    <div className={frameClassName}>
+      {mapError ? (
+        <div role="alert" className={errorClassName}>
+          The interactive map is unavailable right now. Please try again shortly.
+        </div>
+      ) : !indiaGeography?.features?.length ? (
+        <div role="status" aria-live="polite" className={statusClassName}>
+          Loading map data...
+        </div>
+      ) : (
+        <ComposableMap
+          projection="geoMercator"
+          projectionConfig={{ center: [82.8, 23.5], scale: mapScale }}
+          className={mapClassName}
+          role="img"
+          aria-label="Interactive India map showing Project Bharti states"
+        >
+          <Geographies geography={indiaGeography}>
+            {({ geographies }) =>
+              geographies.map((geo) => {
+                const stateName = geo.properties.name;
+                const state = projectBhartiStateByMapName[stateName];
+                const isHighlighted = Boolean(state);
+                const isActive = activeStateName === stateName;
+
+                return (
+                  <Geography
+                    key={geo.rsmKey}
+                    geography={geo}
+                    role={isHighlighted ? 'button' : 'img'}
+                    tabIndex={isHighlighted ? 0 : -1}
+                    aria-label={stateName}
+                    onClick={(event) => onStateSelect(stateName, event.currentTarget)}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        onStateSelect(stateName, event.currentTarget);
+                      }
+                    }}
+                    style={{
+                      default: {
+                        fill: isHighlighted ? state.color : '#e2e8f0',
+                        stroke: '#ffffff',
+                        strokeWidth: isActive ? 1.15 : isHighlighted ? 0.8 : 0.45,
+                        outline: 'none',
+                        transition: shouldReduceMotion ? 'none' : 'fill 180ms ease, transform 180ms ease',
+                      },
+                      hover: {
+                        fill: isHighlighted ? brightenHexColor(state.color) : '#cbd5e1',
+                        stroke: '#ffffff',
+                        strokeWidth: isHighlighted ? 1.1 : 0.45,
+                        outline: 'none',
+                        cursor: isHighlighted ? 'pointer' : 'default',
+                      },
+                      pressed: {
+                        fill: isHighlighted ? state.color : '#cbd5e1',
+                        outline: 'none',
+                      },
+                    }}
+                  />
+                );
+              })
+            }
+          </Geographies>
+        </ComposableMap>
+      )}
+    </div>
+  );
+}
+
+export default function InteractiveIndiaMap({ variant = 'full' } = {}) {
+  const isCompact = variant === 'compact';
   const [indiaGeography, setIndiaGeography] = useState(null);
   const [mapError, setMapError] = useState('');
   const [selectedState, setSelectedState] = useState(projectBhartiStates[0]);
@@ -642,6 +842,34 @@ export default function InteractiveIndiaMap() {
     });
   };
 
+  const mapCanvas = (
+    <IndiaMapCanvas
+      activeStateName={activeStateName}
+      compact={isCompact}
+      indiaGeography={indiaGeography}
+      mapError={mapError}
+      onStateSelect={handleStateSelect}
+      shouldReduceMotion={shouldReduceMotion}
+    />
+  );
+
+  const statePanel =
+    typeof document !== 'undefined' && isPanelOpen
+      ? createPortal(
+          <StatePanel selectedState={selectedState} onClose={handleStatePanelClose} />,
+          document.body,
+        )
+      : null;
+
+  if (isCompact) {
+    return (
+      <>
+        <div className="relative w-full bg-transparent">{mapCanvas}</div>
+        {statePanel}
+      </>
+    );
+  }
+
   return (
     <section aria-labelledby="india-map-title" className="interactive-india-map section bg-white">
       <div className="site-container">
@@ -686,73 +914,7 @@ export default function InteractiveIndiaMap() {
               Interactive Engine
             </div>
 
-            <div className="relative min-h-[360px] overflow-hidden rounded-[1.5rem] bg-[radial-gradient(circle_at_30%_20%,rgba(153,27,27,0.10),transparent_28%),linear-gradient(145deg,#ffffff,#f8fafc)] p-3 md:min-h-[520px] md:p-6">
-              {mapError ? (
-                <div role="alert" className="flex min-h-[320px] items-center justify-center rounded-2xl border border-dashed border-red-200 bg-red-50 px-6 text-center text-sm font-semibold text-red-900">
-                  The interactive map is unavailable right now. Please try again shortly.
-                </div>
-              ) : !indiaGeography?.features?.length ? (
-                <div role="status" aria-live="polite" className="flex min-h-[320px] items-center justify-center text-sm font-semibold text-slate-500">
-                  Loading map data...
-                </div>
-              ) : (
-                <ComposableMap
-                  projection="geoMercator"
-                  projectionConfig={{ center: [82.8, 23.5], scale: 980 }}
-                  className="h-full min-h-[330px] w-full md:min-h-[500px]"
-                  role="img"
-                  aria-label="Interactive India map showing Project Bharti states"
-                >
-                  <Geographies geography={indiaGeography}>
-                    {({ geographies }) =>
-                      geographies.map((geo) => {
-                        const stateName = geo.properties.name;
-                        const state = projectBhartiStateByMapName[stateName];
-                        const isHighlighted = Boolean(state);
-                        const isActive = activeStateName === stateName;
-
-                        return (
-                          <Geography
-                            key={geo.rsmKey}
-                            geography={geo}
-                            role={isHighlighted ? 'button' : 'img'}
-                            tabIndex={isHighlighted ? 0 : -1}
-                            aria-label={stateName}
-                            onClick={(event) => handleStateSelect(stateName, event.currentTarget)}
-                            onKeyDown={(event) => {
-                              if (event.key === 'Enter' || event.key === ' ') {
-                                event.preventDefault();
-                                handleStateSelect(stateName, event.currentTarget);
-                              }
-                            }}
-                            style={{
-                              default: {
-                                fill: isHighlighted ? state.color : '#e2e8f0',
-                                stroke: '#ffffff',
-                                strokeWidth: isActive ? 1.15 : isHighlighted ? 0.8 : 0.45,
-                                outline: 'none',
-                                transition: shouldReduceMotion ? 'none' : 'fill 180ms ease, transform 180ms ease',
-                              },
-                              hover: {
-                                fill: isHighlighted ? brightenHexColor(state.color) : '#cbd5e1',
-                                stroke: '#ffffff',
-                                strokeWidth: isHighlighted ? 1.1 : 0.45,
-                                outline: 'none',
-                                cursor: isHighlighted ? 'pointer' : 'default',
-                              },
-                              pressed: {
-                                fill: isHighlighted ? state.color : '#cbd5e1',
-                                outline: 'none',
-                              },
-                            }}
-                          />
-                        );
-                      })
-                    }
-                  </Geographies>
-                </ComposableMap>
-              )}
-            </div>
+            {mapCanvas}
 
             <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-slate-600">
               <span className="inline-flex items-center gap-2">
@@ -768,9 +930,7 @@ export default function InteractiveIndiaMap() {
         </div>
       </div>
 
-      {isPanelOpen ? (
-        <StatePanel selectedState={selectedState} onClose={handleStatePanelClose} />
-      ) : null}
+      {statePanel}
     </section>
   );
 }

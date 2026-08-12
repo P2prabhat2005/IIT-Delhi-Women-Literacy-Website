@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
-import { Network } from 'lucide-react';
+import { ArrowRight, Network } from 'lucide-react';
 import Objectives from '../components/Objectives.jsx';
 import ProjectLeadership from '../components/ProjectLeadership.jsx';
 import RouteLoadingState from '../components/RouteLoadingState.jsx';
@@ -10,6 +10,8 @@ import { aboutProjectContent } from '../data/homepage.js';
 const InteractiveIndiaMap = lazy(() => import('../components/InteractiveIndiaMap.jsx'));
 
 export default function About() {
+  const { aboutIntro } = aboutProjectContent;
+
   return (
     <>
       <section className="section bg-white" aria-labelledby="about-project-bharti-intro-title">
@@ -22,16 +24,78 @@ export default function About() {
           >
             About Project Bharti
           </SectionTitle>
-          <div className="mx-auto mt-6 max-w-3xl space-y-5 text-center text-base leading-8 text-slate-600 md:mt-7 md:space-y-6 md:text-[1.05rem] md:leading-8">
-            {aboutProjectContent.aboutIntro.paragraphs.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
+
+          <motion.article
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.45 }}
+            className="mx-auto mt-8 max-w-4xl rounded-[1.75rem] border border-slate-200 bg-white p-6 text-left shadow-xl shadow-slate-200/60 md:mt-10 md:p-8"
+          >
+            <h3 className="text-xl font-semibold text-slate-950 md:text-2xl">{aboutIntro.whatIs.title}</h3>
+            <div className="mt-4 space-y-4 text-base leading-7 text-slate-600 md:leading-8">
+              {aboutIntro.whatIs.body.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+            </div>
+          </motion.article>
+
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:mt-10 lg:grid-cols-3 lg:gap-5">
+            {aboutIntro.focusAreas.map(({ Icon, description, title }, index) => (
+              <motion.article
+                key={title}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-70px' }}
+                transition={{ duration: 0.45, delay: index * 0.06 }}
+                className="rounded-[1.75rem] border border-slate-200 bg-white p-6 text-left shadow-xl shadow-slate-200/60 transition duration-300 hover:-translate-y-1 hover:border-red-100 hover:shadow-2xl"
+              >
+                <div className="mb-4 inline-flex items-center rounded-full border border-red-100 bg-red-50 px-3 py-1 text-red-900">
+                  <Icon size={15} aria-hidden="true" />
+                </div>
+                <h3 className="text-xl font-semibold text-slate-950">{title}</h3>
+                <p className="mt-3 text-sm leading-7 text-slate-600">{description}</p>
+              </motion.article>
             ))}
           </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-70px' }}
+            transition={{ duration: 0.45 }}
+            className="mt-8 rounded-[1.75rem] border border-slate-200 bg-slate-50 p-6 text-left md:mt-10 md:p-7"
+          >
+            <h3 className="text-lg font-semibold text-slate-950 md:text-xl">{aboutIntro.approach.title}</h3>
+            <ol
+              className="mt-5 flex flex-col gap-3 md:flex-row md:flex-wrap md:items-center md:gap-x-2 md:gap-y-3"
+              aria-label="Project Bharti approach"
+            >
+              {aboutIntro.approach.steps.map((step, index) => (
+                <li key={step} className="flex items-center gap-2 md:gap-2.5">
+                  <span className="inline-flex items-center rounded-full border border-slate-200 bg-white px-3.5 py-2 text-sm font-semibold text-slate-800 shadow-sm">
+                    <span className="mr-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-800 text-[11px] font-bold text-white">
+                      {index + 1}
+                    </span>
+                    {step}
+                  </span>
+                  {index < aboutIntro.approach.steps.length - 1 ? (
+                    <ArrowRight
+                      size={16}
+                      className="hidden shrink-0 text-slate-400 md:block"
+                      aria-hidden="true"
+                    />
+                  ) : null}
+                </li>
+              ))}
+            </ol>
+          </motion.div>
+
           <ul
             className="mx-auto mt-8 flex max-w-4xl flex-wrap items-center justify-center gap-2.5 md:mt-9 md:gap-3"
             aria-label="Project Bharti highlights"
           >
-            {aboutProjectContent.aboutIntro.highlights.map((item) => (
+            {aboutIntro.highlights.map((item) => (
               <li
                 key={item.label}
                 className="rounded-full border border-slate-200 bg-slate-50 px-3.5 py-2 text-xs font-semibold tracking-wide text-slate-700 shadow-sm md:px-4 md:text-sm"

@@ -1,8 +1,21 @@
+/**
+ * Single source of truth for Project Bharti geographic coverage.
+ * Hierarchy: State → District → Place → womenTrained
+ * District, state, and project totals are derived from place-level counts.
+ */
+
 import { delhiMedia } from './stateMedia/delhi.js';
 import { haryanaMedia } from './stateMedia/haryana.js';
 import { himachalPradeshMedia } from './stateMedia/himachalPradesh.js';
 import { uttarakhandMedia } from './stateMedia/uttarakhand.js';
 import { uttarPradeshMedia } from './stateMedia/uttarPradesh.js';
+
+const toId = (value) =>
+  String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
 
 const buildPlaceholderMediaGroup = (key, label, countLabel) => ({
   key,
@@ -11,6 +24,31 @@ const buildPlaceholderMediaGroup = (key, label, countLabel) => ({
   items: [],
   placeholder: 'Official content will be added as Project Bharti documentation is published.',
 });
+
+const createPlace = ({ id, name, womenTrained }) => {
+  const placeName = String(name || '').trim();
+
+  return {
+    id: id || toId(placeName),
+    name: placeName,
+    womenTrained: Number(womenTrained) || 0,
+  };
+};
+
+const createDistrict = ({ id, name, places = [] }) => {
+  const districtName = String(name || '').trim();
+  const normalizedPlaces = places.map((place) => createPlace(place));
+  const womenTrained = normalizedPlaces.reduce((total, place) => total + place.womenTrained, 0);
+
+  return {
+    id: id || toId(districtName),
+    name: districtName,
+    places: normalizedPlaces,
+    placeCount: normalizedPlaces.length,
+    // Derived from places only — never authored separately.
+    womenTrained,
+  };
+};
 
 const createStateProfile = ({
   id,
@@ -24,8 +62,10 @@ const createStateProfile = ({
   districts,
   media = {},
 }) => {
-  const totalDistricts = districts.length;
-  const totalWomenTrained = districts.reduce((total, district) => total + district.womenTrained, 0);
+  const normalizedDistricts = districts.map((district) => createDistrict(district));
+  const totalDistricts = normalizedDistricts.length;
+  const totalPlaces = normalizedDistricts.reduce((total, district) => total + district.placeCount, 0);
+  const totalWomenTrained = normalizedDistricts.reduce((total, district) => total + district.womenTrained, 0);
 
   const defaultMediaGroups = [
     buildPlaceholderMediaGroup('gallery', 'Gallery', 'Gallery'),
@@ -40,8 +80,9 @@ const createStateProfile = ({
     mapName,
     stateName,
     color,
-    districts,
+    districts: normalizedDistricts,
     totalDistricts,
+    totalPlaces,
     totalWomenTrained,
     status,
     lastUpdated: 'Recently updated',
@@ -96,6 +137,11 @@ const createStateProfile = ({
   };
 };
 
+/**
+ * Approved Project Bharti geographic coverage.
+ * Hierarchy: State → District → Place → womenTrained
+ * Counts follow the professor's verified place list. Totals are derived from places.
+ */
 export const projectBhartiStates = [
   createStateProfile({
     id: 'delhi',
@@ -110,8 +156,16 @@ export const projectBhartiStates = [
       'Build enterprise readiness through community training',
     ],
     districts: [
-      { name: 'North Delhi', womenTrained: 42 },
-      { name: 'South Delhi', womenTrained: 106 },
+      {
+        id: 'north-delhi',
+        name: 'North Delhi',
+        places: [{ id: 'north-delhi', name: 'North Delhi', womenTrained: 42 }],
+      },
+      {
+        id: 'south-delhi',
+        name: 'South Delhi',
+        places: [{ id: 'south-delhi', name: 'South Delhi', womenTrained: 106 }],
+      },
     ],
     implementationSnapshot: {
       title: 'Implementation snapshot',
@@ -134,8 +188,16 @@ export const projectBhartiStates = [
       'Support entrepreneurship capability at the group level',
     ],
     districts: [
-      { name: 'Nuh', womenTrained: 69 },
-      { name: 'Palwal', womenTrained: 56 },
+      {
+        id: 'nuh',
+        name: 'Nuh',
+        places: [{ id: 'nuh', name: 'Nuh', womenTrained: 69 }],
+      },
+      {
+        id: 'palwal',
+        name: 'Palwal',
+        places: [{ id: 'palwal', name: 'Palwal', womenTrained: 56 }],
+      },
     ],
     implementationSnapshot: {
       title: 'Implementation snapshot',
@@ -158,10 +220,29 @@ export const projectBhartiStates = [
       'Document field insights for scalable models',
     ],
     districts: [
-      { name: 'Dharamshala', womenTrained: 50 },
-      { name: 'Hamirpur', womenTrained: 61 },
-      { name: 'Narkanda', womenTrained: 43 },
-      { name: 'Shimla', womenTrained: 33 },
+      {
+        id: 'hamirpur',
+        name: 'Hamirpur',
+        places: [{ id: 'hamirpur', name: 'Hamirpur', womenTrained: 61 }],
+      },
+      {
+        id: 'kangra',
+        name: 'Kangra',
+        places: [{ id: 'dharamshala', name: 'Dharamshala', womenTrained: 50 }],
+      },
+      {
+        id: 'sirmaur',
+        name: 'Sirmaur',
+        places: [{ id: 'nahan', name: 'Nahan', womenTrained: 63 }],
+      },
+      {
+        id: 'shimla',
+        name: 'Shimla',
+        places: [
+          { id: 'shimla', name: 'Shimla', womenTrained: 33 },
+          { id: 'narkanda', name: 'Narkanda', womenTrained: 43 },
+        ],
+      },
     ],
     implementationSnapshot: {
       title: 'Implementation snapshot',
@@ -183,7 +264,18 @@ export const projectBhartiStates = [
       'Improve confidence in formal financial systems',
       'Support community-led learning and capacity building',
     ],
-    districts: [{ name: 'Haridwar', womenTrained: 116 }],
+    districts: [
+      {
+        id: 'dehradun',
+        name: 'Dehradun',
+        places: [{ id: 'dehradun', name: 'Dehradun', womenTrained: 84 }],
+      },
+      {
+        id: 'haridwar',
+        name: 'Haridwar',
+        places: [{ id: 'haridwar', name: 'Haridwar', womenTrained: 116 }],
+      },
+    ],
     implementationSnapshot: {
       title: 'Implementation snapshot',
       description: 'The Uttarakhand profile documents community mobilisation, training workshops, and facilitator-led capacity building.',
@@ -205,8 +297,16 @@ export const projectBhartiStates = [
       'Generate field evidence for wider programme and policy design',
     ],
     districts: [
-      { name: 'Lucknow', womenTrained: 50 },
-      { name: 'Prayagraj', womenTrained: 78 },
+      {
+        id: 'lucknow',
+        name: 'Lucknow',
+        places: [{ id: 'lucknow', name: 'Lucknow', womenTrained: 50 }],
+      },
+      {
+        id: 'prayagraj',
+        name: 'Prayagraj',
+        places: [{ id: 'prayagraj', name: 'Prayagraj', womenTrained: 78 }],
+      },
     ],
     implementationSnapshot: {
       title: 'Implementation snapshot',
@@ -225,8 +325,68 @@ export const projectBhartiStateByMapName = projectBhartiStates.reduce((accumulat
   return accumulator;
 }, {});
 
+export const projectBhartiStateById = projectBhartiStates.reduce((accumulator, state) => {
+  accumulator[state.id] = state;
+  return accumulator;
+}, {});
+
+const computedWomenTrained = projectBhartiStates.reduce(
+  (total, state) => total + state.totalWomenTrained,
+  0,
+);
+
+/**
+ * Headline women-trained figure uses an explicit display policy so the UI can
+ * keep showing the current manual "1000+" while computed place totals remain available.
+ * Flip mode to "computed" (or update value) only after a verified figure is approved.
+ */
 export const projectBhartiTotals = {
   stateCount: projectBhartiStates.length,
   totalDistricts: projectBhartiStates.reduce((total, state) => total + state.totalDistricts, 0),
-  totalWomenTrained: projectBhartiStates.reduce((total, state) => total + state.totalWomenTrained, 0),
+  totalPlaces: projectBhartiStates.reduce((total, state) => total + state.totalPlaces, 0),
+  computedWomenTrained,
+  // Back-compat alias for existing consumers that expect totalWomenTrained.
+  totalWomenTrained: computedWomenTrained,
+  womenTrainedDisplay: {
+    mode: 'manual',
+    value: 1000,
+    suffix: '+',
+    label: 'Women trained',
+  },
 };
+
+export function formatWomenTrainedDisplay(totals = projectBhartiTotals) {
+  const display = totals.womenTrainedDisplay || {
+    mode: 'computed',
+    value: totals.computedWomenTrained,
+    suffix: '',
+    label: 'Women trained',
+  };
+
+  if (display.mode === 'computed') {
+    const value = totals.computedWomenTrained;
+    const suffix = display.suffix || '';
+    return {
+      mode: 'computed',
+      value,
+      suffix,
+      formatted: `${value.toLocaleString('en-IN')}${suffix}`,
+      label: display.label || 'Women trained',
+    };
+  }
+
+  const value = display.value;
+  const suffix = display.suffix || '';
+  return {
+    mode: 'manual',
+    value,
+    suffix,
+    // Keep manual headline formatting literal (e.g. "1000+") until a verified figure is approved.
+    formatted: `${value}${suffix}`,
+    label: display.label || 'Women trained',
+  };
+}
+
+export function getStateById(stateId) {
+  return projectBhartiStateById[stateId] || null;
+}

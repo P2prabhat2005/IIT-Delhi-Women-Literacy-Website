@@ -128,7 +128,11 @@ function DevelopmentTeamGroups({ category }) {
               {group.title}
             </h4>
           ) : null}
-          <div className={`grid gap-4 sm:grid-cols-2 lg:grid-cols-3 ${group.title ? 'mt-5' : ''}`}>
+          <div
+            className={`grid gap-4 sm:grid-cols-2 ${
+              group.members.length >= 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-3'
+            } ${group.title ? 'mt-5' : ''}`}
+          >
             {group.members.map((member, index) => (
               <DevelopmentMemberCard key={member.id} member={member} index={index} />
             ))}

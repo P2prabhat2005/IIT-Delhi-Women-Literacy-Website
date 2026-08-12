@@ -48,6 +48,14 @@ function getPageMeta(pathname) {
     };
   }
 
+  if (normalizedPath.startsWith('/stories/')) {
+    return {
+      title: `Stories from the Field | ${siteName} | ${siteTitleSuffix}`,
+      description:
+        'Field case studies of women entrepreneurs building enterprises through Project Bharti’s literacy and capacity-building work.',
+    };
+  }
+
   if (normalizedPath === '/contact') {
     return {
       title: `Contact ${siteName} | ${siteTitleSuffix}`,

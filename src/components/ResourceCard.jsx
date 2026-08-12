@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import {
   ArrowUpRight,
@@ -117,6 +118,15 @@ export default function ResourceCard({
       </div>
 
       <div className="mt-6 flex flex-wrap items-center gap-2">
+        {resource.href ? (
+          <Link
+            to={resource.href}
+            className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition duration-300 hover:bg-slate-50 motion-safe:hover:-translate-y-0.5"
+          >
+            Read story
+            <ArrowUpRight size={16} aria-hidden="true" />
+          </Link>
+        ) : null}
         {hasResolvedMedia ? (
           <>
             <button

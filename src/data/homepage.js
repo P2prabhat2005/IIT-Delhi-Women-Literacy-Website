@@ -13,7 +13,9 @@ import {
   Smartphone,
   UsersRound,
 } from 'lucide-react';
-import { projectBhartiStateNames, projectBhartiTotals } from './stateImpact.js';
+import { projectBhartiStateNames, projectBhartiTotals, formatWomenTrainedDisplay } from './stateImpact.js';
+
+const womenTrainedDisplay = formatWomenTrainedDisplay(projectBhartiTotals);
 
 export const heroContent = {
   eyebrow: 'Project Bharti',
@@ -32,7 +34,7 @@ export const heroContent = {
   stats: [
     { value: projectBhartiTotals.stateCount.toLocaleString('en-IN'), label: 'Project states', detail: projectBhartiStateNames.join(', ') },
     { value: projectBhartiTotals.totalDistricts.toLocaleString('en-IN'), label: 'Districts covered', detail: 'Across current project states' },
-    { value: '1000+', label: 'Women trained', detail: 'Across current project states' },
+    { value: womenTrainedDisplay.formatted, label: womenTrainedDisplay.label, detail: 'Across current project states' },
   ],
   visual: {
     eyebrow: 'Research to field impact',
@@ -82,14 +84,45 @@ export const aboutProjectContent = {
     highlights: ['Women SHGs', 'Financial literacy', 'Digital literacy', 'Capacity building'],
   },
   aboutIntro: {
-    paragraphs: [
-      'Project Bharti is an IIT Delhi research and outreach initiative that enables SHG-linked women entrepreneurs to strengthen financial confidence, digital readiness, and enterprise capability. Academic leadership at IIT Delhi guides the research agenda, while collaboration with EXL supports structured field delivery.',
-      'The project centres on financial and digital literacy for women-led micro-enterprises. Training is applied to everyday decisions—savings, payments, record keeping, customer access, and safe use of digital tools—so participants can transfer skills directly into livelihood practice.',
-      'Through community engagement and capacity building across project states, Project Bharti translates research into measurable community impact. The approach supports women entrepreneurs, reinforces local enterprise networks, and strengthens participation in markets and digital financial systems.',
+    whatIs: {
+      title: 'What is Project Bharti?',
+      body: [
+        'Project Bharti is an IIT Delhi research and outreach initiative that enables SHG-linked women entrepreneurs to strengthen financial confidence, digital readiness, and enterprise capability. Academic leadership at IIT Delhi guides the research agenda, while collaboration with EXL supports structured field delivery.',
+        'The project centres on financial and digital literacy for women-led micro-enterprises. Training is applied to everyday decisions—savings, payments, record keeping, customer access, and safe use of digital tools—so participants can transfer skills directly into livelihood practice. Through community engagement and capacity building across project states, Project Bharti translates research into measurable community impact for women entrepreneurs and local enterprise networks.',
+      ],
+    },
+    focusAreas: [
+      {
+        title: 'Financial Literacy',
+        description:
+          'Builds practical financial confidence for women-led micro-enterprises, applied to everyday decisions such as savings, payments, and record keeping.',
+        Icon: Landmark,
+      },
+      {
+        title: 'Digital Literacy',
+        description:
+          'Strengthens digital readiness and safe use of digital tools so participants can engage more effectively with digital financial systems.',
+        Icon: Smartphone,
+      },
+      {
+        title: 'Women Entrepreneurship',
+        description:
+          'Supports SHG-linked women entrepreneurs in building enterprise capability, reinforcing local enterprise networks, and strengthening market participation.',
+        Icon: UsersRound,
+      },
     ],
+    approach: {
+      title: 'Project Approach',
+      steps: [
+        'Research',
+        'Community Engagement',
+        'Training & Capacity Building',
+        'Measurable Community Impact',
+      ],
+    },
     highlights: [
-      { label: '5 States' },
-      { label: '1000+ Women Trained' },
+      { label: `${projectBhartiTotals.stateCount} States` },
+      { label: `${womenTrainedDisplay.formatted} Women Trained` },
       { label: 'IIT Delhi + EXL Collaboration' },
       { label: 'Financial & Digital Literacy' },
     ],
@@ -168,8 +201,8 @@ export const objectiveImpactHighlights = [
   },
   {
     label: 'Women Trained',
-    value: 1000,
-    suffix: '+',
+    value: womenTrainedDisplay.value,
+    suffix: womenTrainedDisplay.suffix,
     helper: 'Across current project states',
   },
 ];
