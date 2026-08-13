@@ -1,9 +1,11 @@
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, ArrowUpRight, FileText, MapPin } from 'lucide-react';
 import { getCaseStudyBySlug } from '../data/caseStudies.js';
+import { getCaseStudyImageSize } from '../data/caseStudyImageSizes.js';
+import { isSafeNavigationUrl } from '../utils/safeUrl.js';
 import NotFound from './NotFound.jsx';
 
-function StoryImage({ image, className = '' }) {
+function StoryImage({ image, className = '', loading = 'lazy' }) {
   if (!image?.src) {
     return (
       <div
@@ -16,10 +18,20 @@ function StoryImage({ image, className = '' }) {
     );
   }
 
+  const size = getCaseStudyImageSize(image.src);
+
   return (
     <figure className={className}>
       <div className="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-slate-100 shadow-sm">
-        <img src={image.src} alt={image.alt} className="h-full w-full object-cover" />
+        <img
+          src={image.src}
+          alt={image.alt}
+          width={size?.width}
+          height={size?.height}
+          loading={loading}
+          decoding="async"
+          className="h-full w-full object-cover"
+        />
       </div>
       {image.alt ? <figcaption className="mt-3 text-sm leading-6 text-slate-500">{image.alt}</figcaption> : null}
     </figure>
@@ -38,7 +50,7 @@ export default function StoryDetail() {
     <article className="bg-[#f7f4ef]">
       <div className="site-container py-10 md:py-14">
         <Link
-          to={{ pathname: '/', hash: 'stories-from-the-field-title' }}
+          to="/stories"
           className="inline-flex items-center gap-2 text-sm font-semibold text-red-900 transition hover:text-red-800"
         >
           <ArrowLeft size={16} aria-hidden="true" />
@@ -63,7 +75,7 @@ export default function StoryDetail() {
 
         <div className="mt-10 grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
           <div className="space-y-8">
-            <StoryImage image={study.image} />
+            <StoryImage image={study.image} loading="eager" />
 
             <section className="rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-sm md:p-8">
               <h2 className="text-lg font-semibold text-slate-950">Story overview</h2>
@@ -104,7 +116,7 @@ export default function StoryDetail() {
             {study.gallery.length > 1 ? (
               <div className="space-y-4">
                 {study.gallery.slice(1).map((image) => (
-                  <StoryImage key={image.src} image={image} />
+                  <StoryImage key={image.src} image={image} loading="lazy" />
                 ))}
               </div>
             ) : null}
@@ -128,16 +140,18 @@ export default function StoryDetail() {
               <p className="mt-3 text-sm leading-7 text-slate-300">
                 Open the original Project Bharti case-study PDF for the complete formal document.
               </p>
-              <a
-                href={study.pdfUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-red-50"
-              >
-                Open PDF
-                <ArrowUpRight size={16} aria-hidden="true" />
-                <span className="sr-only">(opens in a new tab)</span>
-              </a>
+              {isSafeNavigationUrl(study.pdfUrl) ? (
+                <a
+                  href={study.pdfUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-red-50"
+                >
+                  Open PDF
+                  <ArrowUpRight size={16} aria-hidden="true" />
+                  <span className="sr-only">(opens in a new tab)</span>
+                </a>
+              ) : null}
             </div>
           </aside>
         </div>

@@ -1,10 +1,10 @@
-import { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
-  INTRO_POSTER_SRC,
-  INTRO_VIDEO_SRC,
   bootstrapIntroVideoPreload,
+  hideIntroVideoElement,
   markIntroSplashPlayed,
+  revealIntroVideoElement,
   setIntroSplashActive,
   shouldPlayIntroSplash,
 } from '../utils/introSplash.js';
@@ -27,6 +27,9 @@ const OVERLAY_STYLE = {
 };
 
 const VIDEO_STYLE = {
+  position: 'fixed',
+  inset: '0',
+  zIndex: 101,
   display: 'block',
   width: '100%',
   height: '100%',
@@ -38,10 +41,11 @@ const VIDEO_STYLE = {
   transform: 'translateZ(0)',
   backfaceVisibility: 'hidden',
   willChange: 'opacity',
+  pointerEvents: 'none',
 };
 
 const SKIP_BUTTON_CLASS =
-  'absolute right-4 top-4 rounded-full border border-white/30 bg-slate-950/70 px-4 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-slate-950 sm:right-6 sm:top-6';
+  'pointer-events-auto absolute right-4 top-4 rounded-full border border-white/30 bg-slate-950/70 px-4 py-2 text-sm font-semibold text-white backdrop-blur transition hover:bg-slate-950 sm:right-6 sm:top-6';
 
 function easeOutCubic(value) {
   return 1 - (1 - value) ** 3;
@@ -221,21 +225,46 @@ function SessionIntroVideo() {
     } else {
       monitorVideoFrames();
     }
-  }, [monitorVideoFrames, removeIntro]);
+  }, [monitorVideoFrames]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!isEligible || isDismissed) {
       setIntroSplashActive(false);
       return undefined;
     }
 
     setIntroSplashActive(true);
-    bootstrapIntroVideoPreload();
+    const video = bootstrapIntroVideoPreload();
+    if (!video) {
+      return undefined;
+    }
+
+    videoRef.current = video;
+    revealIntroVideoElement(video, VIDEO_STYLE);
+    applyDesktopCoverMode(overlayRef.current, video);
+
+    video.addEventListener('loadeddata', startPlayback);
+    video.addEventListener('canplay', startPlayback);
+    video.addEventListener('canplaythrough', startPlayback);
+    video.addEventListener('timeupdate', handleVideoProgress);
+    video.addEventListener('ended', handleVideoEnd);
+    video.addEventListener('error', removeIntro);
+
+    if (video.readyState >= 2) {
+      startPlayback();
+    }
 
     return () => {
+      video.removeEventListener('loadeddata', startPlayback);
+      video.removeEventListener('canplay', startPlayback);
+      video.removeEventListener('canplaythrough', startPlayback);
+      video.removeEventListener('timeupdate', handleVideoProgress);
+      video.removeEventListener('ended', handleVideoEnd);
+      video.removeEventListener('error', removeIntro);
+      hideIntroVideoElement(video);
       setIntroSplashActive(false);
     };
-  }, [isDismissed, isEligible]);
+  }, [handleVideoEnd, handleVideoProgress, isDismissed, isEligible, removeIntro, startPlayback]);
 
   useEffect(() => {
     if (!isEligible || isDismissed) {
@@ -271,37 +300,19 @@ function SessionIntroVideo() {
   }
 
   return createPortal(
-    <div
-      ref={overlayRef}
-      style={OVERLAY_STYLE}
-      role="dialog"
-      aria-label="Project introduction video"
-      aria-modal="true"
-    >
-      {/* Poster is visible immediately; playback starts once enough media is buffered. */}
-      <video
-        ref={videoRef}
-        style={VIDEO_STYLE}
-        src={INTRO_VIDEO_SRC}
-        poster={INTRO_POSTER_SRC}
-        muted
-        playsInline
-        preload="auto"
-        autoPlay={false}
-        fetchPriority="high"
-        disablePictureInPicture
-        controlsList="nodownload nofullscreen noremoteplayback"
-        onLoadedData={startPlayback}
-        onCanPlay={startPlayback}
-        onCanPlayThrough={startPlayback}
-        onTimeUpdate={handleVideoProgress}
-        onEnded={handleVideoEnd}
-        onError={removeIntro}
-      />
-      <button type="button" onClick={removeIntro} autoFocus className={SKIP_BUTTON_CLASS}>
-        Skip introduction
-      </button>
-    </div>,
+    <>
+      <div ref={overlayRef} style={OVERLAY_STYLE} aria-hidden="true" />
+      <div
+        className="pointer-events-none fixed inset-0 z-[102]"
+        role="dialog"
+        aria-label="Project introduction video"
+        aria-modal="true"
+      >
+        <button type="button" onClick={removeIntro} autoFocus className={SKIP_BUTTON_CLASS}>
+          Skip introduction
+        </button>
+      </div>
+    </>,
     document.body,
   );
 }

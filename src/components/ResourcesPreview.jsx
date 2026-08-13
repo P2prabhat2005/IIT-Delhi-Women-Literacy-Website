@@ -23,7 +23,7 @@ export default function ResourcesPreview() {
           </Link>
         </div>
         <div className="mt-10 grid gap-5 md:grid-cols-3">
-          {resources.map(({ description, Icon, title }, index) => (
+          {resources.map(({ description, Icon, title, to }, index) => (
             <motion.article
               key={title}
               initial={reduceMotion ? false : { opacity: 0, y: 18 }}
@@ -35,6 +35,11 @@ export default function ResourcesPreview() {
               <Icon className="text-red-800 transition duration-300" size={28} aria-hidden="true" />
               <h3 className="mt-5 text-xl font-semibold text-slate-950">{title}</h3>
               <p className="mt-3 leading-7 text-slate-600">{description}</p>
+              {to ? (
+                <Link className="mt-5 inline-flex text-sm font-semibold text-red-900 transition hover:text-red-800" to={to}>
+                  Browse {title}
+                </Link>
+              ) : null}
             </motion.article>
           ))}
         </div>

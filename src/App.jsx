@@ -9,6 +9,8 @@ const Contact = lazy(() => import('./pages/Contact.jsx'));
 const Home = lazy(() => import('./pages/Home.jsx'));
 const NotFound = lazy(() => import('./pages/NotFound.jsx'));
 const Resources = lazy(() => import('./pages/Resources.jsx'));
+const ResourceGuide = lazy(() => import('./pages/ResourceGuide.jsx'));
+const Stories = lazy(() => import('./pages/Stories.jsx'));
 const StoryDetail = lazy(() => import('./pages/StoryDetail.jsx'));
 
 export default function App() {
@@ -44,6 +46,22 @@ export default function App() {
           element={
             <Suspense fallback={<RouteLoadingState />}>
               <Resources />
+            </Suspense>
+          }
+        />
+        <Route
+          path="resources/:slug"
+          element={
+            <Suspense fallback={<RouteLoadingState />}>
+              <ResourceGuide />
+            </Suspense>
+          }
+        />
+        <Route
+          path="stories"
+          element={
+            <Suspense fallback={<RouteLoadingState />}>
+              <Stories />
             </Suspense>
           }
         />

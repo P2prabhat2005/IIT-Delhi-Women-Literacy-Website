@@ -3,6 +3,7 @@ import {
   BookOpenCheck,
   Building2,
   ChartNoAxesCombined,
+  CirclePlay,
   ClipboardCheck,
   FileText,
   Handshake,
@@ -230,19 +231,22 @@ export const activities = [
 
 export const resources = [
   {
-    title: 'Training Modules',
-    description: 'Curriculum-ready financial and digital literacy modules prepared for field and partner use.',
-    Icon: BookOpenCheck,
+    title: 'Case Studies',
+    description: 'Official field stories of women entrepreneurs featured in Stories from the Field.',
+    Icon: UsersRound,
+    to: '/resources#case-studies',
   },
   {
-    title: 'Policy Briefs',
-    description: 'Concise research outputs for institutions, public agencies, and implementation partners.',
+    title: 'Training Videos',
+    description: 'Short instructional videos for community learning and outreach sessions.',
+    Icon: CirclePlay,
+    to: '/resources',
+  },
+  {
+    title: 'Other Documents',
+    description: 'Training materials, reference guides, and supporting documents for facilitators and partners.',
     Icon: FileText,
-  },
-  {
-    title: 'Toolkits',
-    description: 'Practical checklists, facilitator guides, and enterprise support materials.',
-    Icon: ShieldCheck,
+    to: '/resources#other-documents',
   },
 ];
 
@@ -261,11 +265,3 @@ export const contactCtaContent = {
   buttonLabel: 'Contact Project Bharti',
   buttonTo: '/contact',
 };
-
-export const footerLinks = [
-  { label: 'About', to: '/about' },
-  { label: 'Activities', to: '/activities' },
-  { label: 'Resources', to: '/resources' },
-  { label: 'Contact', to: '/contact' },
-  { label: 'Collaborate', to: '/#get-involved' },
-];

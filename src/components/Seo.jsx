@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { getPracticalGuideBySlug } from '../data/practicalGuides.js';
 import { siteSettings } from '../data/settings.js';
 
 const siteName = siteSettings.siteName;
@@ -40,15 +41,26 @@ function getPageMeta(pathname) {
     };
   }
 
+  if (normalizedPath.startsWith('/resources/')) {
+    const slug = normalizedPath.slice('/resources/'.length);
+    const guide = getPracticalGuideBySlug(slug);
+    if (guide) {
+      return {
+        title: `${guide.title} | ${siteName}`,
+        description: guide.description,
+      };
+    }
+  }
+
   if (normalizedPath === '/resources') {
     return {
       title: `Resources | ${siteName} | ${siteTitleSuffix}`,
       description:
-        'Training materials, policy briefs, toolkits, and learning resources developed under Project Bharti.',
+        'Case studies, practical guides, checklists, and verified government scheme explainers from Project Bharti.',
     };
   }
 
-  if (normalizedPath.startsWith('/stories/')) {
+  if (normalizedPath === '/stories' || normalizedPath.startsWith('/stories/')) {
     return {
       title: `Stories from the Field | ${siteName} | ${siteTitleSuffix}`,
       description:

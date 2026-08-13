@@ -5,12 +5,12 @@
  */
 
 import expertPanelDiscussion from '../../assets/images/states/uttar-pradesh/expert-panel-discussion.png';
-import hybridSessionAudience from '../../assets/images/states/uttar-pradesh/hybrid-session-audience.png';
-import hybridSessionWide from '../../assets/images/states/uttar-pradesh/hybrid-session-wide.png';
+import hybridSessionAudience from '../../assets/images/states/uttar-pradesh/hybrid-session-audience.webp';
+import hybridSessionWide from '../../assets/images/states/uttar-pradesh/hybrid-session-wide.webp';
 import inaugurationAudienceView from '../../assets/images/states/uttar-pradesh/inauguration-audience-view.png';
 import panelStageFull from '../../assets/images/states/uttar-pradesh/panel-stage-full.png';
-import recognitionGiftCloseup from '../../assets/images/states/uttar-pradesh/recognition-gift-closeup.png';
-import recognitionStageCeremony from '../../assets/images/states/uttar-pradesh/recognition-stage-ceremony.png';
+import recognitionGiftCloseup from '../../assets/images/states/uttar-pradesh/recognition-gift-closeup.webp';
+import recognitionStageCeremony from '../../assets/images/states/uttar-pradesh/recognition-stage-ceremony.webp';
 
 export const uttarPradeshMedia = {
   gallery: [

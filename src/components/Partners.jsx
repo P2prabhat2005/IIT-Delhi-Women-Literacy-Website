@@ -73,6 +73,8 @@ function MediaTile({ item, onOpen, index, reduceMotion, sizeMap = SIZE_CLASSES }
         >
           <img
             src={item.src}
+            srcSet={item.srcSet}
+            sizes={item.sizes}
             alt=""
             loading="lazy"
             decoding="async"
@@ -197,7 +199,7 @@ export default function Partners() {
   };
 
   return (
-    <section aria-labelledby="partners-title" className="section bg-slate-50">
+    <section id="partners" aria-labelledby="partners-title" className="section scroll-mt-24 bg-slate-50 !pt-16">
       <div className="mx-auto w-[min(1320px,calc(100%-2rem))]">
         <SectionTitle
           align="center"

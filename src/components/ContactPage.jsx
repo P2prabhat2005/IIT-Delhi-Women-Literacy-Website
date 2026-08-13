@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ArrowUpRight, ChevronDown, Mail, MapPin, Send, Sparkles, UserRound } from 'lucide-react';
 import { contactFaqItems, contactHighlights, contactInfoCards } from '../data/contact.js';
+import { isSafeMailtoAddress, isSafeNavigationUrl } from '../utils/safeUrl.js';
 
 function ContactCard({ card }) {
   const { Icon, detail, isAddress, title, value } = card;
@@ -45,6 +46,10 @@ export default function ContactPage() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const email = contactInfoCards.find((card) => card.title === 'Email')?.value;
+    if (!isSafeMailtoAddress(email)) {
+      return;
+    }
+
     const body = [
       `Name: ${formState.name}`,
       `Email: ${formState.email}`,
@@ -264,25 +269,29 @@ export default function ContactPage() {
             </div>
           </div>
           <div className="mt-8 h-[320px] overflow-hidden rounded-[1.75rem] border border-slate-200 bg-slate-50 shadow-sm md:h-[380px]">
-            <iframe
-              title="Department of Management Studies, IIT Delhi location"
-              src={googleMapsEmbedUrl}
-              className="h-full w-full border-0"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
+            {isSafeNavigationUrl(googleMapsEmbedUrl) ? (
+              <iframe
+                title="Department of Management Studies, IIT Delhi location"
+                src={googleMapsEmbedUrl}
+                className="h-full w-full border-0"
+                loading="lazy"
+                referrerPolicy="strict-origin-when-cross-origin"
+              />
+            ) : null}
           </div>
-          <a
-            href={googleMapsUrl}
-            target="_blank"
-            rel="noreferrer"
-            aria-label="Open the Department of Management Studies, IIT Delhi location in Google Maps"
-            className="btn-secondary mt-5"
-          >
-            <MapPin size={16} aria-hidden="true" />
-            Open in Google Maps
-            <ArrowUpRight size={16} aria-hidden="true" />
-          </a>
+          {isSafeNavigationUrl(googleMapsUrl) ? (
+            <a
+              href={googleMapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open the Department of Management Studies, IIT Delhi location in Google Maps"
+              className="btn-secondary mt-5"
+            >
+              <MapPin size={16} aria-hidden="true" />
+              Open in Google Maps
+              <ArrowUpRight size={16} aria-hidden="true" />
+            </a>
+          ) : null}
         </div>
 
         <div className="rounded-[2rem] border border-slate-200 bg-slate-950 p-6 text-white shadow-2xl shadow-slate-300/70 md:p-8">

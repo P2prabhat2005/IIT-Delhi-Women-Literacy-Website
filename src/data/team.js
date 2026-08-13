@@ -5,7 +5,7 @@
 import apporvaPhoto from '../assets/images/team/apporva.png';
 import akritiChandraPhoto from '../assets/images/team/akriti-chandra.png';
 import harshiGuptaPhoto from '../assets/images/team/harshi-gupta.png';
-import pranjaliSoniPhoto from '../assets/images/team/pranjali-soni.png';
+import pranjaliSoniPhoto from '../assets/images/team/pranjali-soni.webp';
 import profGouravDwivediPhoto from '../assets/images/team/prof-gourav-dwivedi.png';
 import profSeemaSharmaPhoto from '../assets/images/team/prof-seema-sharma.png';
 import purariKumarPhoto from '../assets/images/team/purari-kumar.png';
@@ -94,7 +94,7 @@ const teamCategories = [
         id: 'akriti-chandra',
         fullName: 'Akriti Chandra',
         designation: 'Doctoral Scholar',
-        photo: { url: akritiChandraPhoto },
+        photo: { url: shaliniShuklaPhoto },
         isActive: true,
         displayOrder: 3,
         categoryId: 'development-team',
@@ -130,7 +130,7 @@ const teamCategories = [
         id: 'shalini-shukla',
         fullName: 'Shalini Shukla',
         designation: 'Research Associate',
-        photo: { url: shaliniShuklaPhoto },
+        photo: { url: akritiChandraPhoto },
         isActive: true,
         displayOrder: 7,
         categoryId: 'development-team',

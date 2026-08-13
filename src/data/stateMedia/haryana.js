@@ -5,14 +5,14 @@
  */
 
 import certificateHandover from '../../assets/images/states/haryana/certificate-handover.png';
-import certificateRecognition from '../../assets/images/states/haryana/certificate-recognition.png';
+import certificateRecognition from '../../assets/images/states/haryana/certificate-recognition.webp';
 import communityMobilization from '../../assets/images/states/haryana/community-mobilization.png';
-import expertAddress from '../../assets/images/states/haryana/expert-address-digital-star.png';
-import financialLiteracyClassroom from '../../assets/images/states/haryana/financial-literacy-classroom.png';
-import handbookDistribution from '../../assets/images/states/haryana/handbook-distribution.png';
-import interactiveClassroom from '../../assets/images/states/haryana/interactive-classroom.png';
-import participantRecognition from '../../assets/images/states/haryana/participant-recognition.png';
-import programmeInauguration from '../../assets/images/states/haryana/programme-inauguration.png';
+import expertAddress from '../../assets/images/states/haryana/expert-address-digital-star.webp';
+import financialLiteracyClassroom from '../../assets/images/states/haryana/financial-literacy-classroom.webp';
+import handbookDistribution from '../../assets/images/states/haryana/handbook-distribution.webp';
+import interactiveClassroom from '../../assets/images/states/haryana/interactive-classroom.webp';
+import participantRecognition from '../../assets/images/states/haryana/participant-recognition.webp';
+import programmeInauguration from '../../assets/images/states/haryana/programme-inauguration.webp';
 
 export const haryanaMedia = {
   gallery: [

@@ -3,6 +3,8 @@
  * Shape when present: { url, fileName }
  */
 
+import { openSafeUrl } from '../utils/safeUrl.js';
+
 export function labelToDocumentKey(label) {
   return String(label || '')
     .toLowerCase()
@@ -23,6 +25,5 @@ export function getHeroDocument(key) {
 export function openHeroDocument(key) {
   const entry = getHeroDocument(key);
   if (!entry?.url) return false;
-  window.open(entry.url, '_blank', 'noopener,noreferrer');
-  return true;
+  return openSafeUrl(entry.url);
 }

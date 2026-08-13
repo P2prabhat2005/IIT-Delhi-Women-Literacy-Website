@@ -9,8 +9,13 @@ coverage/
 
 # Environment variables
 .env
-.env.local
-.env.production
+.env.*
+!.env.example
+
+# Keys and local deploy metadata
+*.pem
+*.key
+.vercel
 
 # Logs
 *.log
@@ -38,3 +43,6 @@ Thumbs.db
 
 # Legacy backend leftovers (static site — do not restore)
 server/
+
+# Local source masters (not for production deploy / not for commit)
+media-source/

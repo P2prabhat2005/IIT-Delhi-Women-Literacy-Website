@@ -4,19 +4,19 @@
  * { gallery: [...], activities: [...], videos?: [...], research?: [...], news?: [...] }
  */
 
-import appreciationGiftExchange from '../../assets/images/states/delhi/appreciation-gift-exchange.png';
-import appreciationPlantCeremony from '../../assets/images/states/delhi/appreciation-plant-ceremony.png';
+import appreciationGiftExchange from '../../assets/images/states/delhi/appreciation-gift-exchange.webp';
+import appreciationPlantCeremony from '../../assets/images/states/delhi/appreciation-plant-ceremony.webp';
 import appreciationTwoWomen from '../../assets/images/states/delhi/appreciation-two-women.png';
-import handbookLaunch from '../../assets/images/states/delhi/handbook-launch.png';
+import handbookLaunch from '../../assets/images/states/delhi/handbook-launch.webp';
 import institutionalVisitMural from '../../assets/images/states/delhi/institutional-visit-mural.png';
 import interactiveTraining from '../../assets/images/states/delhi/interactive-training-elevated.png';
-import keynoteOfficialLaunch from '../../assets/images/states/delhi/keynote-official-launch.png';
+import keynoteOfficialLaunch from '../../assets/images/states/delhi/keynote-official-launch.webp';
 import keynoteOrientationScreen from '../../assets/images/states/delhi/keynote-orientation-screen.png';
-import programmeOrientation from '../../assets/images/states/delhi/programme-orientation-wide.png';
-import projectReview from '../../assets/images/states/delhi/project-review-banner.png';
+import programmeOrientation from '../../assets/images/states/delhi/programme-orientation-wide.webp';
+import projectReview from '../../assets/images/states/delhi/project-review-banner.webp';
 import stakeholderConsultation from '../../assets/images/states/delhi/stakeholder-consultation-standing.png';
-import teamCollaborationGifts from '../../assets/images/states/delhi/team-collaboration-gifts.png';
-import teamCollaborationGroup from '../../assets/images/states/delhi/team-collaboration-group.png';
+import teamCollaborationGifts from '../../assets/images/states/delhi/team-collaboration-gifts.webp';
+import teamCollaborationGroup from '../../assets/images/states/delhi/team-collaboration-group.webp';
 
 export const delhiMedia = {
   gallery: [

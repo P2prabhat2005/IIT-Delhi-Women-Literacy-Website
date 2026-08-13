@@ -10,11 +10,12 @@ import artisanMarketVisit from '../assets/images/partners/gallery/artisan-market
 import campusProgrammeGathering from '../assets/images/partners/gallery/campus-programme-gathering.jpg';
 import collaborationSigning from '../assets/images/partners/gallery/collaboration-signing.jpg';
 import communityMarketShowcase from '../assets/images/partners/gallery/community-market-showcase.jpg';
-import communityProductShowcase from '../assets/images/partners/gallery/community-product-showcase.jpg';
+import communityProductShowcase from '../assets/images/partners/gallery/community-product-showcase.webp';
+import communityProductShowcaseSm from '../assets/images/partners/gallery/community-product-showcase-800.webp';
 import communityTrainingCentreGroup from '../assets/images/partners/gallery/community-training-centre-group.jpg';
 import communityOutletVisit from '../assets/images/partners/gallery/community-outlet-visit.jpg';
 import enterpriseStallVisit from '../assets/images/partners/gallery/enterprise-stall-visit.jpg';
-import fieldVisitTeam from '../assets/images/partners/gallery/field-visit-team.png';
+import fieldVisitTeam from '../assets/images/partners/gallery/field-visit-team.webp';
 import handbookLaunchCeremony from '../assets/images/partners/gallery/handbook-launch-ceremony.png';
 import officialInteraction from '../assets/images/partners/gallery/official-interaction.jpg';
 import participantRecognition from '../assets/images/partners/gallery/participant-recognition.jpg';
@@ -22,7 +23,7 @@ import programmeAddress from '../assets/images/partners/gallery/programme-addres
 import programmeRecognition from '../assets/images/partners/gallery/programme-recognition.jpg';
 import programmeSessionMoment from '../assets/images/partners/gallery/programme-session-moment.jpg';
 import programmeStageSession from '../assets/images/partners/gallery/programme-stage-session.jpg';
-import skillsWorkshop from '../assets/images/partners/gallery/skills-workshop.png';
+import skillsWorkshop from '../assets/images/partners/gallery/skills-workshop.webp';
 import stakeholderMeeting from '../assets/images/partners/gallery/stakeholder-meeting.jpg';
 import amarUjalaDelhi from '../assets/images/partners/newspapers/amar-ujala-delhi.png';
 import arunachalTimesMou from '../assets/images/partners/newspapers/arunachal-times-mou.png';
@@ -124,6 +125,8 @@ export const partnersMediaContent = {
         {
           id: 'community-product-showcase',
           src: communityProductShowcase,
+          srcSet: `${communityProductShowcaseSm} 800w, ${communityProductShowcase} 1600w`,
+          sizes: '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 420px',
           alt: 'Women participants gathered around handmade products and learning materials during a Project Bharti session',
           caption: 'Learning materials',
           kind: 'photo',

@@ -21,9 +21,40 @@ import {
   projectBhartiStateByMapName,
   projectBhartiStates,
 } from '../data/stateImpact.js';
+import { getStateMediaGroups } from '../data/stateMedia.js';
+import { isSafeNavigationUrl } from '../utils/safeUrl.js';
 import EditableImageSlot from './EditableImageSlot.jsx';
 import MediaLightbox from './MediaLightbox.jsx';
 import SectionTitle from './SectionTitle.jsx';
+
+let indiaGeographyCache = null;
+let indiaGeographyPromise = null;
+
+function loadIndiaGeography() {
+  if (indiaGeographyCache) {
+    return Promise.resolve(indiaGeographyCache);
+  }
+
+  if (!indiaGeographyPromise) {
+    indiaGeographyPromise = fetch(indiaGeographyUrl)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Unable to load map data.');
+        }
+        return response.json();
+      })
+      .then((geography) => {
+        indiaGeographyCache = geography;
+        return geography;
+      })
+      .catch((error) => {
+        indiaGeographyPromise = null;
+        throw error;
+      });
+  }
+
+  return indiaGeographyPromise;
+}
 
 const metricIconMap = {
   MapPin,
@@ -196,7 +227,7 @@ function VideosViewer({ entries }) {
             Video {index + 1}
           </p>
           {entry.title ? <h4 className="mt-3 text-base font-semibold text-slate-900">{entry.title}</h4> : null}
-          {entry.url ? (
+          {isSafeNavigationUrl(entry.url) ? (
             <a
               href={entry.url}
               target="_blank"
@@ -225,7 +256,7 @@ function ResearchDocumentViewer({ entries }) {
           </p>
           {entry.title ? <h4 className="mt-3 text-base font-semibold text-slate-900">{entry.title}</h4> : null}
           {entry.fileName ? <p className="mt-2 text-xs text-slate-500">{entry.fileName}</p> : null}
-          {entry.url ? (
+          {isSafeNavigationUrl(entry.url) ? (
             <a
               href={entry.url}
               target="_blank"
@@ -255,7 +286,7 @@ function NewsViewer({ entries }) {
           {entry.title ? <h4 className="mt-3 text-base font-semibold text-slate-900">{entry.title}</h4> : null}
           {entry.date ? <p className="mt-2 text-xs font-semibold text-slate-500">{entry.date}</p> : null}
           {entry.description ? <p className="mt-3 text-sm leading-7 text-slate-600">{entry.description}</p> : null}
-          {entry.link ? (
+          {isSafeNavigationUrl(entry.link) ? (
             <a
               href={entry.link}
               target="_blank"
@@ -287,9 +318,13 @@ function StatePanel({ onClose, selectedState }) {
   const [openSection, setOpenSection] = useState('gallery');
   const [expandedDistrictId, setExpandedDistrictId] = useState('');
   const [lightbox, setLightbox] = useState({ isOpen: false, items: [], index: 0 });
-  const mediaContent = useMemo(
-    () => createMediaContent(selectedState?.mediaGroups),
+  const mediaGroups = useMemo(
+    () => (selectedState ? getStateMediaGroups(selectedState.id) : []),
     [selectedState],
+  );
+  const mediaContent = useMemo(
+    () => createMediaContent(mediaGroups),
+    [mediaGroups],
   );
   const closeButtonRef = useRef(null);
   const dialogRef = useRef(null);
@@ -421,7 +456,7 @@ function StatePanel({ onClose, selectedState }) {
 
   if (!selectedState) return null;
 
-  const accordionSections = selectedState.mediaGroups;
+  const accordionSections = mediaGroups;
 
   return (
     <>
@@ -797,21 +832,15 @@ export default function InteractiveIndiaMap({ variant = 'full' } = {}) {
 
     async function loadMap() {
       try {
-        const response = await fetch(indiaGeographyUrl);
-
-        if (!response.ok) {
-          throw new Error(`Unable to load map data (${response.status})`);
-        }
-
-        const geography = await response.json();
+        const geography = await loadIndiaGeography();
 
         if (isMounted) {
           setIndiaGeography(geography);
           setMapError('');
         }
-      } catch (error) {
+      } catch {
         if (isMounted) {
-          setMapError(error.message || 'Unable to load map data.');
+          setMapError('Unable to load map data.');
         }
       }
     }

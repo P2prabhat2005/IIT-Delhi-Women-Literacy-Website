@@ -2,20 +2,24 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, MapPin } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import {
-  caseStudies,
   getFeaturedCaseStudy,
-  getSupportingCaseStudies,
+  getHomepageSupportingCaseStudies,
   storiesFromTheFieldSection,
 } from '../data/caseStudies.js';
+import { getCaseStudyImageSize } from '../data/caseStudyImageSizes.js';
 import { fadeUpTransition, staggerDelay, viewportOnce } from '../utils/motion.js';
 import SectionTitle from './SectionTitle.jsx';
 
 function StoryPortrait({ study, className = '' }) {
   if (study.image?.src) {
+    const size = getCaseStudyImageSize(study.image.src);
+
     return (
       <img
         src={study.image.src}
         alt={study.image.alt}
+        width={size?.width}
+        height={size?.height}
         loading="lazy"
         decoding="async"
         className={`h-full w-full object-cover ${className}`}
@@ -89,10 +93,10 @@ function StoryCard({ study, index }) {
 export default function StoriesFromTheField() {
   const reduceMotion = useReducedMotion();
   const featured = getFeaturedCaseStudy();
-  const supporting = getSupportingCaseStudies();
+  const supporting = getHomepageSupportingCaseStudies();
 
   return (
-    <section aria-labelledby="stories-from-the-field-title" className="section bg-[#f7f4ef]">
+    <section id="stories-from-the-field" aria-labelledby="stories-from-the-field-title" className="section scroll-mt-24 bg-[#f7f4ef]">
       <div className="site-container">
         <SectionTitle
           align="center"
@@ -144,16 +148,19 @@ export default function StoriesFromTheField() {
 
         <div className="mt-12">
           <p className="text-center text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Other stories</p>
-          <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-6 grid gap-5 sm:grid-cols-2">
             {supporting.map((study, index) => (
               <StoryCard key={study.id} study={study} index={index} />
             ))}
           </div>
         </div>
 
-        <p className="mt-8 text-center text-xs text-slate-500">
-          {caseStudies.length} field stories drawn from official Project Bharti case-study documents.
-        </p>
+        <div className="mt-10 flex justify-center">
+          <Link className="link-pill" to="/stories">
+            Explore all stories
+            <ArrowRight size={16} aria-hidden="true" />
+          </Link>
+        </div>
       </div>
     </section>
   );

@@ -22,33 +22,16 @@
     <!-- Early media buffer via a real <video> element (Chromium ignores as="video" link preload). -->
     <video
       id="project-bharti-intro-preload"
+      class="intro-preload-video"
       muted
       playsinline
       preload="auto"
+      poster="/videos/project-bharti-opening-poster.jpg"
       aria-hidden="true"
       tabindex="-1"
       style="position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;left:-9999px;top:0"
     ></video>
-    <script>
-      (function () {
-        try {
-          if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-          if (navigator.connection && navigator.connection.saveData) return;
-          if (window.sessionStorage.getItem('project-bharti-opening-intro-played') === 'true') return;
-
-          var poster = new Image();
-          poster.fetchPriority = 'high';
-          poster.src = '/videos/project-bharti-opening-poster.jpg';
-
-          var video = document.getElementById('project-bharti-intro-preload');
-          if (!video) return;
-          video.src = '/videos/project-bharti-opening.mp4';
-          video.load();
-        } catch (error) {
-          // Intro preload must never block page startup.
-        }
-      })();
-    </script>
+    <script src="/intro-preload.js"></script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

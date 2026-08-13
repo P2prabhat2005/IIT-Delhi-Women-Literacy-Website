@@ -10,6 +10,7 @@ import manishaDetail from '../assets/images/case-studies/manisha-detail.jpg';
 import poojaCover from '../assets/images/case-studies/pooja-cover.jpg';
 import poojaDetail from '../assets/images/case-studies/pooja-detail.jpg';
 import sumanCover from '../assets/images/case-studies/suman-cover.jpg';
+import { additionalCaseStudies } from './fieldStories.js';
 
 export const storiesFromTheFieldSection = {
   eyebrow: 'Stories from the Field',
@@ -63,7 +64,8 @@ export const caseStudies = [
       'Handmade herbal products',
       'IIT Delhi training and market exposure',
     ],
-    featured: true,
+    featured: false,
+    homepageSupporting: true,
     image: {
       src: lalitaCover,
       alt: 'Lalita Devi seated for a portrait during Project Bharti documentation',
@@ -145,7 +147,7 @@ export const caseStudies = [
       'Women-led enterprise',
       'IIT Delhi Entrepreneurship Development Programme',
     ],
-    featured: false,
+    featured: true,
     image: {
       src: manishaCover,
       alt: 'Manisha holding a handcrafted pine-needle basket from her women-led enterprise',
@@ -475,6 +477,7 @@ export const caseStudies = [
     pdfUrl: '/case-studies/suman.pdf',
     pdfFileName: 'suman-case-study.pdf',
   },
+  ...additionalCaseStudies,
 ];
 
 export function getCaseStudyBySlug(slug) {
@@ -488,4 +491,11 @@ export function getFeaturedCaseStudy() {
 export function getSupportingCaseStudies() {
   const featured = getFeaturedCaseStudy();
   return caseStudies.filter((study) => study.id !== featured.id);
+}
+
+export function getHomepageSupportingCaseStudies() {
+  const featured = getFeaturedCaseStudy();
+  const marked = caseStudies.filter((study) => study.homepageSupporting && study.id !== featured.id);
+  if (marked.length >= 2) return marked.slice(0, 2);
+  return getSupportingCaseStudies().slice(0, 2);
 }

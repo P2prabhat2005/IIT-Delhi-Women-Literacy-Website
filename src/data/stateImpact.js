@@ -2,13 +2,9 @@
  * Single source of truth for Project Bharti geographic coverage.
  * Hierarchy: State → District → Place → womenTrained
  * District, state, and project totals are derived from place-level counts.
+ *
+ * Gallery/media URLs live in ./stateMedia.js so Home statistics stay lightweight.
  */
-
-import { delhiMedia } from './stateMedia/delhi.js';
-import { haryanaMedia } from './stateMedia/haryana.js';
-import { himachalPradeshMedia } from './stateMedia/himachalPradesh.js';
-import { uttarakhandMedia } from './stateMedia/uttarakhand.js';
-import { uttarPradeshMedia } from './stateMedia/uttarPradesh.js';
 
 const toId = (value) =>
   String(value || '')
@@ -16,14 +12,6 @@ const toId = (value) =>
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
-
-const buildPlaceholderMediaGroup = (key, label, countLabel) => ({
-  key,
-  label,
-  countLabel,
-  items: [],
-  placeholder: 'Official content will be added as Project Bharti documentation is published.',
-});
 
 const createPlace = ({ id, name, womenTrained }) => {
   const placeName = String(name || '').trim();
@@ -60,20 +48,11 @@ const createStateProfile = ({
   focusAreas,
   implementationSnapshot,
   districts,
-  media = {},
 }) => {
   const normalizedDistricts = districts.map((district) => createDistrict(district));
   const totalDistricts = normalizedDistricts.length;
   const totalPlaces = normalizedDistricts.reduce((total, district) => total + district.placeCount, 0);
   const totalWomenTrained = normalizedDistricts.reduce((total, district) => total + district.womenTrained, 0);
-
-  const defaultMediaGroups = [
-    buildPlaceholderMediaGroup('gallery', 'Gallery', 'Gallery'),
-    buildPlaceholderMediaGroup('activities', 'Activities', 'Activities'),
-    buildPlaceholderMediaGroup('videos', 'Videos', 'Videos'),
-    buildPlaceholderMediaGroup('research', 'Research Documents', 'Research'),
-    buildPlaceholderMediaGroup('news', 'News', 'News'),
-  ];
 
   return {
     id,
@@ -125,10 +104,6 @@ const createStateProfile = ({
       },
     ],
     implementationSnapshot,
-    mediaGroups: defaultMediaGroups.map((group) => ({
-      ...group,
-      items: media[group.key] || group.items,
-    })),
     cta: {
       title: 'Contribute to Project Bharti’s next phase',
       description: 'Collaborate on field documentation, training delivery, and research outputs as this state profile expands.',
@@ -173,7 +148,6 @@ export const projectBhartiStates = [
       partners: ['IIT Delhi', 'Community field partners'],
       focus: ['Field engagement', 'Capacity building'],
     },
-    media: delhiMedia,
   }),
   createStateProfile({
     id: 'haryana',
@@ -205,7 +179,6 @@ export const projectBhartiStates = [
       partners: ['IIT Delhi', 'Regional facilitators'],
       focus: ['Workshop planning', 'Field partnerships'],
     },
-    media: haryanaMedia,
   }),
   createStateProfile({
     id: 'himachal-pradesh',
@@ -250,7 +223,6 @@ export const projectBhartiStates = [
       partners: ['IIT Delhi', 'Local implementation teams'],
       focus: ['Remote access', 'Local adaptation'],
     },
-    media: himachalPradeshMedia,
   }),
   createStateProfile({
     id: 'uttarakhand',
@@ -282,7 +254,6 @@ export const projectBhartiStates = [
       partners: ['IIT Delhi', 'Community facilitators'],
       focus: ['Community learning', 'Digital access'],
     },
-    media: uttarakhandMedia,
   }),
   createStateProfile({
     id: 'uttar-pradesh',
@@ -314,7 +285,6 @@ export const projectBhartiStates = [
       partners: ['IIT Delhi', 'Programme collaborators'],
       focus: ['Market access', 'Field evidence'],
     },
-    media: uttarPradeshMedia,
   }),
 ];
 

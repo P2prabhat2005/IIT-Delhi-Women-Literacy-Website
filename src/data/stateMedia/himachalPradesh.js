@@ -5,11 +5,11 @@
  */
 
 import capacityBuildingSession from '../../assets/images/states/himachal-pradesh/capacity-building-session.png';
-import cmtcShimlaVisit from '../../assets/images/states/himachal-pradesh/cmtc-shimla-visit.png';
-import financialLiteracyWorkshop from '../../assets/images/states/himachal-pradesh/financial-literacy-workshop.png';
+import cmtcShimlaVisit from '../../assets/images/states/himachal-pradesh/cmtc-shimla-visit.webp';
+import financialLiteracyWorkshop from '../../assets/images/states/himachal-pradesh/financial-literacy-workshop.webp';
 import interactiveLearningClassroom from '../../assets/images/states/himachal-pradesh/interactive-learning-classroom.png';
-import moneyWiseOutreachCentre from '../../assets/images/states/himachal-pradesh/money-wise-outreach-centre.png';
-import participantAppreciation from '../../assets/images/states/himachal-pradesh/participant-appreciation.png';
+import moneyWiseOutreachCentre from '../../assets/images/states/himachal-pradesh/money-wise-outreach-centre.webp';
+import participantAppreciation from '../../assets/images/states/himachal-pradesh/participant-appreciation.webp';
 
 export const himachalPradeshMedia = {
   gallery: [

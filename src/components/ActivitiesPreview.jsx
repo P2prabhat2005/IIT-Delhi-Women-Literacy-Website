@@ -1,4 +1,6 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import SectionTitle from './SectionTitle.jsx';
 import { activities } from '../data/homepage.js';
 import { fadeUpTransition, staggerDelay, viewportOnce } from '../utils/motion.js';
@@ -7,15 +9,21 @@ export default function ActivitiesPreview() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <section aria-labelledby="activities-preview-title" className="section bg-slate-950 text-white">
+    <section id="activities" aria-labelledby="activities-preview-title" className="section scroll-mt-24 bg-slate-950 text-white">
       <div className="site-container">
-        <SectionTitle
-          eyebrow="Activities"
-          id="activities-preview-title"
-          description="Programmes are structured for learning, practice, observation, and evidence generation."
-        >
-          Field activity designed with academic rigor.
-        </SectionTitle>
+        <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+          <SectionTitle
+            eyebrow="Activities"
+            id="activities-preview-title"
+            description="Programmes are structured for learning, practice, observation, and evidence generation."
+          >
+            Field activity designed with academic rigor.
+          </SectionTitle>
+          <Link className="link-pill" to="/activities">
+            Explore Activities
+            <ArrowRight size={16} aria-hidden="true" />
+          </Link>
+        </div>
         <div className="mt-12 grid gap-5 md:grid-cols-3">
           {activities.map(({ description, Icon, title }, index) => (
             <motion.article

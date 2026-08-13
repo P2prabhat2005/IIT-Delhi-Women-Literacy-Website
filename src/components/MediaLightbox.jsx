@@ -77,6 +77,8 @@ export default function MediaLightbox({ items = [], initialIndex = 0, isOpen, on
         <img
           key={current.id}
           src={current.src}
+          srcSet={current.srcSet}
+          sizes={current.sizes || '(min-width: 1024px) 72vw, 100vw'}
           alt={current.alt}
           className="max-h-full max-w-full object-contain"
         />

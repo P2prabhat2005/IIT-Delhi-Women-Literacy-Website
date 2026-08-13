@@ -14,10 +14,18 @@ const heroBackgroundAssets = import.meta.glob('../assets/images/hero/*.{png,jpg,
   query: '?url',
 });
 
+const formatRank = (path) => {
+  const extension = path.split('.').pop()?.toLowerCase();
+  if (extension === 'avif') return 0;
+  if (extension === 'webp') return 1;
+  if (extension === 'jpg' || extension === 'jpeg') return 2;
+  return 3;
+};
+
 function findAsset(assets, keywords) {
   return Object.entries(assets)
-    .sort(([left], [right]) => left.localeCompare(right))
-    .find(([path]) => keywords.every((keyword) => path.toLowerCase().includes(keyword)))?.[1];
+    .filter(([path]) => keywords.every((keyword) => path.toLowerCase().includes(keyword)))
+    .sort(([left], [right]) => formatRank(left) - formatRank(right) || left.localeCompare(right))[0]?.[1];
 }
 
 function firstAsset(assets) {
@@ -31,12 +39,12 @@ const heroBackgroundImage =
   (heroArtworkImage ? null : firstAsset(heroBackgroundAssets));
 const heroSectionBackgroundImage = heroBackgroundImage || heroArtworkImage;
 
-const reachSummary = `${heroContent.stats[0].value} STATES • ${heroContent.stats[1].value} DISTRICTS`;
+const reachSummary = `${heroContent.stats[0].value} STATES · ${heroContent.stats[1].value} DISTRICTS`;
 
 function ProjectReachFallback() {
   return (
     <div
-      className="mx-auto min-h-[340px] w-full max-w-[22rem] animate-pulse rounded-full bg-slate-200/25 sm:min-h-[380px] sm:max-w-[26rem] lg:min-h-[440px] lg:max-w-none"
+      className="mx-auto min-h-[300px] w-full max-w-[22rem] animate-pulse rounded-full bg-slate-200/25 sm:min-h-[340px] sm:max-w-[26rem] lg:min-h-[400px] lg:max-w-none"
       aria-hidden="true"
     />
   );
@@ -55,7 +63,7 @@ export default function Hero() {
   const backgroundY = useTransform(scrollYProgress, [0, 1], reduceMotion ? ['0%', '0%'] : ['0%', '8%']);
 
   return (
-    <div className="bg-white px-4 pb-8 pt-4 sm:px-6 sm:pb-10 sm:pt-6 lg:px-10 lg:pb-12 lg:pt-10">
+    <div className="bg-white px-4 pb-6 pt-4 sm:px-6 sm:pb-8 sm:pt-6 lg:px-10 lg:pb-10 lg:pt-10">
       <section
         ref={sectionRef}
         aria-labelledby="hero-title"
@@ -76,8 +84,8 @@ export default function Hero() {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(153,27,27,0.10),transparent_32%),radial-gradient(circle_at_82%_16%,rgba(15,118,110,0.06),transparent_30%),linear-gradient(135deg,rgba(255,250,247,0.72)_0%,rgba(255,255,255,0.58)_48%,rgba(246,248,251,0.68)_100%)]" />
         </motion.div>
 
-        <div className="site-container relative flex min-h-[calc(100vh-88px)] flex-col justify-center gap-14 pb-16 pt-24 md:gap-16 md:pb-20 md:pt-28 lg:gap-[4.5rem] lg:pb-24 lg:pt-32">
-          <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)] lg:gap-16 xl:gap-20">
+        <div className="site-container relative flex flex-col justify-center gap-10 pb-12 pt-24 md:gap-12 md:pb-16 md:pt-28 lg:gap-14 lg:pb-16 lg:pt-28">
+          <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)] lg:gap-16 xl:gap-20">
             <motion.div
               initial={reduceMotion ? false : { opacity: 0, y: 14 }}
               animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
@@ -162,10 +170,11 @@ export default function Hero() {
           </div>
 
           <motion.div
+            id="impact-snapshot"
             initial={reduceMotion ? false : { opacity: 0 }}
             animate={reduceMotion ? undefined : { opacity: 1 }}
             transition={reduceMotion ? { duration: 0 } : { duration: 0.45, delay: 0.15 }}
-            className="border-t border-slate-300/80 pt-8 md:pt-10"
+            className="scroll-mt-24 border-t border-slate-300/80 pt-8 md:pt-10"
           >
             <dl
               className="grid grid-cols-1 gap-8 sm:grid-cols-3 sm:gap-0"

@@ -4,14 +4,14 @@
  * { gallery: [...], activities: [...], videos?: [...], research?: [...], news?: [...] }
  */
 
-import capacityBuildingSession from '../../assets/images/states/uttarakhand/capacity-building-session.png';
-import communityMobilization from '../../assets/images/states/uttarakhand/community-mobilization.png';
+import capacityBuildingSession from '../../assets/images/states/uttarakhand/capacity-building-session.webp';
+import communityMobilization from '../../assets/images/states/uttarakhand/community-mobilization.webp';
 import financialLiteracyWorkshop from '../../assets/images/states/uttarakhand/financial-literacy-workshop.png';
-import interactiveDiscussion from '../../assets/images/states/uttarakhand/interactive-discussion.png';
-import orientationMaterials from '../../assets/images/states/uttarakhand/orientation-materials.png';
+import interactiveDiscussion from '../../assets/images/states/uttarakhand/interactive-discussion.webp';
+import orientationMaterials from '../../assets/images/states/uttarakhand/orientation-materials.webp';
 import participantEngagement from '../../assets/images/states/uttarakhand/participant-engagement.png';
-import programmeFacilitation from '../../assets/images/states/uttarakhand/programme-facilitation.png';
-import programmeInauguration from '../../assets/images/states/uttarakhand/programme-inauguration.png';
+import programmeFacilitation from '../../assets/images/states/uttarakhand/programme-facilitation.webp';
+import programmeInauguration from '../../assets/images/states/uttarakhand/programme-inauguration.webp';
 
 export const uttarakhandMedia = {
   gallery: [

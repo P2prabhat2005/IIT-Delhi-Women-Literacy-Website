@@ -13,7 +13,7 @@
     "lucide-react": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "react-router-dom": "latest",
+    "react-router-dom": "^7.18.2",
     "react-simple-maps": "^3.0.0"
   },
   "devDependencies": {
@@ -23,6 +23,8 @@
     "vite": "latest"
   },
   "overrides": {
-    "d3-color": "^3.1.0"
+    "d3-color": "^3.1.0",
+    "nanoid": "^3.3.18",
+    "postcss": "^8.5.23"
   }
 }

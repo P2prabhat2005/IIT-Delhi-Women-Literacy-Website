@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { footerLinks } from '../data/homepage.js';
+import { footerLinks } from '../data/footer.js';
 import { getCopyrightLine, siteSettings } from '../data/settings.js';
 import FadeIn from './FadeIn.jsx';
 

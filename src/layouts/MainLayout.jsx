@@ -4,6 +4,7 @@ import Footer from '../components/Footer.jsx';
 import Navbar from '../components/Navbar.jsx';
 import PageTransition from '../components/PageTransition.jsx';
 import SessionIntroVideo from '../components/SessionIntroVideo.jsx';
+import { sanitizeHashTargetId } from '../utils/safeUrl.js';
 
 function getStickyHeaderOffset() {
   const header = document.querySelector('header.sticky, header');
@@ -37,7 +38,11 @@ export default function MainLayout() {
       return undefined;
     }
 
-    const targetId = decodeURIComponent(location.hash.replace(/^#/, ''));
+    const targetId = sanitizeHashTargetId(location.hash);
+    if (!targetId) {
+      scrollToPageTop();
+      return undefined;
+    }
     let frameId = 0;
     let attempts = 0;
     const maxAttempts = 60;

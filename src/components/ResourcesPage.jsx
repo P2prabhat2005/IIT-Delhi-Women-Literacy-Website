@@ -1,33 +1,44 @@
 import { useMemo, useState } from 'react';
-import { FileText, PlayCircle, Search, X } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { resourceCategoryOptions, resourceCollections, getStaticResourceLibrary } from '../data/resources.js';
-import AccessibleModal from './AccessibleModal.jsx';
 import ResourceCard from './ResourceCard.jsx';
 
-function ResourceSection({ collection, onOpenModal, onOpenVideo, resources }) {
-  const { Icon, accent, description, id, title } = collection;
+function ResourceSection({ collection, resources }) {
+  const { Icon, accent, description, id, layout, title } = collection;
+  const isDocumentList = layout === 'document-list';
 
   return (
-    <section id={id} className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/70 md:p-8">
-      <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+    <section
+      id={id}
+      className="scroll-mt-24 rounded-[1.75rem] border border-slate-200/90 bg-white p-5 shadow-sm shadow-slate-200/50 md:p-7"
+    >
+      <div className="flex flex-col gap-3 border-b border-slate-100 pb-5 md:flex-row md:items-end md:justify-between">
         <div>
-          <div className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-wide ${accent}`}>
-            <Icon size={15} aria-hidden="true" />
+          <div className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] ${accent}`}>
+            <Icon size={14} aria-hidden="true" />
             {title}
           </div>
-          <h2 className="mt-4 text-2xl font-semibold text-slate-950">{title}</h2>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">{description}</p>
+          <h2 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950">{title}</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-600">{description}</p>
         </div>
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+          {resources.length} {resources.length === 1 ? 'item' : 'items'}
+        </p>
       </div>
-      <div className="mt-8 grid gap-4 lg:grid-cols-2">
+
+      <div
+        className={
+          isDocumentList
+            ? 'mt-5 grid gap-3'
+            : 'mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3'
+        }
+      >
         {resources.map((resource, index) => (
           <ResourceCard
             key={resource.id}
-            collection={collection}
+            layout={layout}
             index={index}
             resource={resource}
-            onOpenModal={onOpenModal}
-            onOpenVideo={onOpenVideo}
           />
         ))}
       </div>
@@ -38,8 +49,6 @@ function ResourceSection({ collection, onOpenModal, onOpenVideo, resources }) {
 export default function ResourcesPage() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchValue, setSearchValue] = useState('');
-  const [activeModal, setActiveModal] = useState(null);
-  const [activeVideo, setActiveVideo] = useState(null);
 
   const library = useMemo(() => {
     const resources = getStaticResourceLibrary();
@@ -56,28 +65,30 @@ export default function ResourcesPage() {
     return resourceCollections
       .map((collection) => ({
         ...collection,
-        resources: library[collection.id] || [],
+        resources: (library[collection.id] || []).filter((resource) => {
+          if (!normalizedQuery) return true;
+          const haystack = [
+            resource.title,
+            resource.subtitle,
+            resource.description,
+            resource.meta,
+            resource.category,
+            resource.categoryLabel,
+            resource.typeLabel,
+            resource.sourceLabel,
+            ...(resource.tags || []),
+          ]
+            .filter(Boolean)
+            .join(' ')
+            .toLowerCase();
+          return haystack.includes(normalizedQuery);
+        }),
       }))
       .filter((collection) => {
         const matchesCategory = activeCategory === 'all' || collection.id === activeCategory;
         if (!matchesCategory) return false;
-
         if (!normalizedQuery) return true;
-
-        const haystack = [
-          collection.title,
-          collection.description,
-          ...collection.resources.flatMap((resource) => [
-            resource.title,
-            resource.description,
-            resource.category,
-            ...resource.tags,
-          ]),
-        ]
-          .join(' ')
-          .toLowerCase();
-
-        return haystack.includes(normalizedQuery);
+        return collection.resources.length > 0;
       });
   }, [activeCategory, library, searchValue]);
 
@@ -87,58 +98,51 @@ export default function ResourcesPage() {
   );
 
   return (
-    <div className="space-y-8">
-      <section className="rounded-[2rem] border border-slate-200 bg-gradient-to-br from-slate-950 via-slate-900 to-red-950 p-8 text-white shadow-2xl shadow-slate-300/70 md:p-10">
-        <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
+    <div className="space-y-7">
+      <section className="overflow-hidden rounded-[1.75rem] border border-slate-200/80 bg-gradient-to-br from-slate-950 via-slate-900 to-red-950 p-7 text-white shadow-xl shadow-slate-300/40 md:p-9">
+        <div className="grid gap-7 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
           <div>
-            <p className="text-sm font-bold uppercase tracking-[0.18em] text-red-200">Resources</p>
-            <h1 className="mt-4 text-4xl font-semibold leading-tight md:text-5xl">
-              Training materials, research outputs, and field references.
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-red-200">Resources</p>
+            <h1 className="mt-3 max-w-3xl text-3xl font-semibold leading-tight tracking-tight md:text-5xl">
+              Field case studies and a practical resource library.
             </h1>
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-300">
-              Downloadable guides, instructional videos, scheme references, and training content aligned with Project Bharti’s financial and digital literacy mandate.
+            <p className="mt-4 max-w-2xl text-base leading-8 text-slate-300 md:text-lg">
+              Case-study PDFs plus concise guides, checklists, and verified government scheme explainers for women entrepreneurs and facilitators.
             </p>
           </div>
-          <div className="rounded-[1.6rem] border border-white/10 bg-white/10 p-5 backdrop-blur">
-            <div className="inline-flex w-fit items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-red-100">
-              Materials are published as Project Bharti releases them.
+          <div className="rounded-[1.4rem] border border-white/10 bg-white/10 p-5 backdrop-blur">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-red-100">
+              Search guides, schemes, and case studies
+            </p>
+            <label className="sr-only" htmlFor="resource-search">
+              Search resources
+            </label>
+            <div className="mt-4 flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-3">
+              <Search size={16} aria-hidden="true" />
+              <input
+                id="resource-search"
+                value={searchValue}
+                onChange={(event) => setSearchValue(event.target.value)}
+                placeholder="Search resources"
+                className="w-full bg-transparent text-sm text-white outline-none placeholder:text-slate-400"
+              />
             </div>
-            <div className="mt-4 flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15 text-white">
-                <Search size={20} aria-hidden="true" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-white">Browse resources</p>
-                <p className="text-sm text-slate-300">Filter by topic, category, or resource type.</p>
-              </div>
-            </div>
-            <div className="mt-6 flex flex-col gap-3">
-              <label className="sr-only" htmlFor="resource-search">
-                Search resources
-              </label>
-              <div className="flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-3">
-                <Search size={16} aria-hidden="true" />
-                <input
-                  id="resource-search"
-                  value={searchValue}
-                  onChange={(event) => setSearchValue(event.target.value)}
-                  placeholder="Search resources"
-                  className="w-full bg-transparent text-sm text-white outline-none placeholder:text-slate-400"
-                />
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {resourceCategoryOptions.map((option) => (
-                  <button
-                    key={option.value}
-                    type="button"
-                    onClick={() => setActiveCategory(option.value)}
-                    aria-pressed={activeCategory === option.value}
-                    className={`rounded-full px-3 py-2 text-sm font-semibold transition ${activeCategory === option.value ? 'bg-white text-red-900' : 'bg-white/10 text-slate-200 hover:bg-white/20'}`}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {resourceCategoryOptions.map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => setActiveCategory(option.value)}
+                  aria-pressed={activeCategory === option.value}
+                  className={`rounded-full px-3 py-2 text-sm font-semibold transition ${
+                    activeCategory === option.value
+                      ? 'bg-white text-red-900'
+                      : 'bg-white/10 text-slate-200 hover:bg-white/20'
+                  }`}
+                >
+                  {option.label}
+                </button>
+              ))}
             </div>
           </div>
         </div>
@@ -154,94 +158,14 @@ export default function ResourcesPage() {
               key={collection.id}
               collection={collection}
               resources={collection.resources}
-              onOpenModal={setActiveModal}
-              onOpenVideo={setActiveVideo}
             />
           ))
         ) : (
-          <div className="rounded-[2rem] border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-sm font-semibold text-slate-600">
+          <div className="rounded-[1.5rem] border border-dashed border-slate-300 bg-white p-8 text-center text-sm font-semibold text-slate-600">
             No resources matched your search. Try a broader keyword or adjust the filters.
           </div>
         )}
       </div>
-
-      <AccessibleModal
-        isOpen={Boolean(activeModal)}
-        onClose={() => setActiveModal(null)}
-        ariaLabel="Resource preview information"
-        overlayClassName="fixed inset-0 z-[80] flex items-center justify-center bg-slate-950/70 px-4 py-6"
-        className="w-full max-w-md rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-2xl"
-      >
-        {activeModal ? (
-          <>
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-red-50 text-red-900">
-                  {activeModal.kind === 'video' ? <PlayCircle size={18} aria-hidden="true" /> : <FileText size={18} aria-hidden="true" />}
-                </div>
-                <div>
-                  <p className="text-sm font-bold uppercase tracking-[0.16em] text-red-800">Coming Soon</p>
-                  <h3 className="mt-1 text-2xl font-semibold text-slate-950">{activeModal.title}</h3>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setActiveModal(null)}
-                data-autofocus
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition hover:bg-slate-100"
-                aria-label="Close preview information"
-              >
-                <X size={18} aria-hidden="true" />
-              </button>
-            </div>
-            <p className="mt-4 text-sm leading-7 text-slate-600">
-              This {activeModal.kind === 'video' ? 'video' : 'resource'} will be published by Project Bharti once the final content is ready.
-            </p>
-            <div className="mt-6 rounded-2xl border border-red-100 bg-red-50 p-4 text-sm font-semibold text-red-900">
-              Official resources will be published by Project Bharti as materials are released.
-            </div>
-            <button
-              type="button"
-              onClick={() => setActiveModal(null)}
-              className="mt-6 inline-flex items-center justify-center rounded-full bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
-            >
-              Close
-            </button>
-          </>
-        ) : null}
-      </AccessibleModal>
-
-      <AccessibleModal
-        isOpen={Boolean(activeVideo)}
-        onClose={() => setActiveVideo(null)}
-        ariaLabel="Video player"
-        overlayClassName="fixed inset-0 z-[80] flex items-center justify-center bg-slate-950/80 px-4 py-6"
-        className="w-full max-w-2xl rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-2xl"
-      >
-        {activeVideo ? (
-          <>
-            <div className="flex items-start justify-between gap-4">
-              <h3 className="text-xl font-semibold text-slate-950">{activeVideo.title}</h3>
-              <button
-                type="button"
-                onClick={() => setActiveVideo(null)}
-                data-autofocus
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition hover:bg-slate-100"
-                aria-label="Close video player"
-              >
-                <X size={16} aria-hidden="true" />
-              </button>
-            </div>
-            <video
-              key={activeVideo.video?.url}
-              src={activeVideo.video?.url}
-              controls
-              autoPlay
-              className="mt-4 w-full rounded-2xl bg-slate-950"
-            />
-          </>
-        ) : null}
-      </AccessibleModal>
     </div>
   );
 }
