@@ -1,6 +1,10 @@
 import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowUpRight, ExternalLink, FileText } from 'lucide-react';
+import {
+  getCaseStudyImageSize,
+  getCaseStudyThumbnailObjectPosition,
+} from '../data/caseStudyImageSizes.js';
 import { fadeUpTransition, staggerDelay, viewportOnce } from '../utils/motion.js';
 import { isSafeNavigationUrl, openSafeUrl } from '../utils/safeUrl.js';
 
@@ -23,6 +27,10 @@ export function CaseStudyResourceCard({ index = 0, resource }) {
   const reduceMotion = useReducedMotion();
   const hasDocument = isSafeNavigationUrl(resource.document?.url);
   const hasThumbnail = Boolean(resource.thumbnail?.url);
+  const thumbnailSize = hasThumbnail ? getCaseStudyImageSize(resource.thumbnail.url) : null;
+  const thumbnailObjectPosition = hasThumbnail
+    ? getCaseStudyThumbnailObjectPosition(resource.thumbnail.url)
+    : undefined;
 
   return (
     <motion.article
@@ -37,9 +45,12 @@ export function CaseStudyResourceCard({ index = 0, resource }) {
           <img
             src={resource.thumbnail.url}
             alt={resource.thumbnail.alt || ''}
+            width={thumbnailSize?.width}
+            height={thumbnailSize?.height}
             loading="lazy"
             decoding="async"
             className="h-full w-full object-cover transition duration-500 motion-safe:group-hover:scale-[1.03]"
+            style={{ objectPosition: thumbnailObjectPosition }}
           />
         ) : (
           <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-gradient-to-br from-slate-50 via-white to-red-50 px-6 text-center">
