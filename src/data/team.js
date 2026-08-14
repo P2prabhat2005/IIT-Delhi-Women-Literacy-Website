@@ -102,7 +102,7 @@ const teamCategories = [
       {
         id: 'shashank-kumar',
         fullName: 'Shashank Kumar',
-        designation: 'Research Associate',
+        designation: 'Project Employee',
         photo: { url: shashankKumarPhoto },
         isActive: true,
         displayOrder: 4,
@@ -111,7 +111,7 @@ const teamCategories = [
       {
         id: 'pranjali-soni',
         fullName: 'Pranjali Soni',
-        designation: 'Research Associate',
+        designation: 'Project Employee',
         photo: { url: pranjaliSoniPhoto },
         isActive: true,
         displayOrder: 5,
@@ -120,7 +120,7 @@ const teamCategories = [
       {
         id: 'harshi-gupta',
         fullName: 'Harshi Gupta',
-        designation: 'Research Associate',
+        designation: 'Project Employee',
         photo: { url: harshiGuptaPhoto },
         isActive: true,
         displayOrder: 6,
@@ -129,7 +129,7 @@ const teamCategories = [
       {
         id: 'shalini-shukla',
         fullName: 'Shalini Shukla',
-        designation: 'Research Associate',
+        designation: 'Project Employee',
         photo: { url: akritiChandraPhoto },
         isActive: true,
         displayOrder: 7,

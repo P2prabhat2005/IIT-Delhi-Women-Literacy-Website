@@ -23,6 +23,7 @@ a {
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
 }
 
 :where(a, button, input, textarea, select, [tabindex]):focus-visible {
@@ -245,26 +246,6 @@ main {
 
   .section-heading {
     font-size: clamp(1.9rem, 10vw, 2.75rem);
-  }
-}
-
-.status-badge-pulse {
-  animation: status-badge-pulse 2.4s ease-in-out infinite;
-}
-
-@keyframes status-badge-pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.55;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .status-badge-pulse {
-    animation: none;
   }
 }
 

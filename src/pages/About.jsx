@@ -33,7 +33,7 @@ export default function About() {
             className="mx-auto mt-8 max-w-4xl rounded-[1.75rem] border border-slate-200 bg-white p-6 text-left shadow-xl shadow-slate-200/60 md:mt-10 md:p-8"
           >
             <h3 className="text-xl font-semibold text-slate-950 md:text-2xl">{aboutIntro.whatIs.title}</h3>
-            <div className="mt-4 space-y-4 text-base leading-7 text-slate-600 md:leading-8">
+            <div className="mt-4 space-y-4 text-base leading-7 text-slate-600 md:text-justify md:leading-8">
               {aboutIntro.whatIs.body.map((paragraph) => (
                 <p key={paragraph}>{paragraph}</p>
               ))}

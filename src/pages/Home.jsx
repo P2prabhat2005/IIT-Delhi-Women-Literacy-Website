@@ -3,7 +3,6 @@ import ActivitiesPreview from '../components/ActivitiesPreview.jsx';
 import ContactCTA from '../components/ContactCTA.jsx';
 import Hero from '../components/Hero.jsx';
 import Partners from '../components/Partners.jsx';
-import ProjectReach from '../components/ProjectReach.jsx';
 import StoriesFromTheField from '../components/StoriesFromTheField.jsx';
 import VoicesFromTheField from '../components/VoicesFromTheField.jsx';
 
@@ -12,7 +11,6 @@ export default function Home() {
     <>
       <Hero />
       <AboutPreview />
-      <ProjectReach />
       <ActivitiesPreview />
       <StoriesFromTheField />
       <VoicesFromTheField />

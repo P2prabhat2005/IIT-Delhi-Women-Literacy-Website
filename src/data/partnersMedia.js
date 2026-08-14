@@ -6,27 +6,24 @@
  * size: 'feature' | 'wide' | 'lg' | 'md' | 'sm'
  */
 
-import artisanMarketVisit from '../assets/images/partners/gallery/artisan-market-visit.jpg';
 import campusProgrammeGathering from '../assets/images/partners/gallery/campus-programme-gathering.jpg';
 import collaborationSigning from '../assets/images/partners/gallery/collaboration-signing.jpg';
+import communityHandbookGroup from '../assets/images/partners/gallery/community-handbook-group.png';
 import communityMarketShowcase from '../assets/images/partners/gallery/community-market-showcase.jpg';
 import communityProductShowcase from '../assets/images/partners/gallery/community-product-showcase.webp';
 import communityProductShowcaseSm from '../assets/images/partners/gallery/community-product-showcase-800.webp';
 import communityTrainingCentreGroup from '../assets/images/partners/gallery/community-training-centre-group.jpg';
-import communityOutletVisit from '../assets/images/partners/gallery/community-outlet-visit.jpg';
 import enterpriseStallVisit from '../assets/images/partners/gallery/enterprise-stall-visit.jpg';
+import fieldTrainingWorkshop from '../assets/images/partners/gallery/field-training-workshop.png';
 import fieldVisitTeam from '../assets/images/partners/gallery/field-visit-team.webp';
-import handbookLaunchCeremony from '../assets/images/partners/gallery/handbook-launch-ceremony.png';
+import researchCoordinationMeeting from '../assets/images/partners/gallery/research-coordination-meeting.png';
 import officialInteraction from '../assets/images/partners/gallery/official-interaction.jpg';
 import participantRecognition from '../assets/images/partners/gallery/participant-recognition.jpg';
 import programmeAddress from '../assets/images/partners/gallery/programme-address.jpg';
 import programmeRecognition from '../assets/images/partners/gallery/programme-recognition.jpg';
 import programmeSessionMoment from '../assets/images/partners/gallery/programme-session-moment.jpg';
 import programmeStageSession from '../assets/images/partners/gallery/programme-stage-session.jpg';
-import skillsWorkshop from '../assets/images/partners/gallery/skills-workshop.webp';
-import stakeholderMeeting from '../assets/images/partners/gallery/stakeholder-meeting.jpg';
 import amarUjalaDelhi from '../assets/images/partners/newspapers/amar-ujala-delhi.png';
-import arunachalTimesMou from '../assets/images/partners/newspapers/arunachal-times-mou.png';
 import etGovernmentEmpower from '../assets/images/partners/newspapers/et-government-empower.png';
 import narsanFinancialTraining from '../assets/images/partners/newspapers/narsan-financial-training.png';
 import nationPressLaunch from '../assets/images/partners/newspapers/nation-press-launch.png';
@@ -43,18 +40,18 @@ export const partnersMediaContent = {
         'Formal programme documentation reflecting IIT Delhi’s academic leadership and institutional collaboration with EXL.',
       items: [
         {
-          id: 'handbook-launch-ceremony',
-          src: handbookLaunchCeremony,
-          alt: 'Large group at the Project Bharti handbook launch ceremony in an auditorium with IIT Delhi and EXL teams',
-          caption: 'Handbook launch',
-          kind: 'photo',
-          size: 'feature',
-        },
-        {
           id: 'collaboration-signing',
           src: collaborationSigning,
           alt: 'Representatives signing documents during a formal project interaction',
           caption: 'Institutional collaboration',
+          kind: 'photo',
+          size: 'feature',
+        },
+        {
+          id: 'research-coordination-meeting',
+          src: researchCoordinationMeeting,
+          alt: 'Project team and participants in a round-table coordination meeting',
+          caption: 'Research coordination',
           kind: 'photo',
           size: 'md',
         },
@@ -67,28 +64,20 @@ export const partnersMediaContent = {
           size: 'md',
         },
         {
-          id: 'programme-address',
-          src: programmeAddress,
-          alt: 'A speaker addressing participants from a lectern during a Project Bharti programme',
-          caption: 'Programme address',
-          kind: 'photo',
-          size: 'sm',
-        },
-        {
-          id: 'stakeholder-meeting',
-          src: stakeholderMeeting,
-          alt: 'Stakeholders seated around a conference table during a project discussion',
-          caption: 'Stakeholder consultation',
-          kind: 'photo',
-          size: 'sm',
-        },
-        {
           id: 'campus-programme-gathering',
           src: campusProgrammeGathering,
           alt: 'Project participants and organisers gathered outside the Department of Management Studies building',
           caption: 'Campus programme',
           kind: 'photo',
-          size: 'sm',
+          size: 'md',
+        },
+        {
+          id: 'programme-address',
+          src: programmeAddress,
+          alt: 'A speaker addressing participants from a lectern during a Project Bharti programme',
+          caption: 'Programme address',
+          kind: 'photo',
+          size: 'md',
         },
       ],
     },
@@ -99,20 +88,12 @@ export const partnersMediaContent = {
         'Capacity-building sessions delivering financial literacy, digital literacy, and enterprise skills with community participants.',
       items: [
         {
-          id: 'skills-workshop',
-          src: skillsWorkshop,
-          alt: 'Women participating in a hands-on skills workshop during a Project Bharti capacity-building session',
-          caption: 'Skills workshop',
-          kind: 'photo',
-          size: 'feature',
-        },
-        {
           id: 'programme-session-moment',
           src: programmeSessionMoment,
           alt: 'A facilitator and participant during a Project Bharti session',
           caption: 'Training session',
           kind: 'photo',
-          size: 'md',
+          size: 'feature',
         },
         {
           id: 'official-interaction',
@@ -132,6 +113,14 @@ export const partnersMediaContent = {
           kind: 'photo',
           size: 'sm',
         },
+        {
+          id: 'field-training-workshop',
+          src: fieldTrainingWorkshop,
+          alt: 'Women participants seated at a conference table during a field training workshop',
+          caption: 'Field workshop',
+          kind: 'photo',
+          size: 'wide',
+        },
       ],
     },
     {
@@ -141,28 +130,12 @@ export const partnersMediaContent = {
         'Field visits and market engagements connecting Project Bharti with local enterprises, SHG networks, and community spaces.',
       items: [
         {
-          id: 'enterprise-stall-visit',
-          src: enterpriseStallVisit,
-          alt: 'Project representatives visiting a local enterprise stall',
-          caption: 'Enterprise visit',
+          id: 'community-handbook-group',
+          src: communityHandbookGroup,
+          alt: 'A large group of women participants holding project handbooks outdoors with mountain scenery in the background',
+          caption: 'Community engagement',
           kind: 'photo',
           size: 'feature',
-        },
-        {
-          id: 'community-outlet-visit',
-          src: communityOutletVisit,
-          alt: 'A project representative visiting a community sales outlet',
-          caption: 'Community outlet',
-          kind: 'photo',
-          size: 'md',
-        },
-        {
-          id: 'artisan-market-visit',
-          src: artisanMarketVisit,
-          alt: 'A project representative viewing handcrafted products at a market stall',
-          caption: 'Market engagement',
-          kind: 'photo',
-          size: 'md',
         },
         {
           id: 'field-visit-team',
@@ -181,12 +154,20 @@ export const partnersMediaContent = {
           size: 'sm',
         },
         {
+          id: 'enterprise-stall-visit',
+          src: enterpriseStallVisit,
+          alt: 'Project representatives visiting a local enterprise stall',
+          caption: 'Enterprise visit',
+          kind: 'photo',
+          size: 'md',
+        },
+        {
           id: 'community-training-centre-group',
           src: communityTrainingCentreGroup,
           alt: 'Project participants gathered outside a Community Managed Training Centre',
           caption: 'Training centre',
           kind: 'photo',
-          size: 'sm',
+          size: 'md',
         },
       ],
     },
@@ -210,14 +191,6 @@ export const partnersMediaContent = {
           src: etGovernmentEmpower,
           alt: 'ET Government article on IIT Delhi and EXL empowering 500 micro-level women entrepreneurs through action research',
           caption: 'ET Government',
-          kind: 'press',
-          size: 'md',
-        },
-        {
-          id: 'arunachal-times-mou',
-          src: arunachalTimesMou,
-          alt: 'The Arunachal Times article on IIT Delhi and ArSRLM MoU to empower women entrepreneurs',
-          caption: 'The Arunachal Times',
           kind: 'press',
           size: 'md',
         },

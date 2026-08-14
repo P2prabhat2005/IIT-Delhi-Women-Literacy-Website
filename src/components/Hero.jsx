@@ -39,14 +39,16 @@ const heroBackgroundImage =
   (heroArtworkImage ? null : firstAsset(heroBackgroundAssets));
 const heroSectionBackgroundImage = heroBackgroundImage || heroArtworkImage;
 
-const reachSummary = `${heroContent.stats[0].value} STATES · ${heroContent.stats[1].value} DISTRICTS`;
-
 function ProjectReachFallback() {
   return (
     <div
-      className="mx-auto min-h-[300px] w-full max-w-[22rem] animate-pulse rounded-full bg-slate-200/25 sm:min-h-[340px] sm:max-w-[26rem] lg:min-h-[400px] lg:max-w-none"
+      className="flex min-h-[420px] w-full animate-pulse flex-col lg:min-h-[480px]"
       aria-hidden="true"
-    />
+    >
+      <div className="min-h-[300px] flex-[0_0_72%] rounded-[28%] bg-slate-200/12 lg:min-h-[340px]" />
+      <div className="mt-4 h-3 w-3/4 rounded-full bg-slate-200/15" />
+      <div className="mt-3 h-2.5 w-1/2 rounded-full bg-slate-200/10" />
+    </div>
   );
 }
 
@@ -65,9 +67,10 @@ export default function Hero() {
   return (
     <div className="bg-white px-4 pb-6 pt-4 sm:px-6 sm:pb-8 sm:pt-6 lg:px-10 lg:pb-10 lg:pt-10">
       <section
+        id="hero"
         ref={sectionRef}
         aria-labelledby="hero-title"
-        className="relative isolate mx-auto max-w-[1440px] overflow-hidden rounded-[1.75rem] border border-slate-200/80 bg-[#fbfaf8] md:rounded-[2rem]"
+        className="relative isolate mx-auto max-w-[1440px] scroll-mt-28 overflow-hidden rounded-[1.75rem] border border-slate-200/80 bg-[#fbfaf8] md:rounded-[2rem]"
       >
         <motion.div className="absolute inset-0 -z-20" style={{ y: backgroundY }} aria-hidden="true">
           {heroSectionBackgroundImage && !deferHeavyVisuals ? (
@@ -84,8 +87,8 @@ export default function Hero() {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(153,27,27,0.10),transparent_32%),radial-gradient(circle_at_82%_16%,rgba(15,118,110,0.06),transparent_30%),linear-gradient(135deg,rgba(255,250,247,0.72)_0%,rgba(255,255,255,0.58)_48%,rgba(246,248,251,0.68)_100%)]" />
         </motion.div>
 
-        <div className="site-container relative flex flex-col justify-center gap-10 pb-12 pt-24 md:gap-12 md:pb-16 md:pt-28 lg:gap-14 lg:pb-16 lg:pt-28">
-          <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)] lg:gap-16 xl:gap-20">
+        <div className="site-container relative flex flex-col justify-center gap-10 pb-12 pt-20 md:gap-12 md:pb-16 md:pt-24 lg:gap-14 lg:pb-16 lg:pt-24">
+          <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:items-start lg:gap-14 xl:gap-16">
             <motion.div
               initial={reduceMotion ? false : { opacity: 0, y: 14 }}
               animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
@@ -98,7 +101,7 @@ export default function Hero() {
 
               <h1
                 id="hero-title"
-                className="mt-5 max-w-xl text-[2.75rem] font-semibold leading-[1.05] tracking-[-0.02em] text-slate-950 md:mt-6 md:text-6xl lg:text-[4.25rem]"
+                className="scroll-mt-28 mt-5 max-w-xl text-[2.75rem] font-semibold leading-[1.05] tracking-[-0.02em] text-slate-950 md:mt-6 md:text-6xl lg:text-[4.25rem]"
               >
                 {heroContent.title}
               </h1>
@@ -134,38 +137,16 @@ export default function Hero() {
               initial={reduceMotion ? false : { opacity: 0, y: 12 }}
               animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
               transition={reduceMotion ? { duration: 0 } : fadeUpTransition(0.08, 0.5)}
-              className="mx-auto w-full min-w-0 max-w-lg lg:mx-0 lg:max-w-none"
+              className="mx-auto flex w-full min-w-0 max-w-md flex-col self-start lg:mx-0 lg:ml-auto lg:min-h-[min(52vh,500px)] lg:max-w-[34rem] lg:pt-0"
               aria-label="Project Bharti geographic reach"
             >
-              <div className="text-center lg:text-left">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-red-900/90 md:text-xs">
-                  Project Reach
-                </p>
-                <p className="mt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500 md:text-[11px]">
-                  {reachSummary}
-                </p>
-              </div>
-
-              <div className="relative mx-auto mt-5 max-w-[22rem] sm:mt-6 sm:max-w-[26rem] lg:mx-0 lg:max-w-none">
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute left-1/2 top-[46%] h-[78%] w-[78%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.55)_0%,rgba(251,250,248,0.22)_48%,transparent_72%)] blur-[2px]"
-                />
-                <div className="relative drop-shadow-[0_14px_28px_rgba(15,23,42,0.10)]">
-                  {deferHeavyVisuals ? (
-                    <ProjectReachFallback />
-                  ) : (
-                    <Suspense fallback={<ProjectReachFallback />}>
-                      <InteractiveIndiaMap variant="compact" />
-                    </Suspense>
-                  )}
-                </div>
-              </div>
-
-              <p className="mt-4 text-center text-[11px] font-medium leading-5 tracking-wide text-slate-600 lg:text-left">
-                Select a highlighted state
-                <span className="block sm:inline sm:before:content-['\00a0']">to explore field activity</span>
-              </p>
+              {deferHeavyVisuals ? (
+                <ProjectReachFallback />
+              ) : (
+                <Suspense fallback={<ProjectReachFallback />}>
+                  <InteractiveIndiaMap variant="compact" />
+                </Suspense>
+              )}
             </motion.aside>
           </div>
 
@@ -174,7 +155,7 @@ export default function Hero() {
             initial={reduceMotion ? false : { opacity: 0 }}
             animate={reduceMotion ? undefined : { opacity: 1 }}
             transition={reduceMotion ? { duration: 0 } : { duration: 0.45, delay: 0.15 }}
-            className="scroll-mt-24 border-t border-slate-300/80 pt-8 md:pt-10"
+            className="scroll-mt-28 border-t border-slate-300/80 pt-8 md:pt-10"
           >
             <dl
               className="grid grid-cols-1 gap-8 sm:grid-cols-3 sm:gap-0"

@@ -6,61 +6,63 @@ import SectionTitle from './SectionTitle.jsx';
 
 const testimonialVideos = [
   {
-    id: '1000131955',
-    src: '/videos/testimonials/1000131955.mp4',
-    poster: '/videos/testimonials/1000131955.jpg',
+    id: '31687',
+    src: '/videos/testimonials/31687.mp4',
+    poster: '/videos/testimonials/31687.jpg',
   },
   {
-    id: '1000131958',
-    src: '/videos/testimonials/1000131958.mp4',
-    poster: '/videos/testimonials/1000131958.jpg',
+    id: '31688',
+    src: '/videos/testimonials/31688.mp4',
+    poster: '/videos/testimonials/31688.jpg',
   },
   {
-    id: 'vn-20260812-120558',
-    src: '/videos/testimonials/VN20260812_120558.mp4',
-    poster: '/videos/testimonials/VN20260812_120558.jpg',
+    id: '31690',
+    src: '/videos/testimonials/31690.mp4',
+    poster: '/videos/testimonials/31690.jpg',
+  },
+  {
+    id: '31691',
+    src: '/videos/testimonials/31691.mp4',
+    poster: '/videos/testimonials/31691.jpg',
+  },
+  {
+    id: '31692',
+    src: '/videos/testimonials/31692.mp4',
+    poster: '/videos/testimonials/31692.jpg',
   },
 ];
 
-function VoiceCard({ featured = false, onPlay, video }) {
+function VoiceCard({ className = '', onPlay, video }) {
   return (
-    <article className="min-w-0">
+    <article className={`min-w-0 ${className}`.trim()}>
       <button
         type="button"
         onClick={() => onPlay(video)}
         className="group relative block aspect-video w-full overflow-hidden rounded-[1.15rem] border border-slate-200/90 bg-slate-100 text-left shadow-[0_6px_18px_rgba(15,23,42,0.05)] outline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-red-800"
-        aria-label={featured ? 'Play featured participant voice' : 'Play participant voice'}
+        aria-label={`Play testimonial video ${video.id}`}
       >
         <img
           src={video.poster}
           alt=""
-          width="720"
-          height="1280"
+          width="1280"
+          height="720"
           loading="lazy"
           decoding="async"
-          className="h-full w-full object-cover object-[center_28%] opacity-90 transition duration-300 motion-safe:group-hover:scale-[1.015]"
+          className="h-full w-full object-cover object-center opacity-90 transition duration-300 motion-safe:group-hover:scale-[1.015]"
         />
         <span className="absolute inset-0 bg-slate-950/15 transition group-hover:bg-slate-950/25" aria-hidden="true" />
         <span className="absolute inset-0 flex items-center justify-center" aria-hidden="true">
-          <span
-            className={`flex items-center justify-center rounded-full border border-white/70 bg-white/95 text-red-900 shadow-[0_6px_14px_rgba(15,23,42,0.14)] transition motion-safe:group-hover:scale-105 ${
-              featured ? 'h-16 w-16' : 'h-12 w-12'
-            }`}
-          >
-            <Play size={featured ? 24 : 18} className="ml-0.5" fill="currentColor" aria-hidden="true" />
+          <span className="flex h-14 w-14 items-center justify-center rounded-full border border-white/70 bg-white/95 text-red-900 shadow-[0_6px_14px_rgba(15,23,42,0.14)] transition motion-safe:group-hover:scale-105">
+            <Play size={22} className="ml-0.5" fill="currentColor" aria-hidden="true" />
           </span>
         </span>
       </button>
-      <p className={`mt-3 font-semibold uppercase tracking-[0.18em] text-red-900/80 ${featured ? 'text-[11px]' : 'text-[10px]'}`}>
-        Participant Voice
-      </p>
     </article>
   );
 }
 
 export default function VoicesFromTheField() {
   const [activeVideo, setActiveVideo] = useState(null);
-  const [featuredVideo, ...supportingVideos] = testimonialVideos;
 
   return (
     <section
@@ -90,12 +92,21 @@ export default function VoicesFromTheField() {
           <span className="h-px w-6 bg-red-800/50" />
         </div>
 
-        <div className="mt-10 grid grid-cols-1 gap-6 lg:mt-12 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)] lg:items-start lg:gap-7">
-          <VoiceCard featured video={featuredVideo} onPlay={setActiveVideo} />
-
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-1 lg:gap-7">
-            {supportingVideos.map((video) => (
+        <div className="mx-auto mt-10 max-w-5xl lg:mt-12" aria-label="Participant testimonial videos">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5 lg:grid-cols-3">
+            {testimonialVideos.slice(0, 3).map((video) => (
               <VoiceCard key={video.id} video={video} onPlay={setActiveVideo} />
+            ))}
+          </div>
+
+          <div className="mt-4 grid grid-cols-1 gap-4 md:mt-5 md:grid-cols-2 md:gap-5 lg:grid-cols-6">
+            {testimonialVideos.slice(3).map((video, index) => (
+              <VoiceCard
+                key={video.id}
+                video={video}
+                onPlay={setActiveVideo}
+                className={index === 0 ? 'lg:col-span-2 lg:col-start-2' : 'lg:col-span-2 lg:col-start-4'}
+              />
             ))}
           </div>
         </div>

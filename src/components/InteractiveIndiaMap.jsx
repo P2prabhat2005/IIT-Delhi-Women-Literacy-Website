@@ -14,6 +14,7 @@ import {
   X,
 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
 import indiaGeographyUrl from '../assets/maps/india-states.geojson?url';
@@ -64,25 +65,6 @@ const metricIconMap = {
   Handshake,
   FileText,
 };
-
-function isLiveStatus(status) {
-  const normalized = String(status || '').trim().toLowerCase();
-  return normalized === 'active' || normalized === 'ongoing';
-}
-
-function StatusBadge({ status, className = '' }) {
-  const live = isLiveStatus(status);
-
-  return (
-    <span
-      className={`${className}${live ? ' status-badge-pulse' : ''}`}
-      aria-label={live ? `${status} status` : undefined}
-    >
-      {live ? <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-current" aria-hidden="true" /> : null}
-      {status}
-    </span>
-  );
-}
 
 const brightenHexColor = (color, amount = 0.12) => {
   const hex = color.replace('#', '');
@@ -362,7 +344,7 @@ function StatePanel({ onClose, selectedState }) {
       const gallery = gallerySectionRef.current;
       const availableHeight = Math.max(0, dialog.clientHeight - headerHeight);
 
-      // Prefer the start of the presentable block (summary + stats + gallery).
+      // Prefer the start of the presentable block (summary + stats + districts + gallery).
       // On short mobile viewports, nudge so the open Gallery section clears the sticky header.
       let nextTop = presentable ? Math.max(0, presentable.offsetTop - headerHeight - 8) : 0;
 
@@ -490,15 +472,6 @@ function StatePanel({ onClose, selectedState }) {
               <div>
                 <p className="text-sm font-bold uppercase tracking-[0.16em] text-red-800">Project Bharti</p>
                 <h3 id="state-sidebar-title" className="mt-2 text-3xl font-semibold text-slate-950">{selectedState.stateName}</h3>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <StatusBadge
-                    status={selectedState.status}
-                    className="rounded-full border border-red-100 bg-red-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-red-900"
-                  />
-                  <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600">
-                    {selectedState.lastUpdated}
-                  </span>
-                </div>
               </div>
               <button
                 ref={closeButtonRef}
@@ -531,6 +504,74 @@ function StatePanel({ onClose, selectedState }) {
                     </div>
                   );
                 })}
+              </section>
+
+              <section className="rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm" aria-labelledby="state-districts-heading">
+                <div id="state-districts-heading" className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                  <MapPin size={14} aria-hidden="true" />
+                  Districts
+                </div>
+                <div className="mt-4 space-y-2">
+                  {selectedState.districts.map((district) => {
+                    const isExpanded = expandedDistrictId === district.id;
+
+                    return (
+                      <div key={district.id} className="overflow-hidden rounded-2xl bg-slate-50">
+                        <button
+                          type="button"
+                          className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition hover:bg-slate-100/80"
+                          onClick={() => setExpandedDistrictId(isExpanded ? '' : district.id)}
+                          aria-expanded={isExpanded}
+                          aria-controls={`district-places-${district.id}`}
+                        >
+                          <span className="min-w-0">
+                            <span className="block text-sm font-semibold text-slate-800">{district.name}</span>
+                            <span className="mt-0.5 block text-xs text-slate-500">
+                              {district.placeCount.toLocaleString('en-IN')}{' '}
+                              {district.placeCount === 1 ? 'place' : 'places'}
+                            </span>
+                          </span>
+                          <span className="flex shrink-0 items-center gap-2">
+                            <span className="text-sm font-semibold text-slate-600">
+                              {district.womenTrained.toLocaleString('en-IN')} women trained
+                            </span>
+                            <ChevronDown
+                              size={16}
+                              className={`shrink-0 text-slate-500 transition ${isExpanded ? 'rotate-180' : ''}`}
+                              aria-hidden="true"
+                            />
+                          </span>
+                        </button>
+
+                        {isExpanded ? (
+                          <div
+                            id={`district-places-${district.id}`}
+                            className="border-t border-slate-200/80 px-4 py-3"
+                            role="region"
+                            aria-label={`Places in ${district.name}`}
+                          >
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                              Places
+                            </p>
+                            <ul className="mt-2 space-y-2">
+                              {district.places.map((place) => (
+                                <li
+                                  key={place.id}
+                                  className="flex items-center justify-between gap-3 rounded-xl bg-white px-3 py-2.5"
+                                >
+                                  <span className="text-sm font-semibold text-slate-800">{place.name}</span>
+                                  <span className="text-sm font-semibold text-slate-600">
+                                    {place.womenTrained.toLocaleString('en-IN')} women trained
+                                  </span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ) : null}
+                      </div>
+                    );
+                  })}
+                </div>
               </section>
 
               <section
@@ -588,74 +629,6 @@ function StatePanel({ onClose, selectedState }) {
                   </li>
                 ))}
               </ul>
-            </section>
-
-            <section className="rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm">
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
-                <MapPin size={14} aria-hidden="true" />
-                District list
-              </div>
-              <div className="mt-4 space-y-2">
-                {selectedState.districts.map((district) => {
-                  const isExpanded = expandedDistrictId === district.id;
-
-                  return (
-                    <div key={district.id} className="overflow-hidden rounded-2xl bg-slate-50">
-                      <button
-                        type="button"
-                        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition hover:bg-slate-100/80"
-                        onClick={() => setExpandedDistrictId(isExpanded ? '' : district.id)}
-                        aria-expanded={isExpanded}
-                        aria-controls={`district-places-${district.id}`}
-                      >
-                        <span className="min-w-0">
-                          <span className="block text-sm font-semibold text-slate-800">{district.name}</span>
-                          <span className="mt-0.5 block text-xs text-slate-500">
-                            {district.placeCount.toLocaleString('en-IN')}{' '}
-                            {district.placeCount === 1 ? 'place' : 'places'}
-                          </span>
-                        </span>
-                        <span className="flex shrink-0 items-center gap-2">
-                          <span className="text-sm font-semibold text-slate-600">
-                            {district.womenTrained.toLocaleString('en-IN')} women trained
-                          </span>
-                          <ChevronDown
-                            size={16}
-                            className={`shrink-0 text-slate-500 transition ${isExpanded ? 'rotate-180' : ''}`}
-                            aria-hidden="true"
-                          />
-                        </span>
-                      </button>
-
-                      {isExpanded ? (
-                        <div
-                          id={`district-places-${district.id}`}
-                          className="border-t border-slate-200/80 px-4 py-3"
-                          role="region"
-                          aria-label={`Places in ${district.name}`}
-                        >
-                          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
-                            Places
-                          </p>
-                          <ul className="mt-2 space-y-2">
-                            {district.places.map((place) => (
-                              <li
-                                key={place.id}
-                                className="flex items-center justify-between gap-3 rounded-xl bg-white px-3 py-2.5"
-                              >
-                                <span className="text-sm font-semibold text-slate-800">{place.name}</span>
-                                <span className="text-sm font-semibold text-slate-600">
-                                  {place.womenTrained.toLocaleString('en-IN')} women trained
-                                </span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ) : null}
-                    </div>
-                  );
-                })}
-              </div>
             </section>
 
             <section className="rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm">
@@ -732,18 +705,22 @@ function IndiaMapCanvas({
   onStateSelect,
   shouldReduceMotion,
 }) {
-  const mapScale = 980;
+  const mapScale = compact ? 905 : 980;
+  const inactiveFill = compact ? '#d8e0e8' : '#e2e8f0';
+  const inactiveFillHover = compact ? '#ccd6e0' : '#cbd5e1';
+  const boundaryStroke = compact ? '#eef2f6' : '#ffffff';
+  const boundaryStrokeHighlighted = compact ? 'rgba(30,41,59,0.28)' : '#ffffff';
   const frameClassName = compact
-    ? 'relative min-h-[340px] overflow-visible bg-transparent p-0 sm:min-h-[380px] lg:min-h-[440px]'
+    ? 'relative w-full overflow-visible'
     : 'relative min-h-[360px] overflow-hidden rounded-[1.5rem] bg-[radial-gradient(circle_at_30%_20%,rgba(153,27,27,0.10),transparent_28%),linear-gradient(145deg,#ffffff,#f8fafc)] p-3 md:min-h-[520px] md:p-6';
   const mapClassName = compact
-    ? 'h-full min-h-[340px] w-full sm:min-h-[380px] lg:min-h-[440px]'
+    ? 'h-full w-full'
     : 'h-full min-h-[330px] w-full md:min-h-[500px]';
   const statusClassName = compact
-    ? 'flex min-h-[340px] items-center justify-center text-sm font-semibold text-slate-500 sm:min-h-[380px] lg:min-h-[440px]'
+    ? 'flex h-full min-h-[280px] items-center justify-center text-sm font-semibold text-slate-500 lg:min-h-[340px]'
     : 'flex min-h-[320px] items-center justify-center text-sm font-semibold text-slate-500';
   const errorClassName = compact
-    ? 'flex min-h-[340px] items-center justify-center border border-dashed border-red-200/70 bg-transparent px-4 text-center text-sm font-semibold text-red-900 sm:min-h-[380px] lg:min-h-[440px]'
+    ? 'flex h-full min-h-[280px] items-center justify-center bg-transparent px-4 text-center text-sm font-semibold text-red-900 lg:min-h-[340px]'
     : 'flex min-h-[320px] items-center justify-center rounded-2xl border border-dashed border-red-200 bg-red-50 px-6 text-center text-sm font-semibold text-red-900';
 
   return (
@@ -788,16 +765,26 @@ function IndiaMapCanvas({
                     }}
                     style={{
                       default: {
-                        fill: isHighlighted ? state.color : '#e2e8f0',
-                        stroke: '#ffffff',
-                        strokeWidth: isActive ? 1.15 : isHighlighted ? 0.8 : 0.45,
+                        fill: isHighlighted ? state.color : inactiveFill,
+                        stroke: isHighlighted ? boundaryStrokeHighlighted : boundaryStroke,
+                        strokeWidth: compact
+                          ? isActive
+                            ? 1.15
+                            : isHighlighted
+                              ? 0.9
+                              : 0.42
+                          : isActive
+                            ? 1.15
+                            : isHighlighted
+                              ? 0.8
+                              : 0.45,
                         outline: 'none',
                         transition: shouldReduceMotion ? 'none' : 'fill 180ms ease, transform 180ms ease',
                       },
                       hover: {
-                        fill: isHighlighted ? brightenHexColor(state.color) : '#cbd5e1',
-                        stroke: '#ffffff',
-                        strokeWidth: isHighlighted ? 1.1 : 0.45,
+                        fill: isHighlighted ? brightenHexColor(state.color) : inactiveFillHover,
+                        stroke: isHighlighted ? boundaryStrokeHighlighted : boundaryStroke,
+                        strokeWidth: compact ? (isHighlighted ? 1 : 0.42) : isHighlighted ? 1.1 : 0.45,
                         outline: 'none',
                         cursor: isHighlighted ? 'pointer' : 'default',
                       },
@@ -893,20 +880,75 @@ export default function InteractiveIndiaMap({ variant = 'full' } = {}) {
   if (isCompact) {
     return (
       <>
-        <div className="relative w-full bg-transparent">{mapCanvas}</div>
+        <div className="flex h-full w-full flex-col lg:min-h-[inherit]">
+          <div className="relative min-h-[280px] flex-[0_0_72%] w-full lg:min-h-[340px]">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-[2%_4%_6%_8%] rounded-[38%] bg-[rgba(255,251,247,0.58)]"
+            />
+            <div className="relative h-full w-full">{mapCanvas}</div>
+          </div>
+
+          <div className="mt-3 shrink-0">
+            <p className="sr-only">Project Bharti states on map</p>
+            <div
+              className="flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1 lg:justify-end"
+              aria-label="Project Bharti states on map"
+              role="list"
+            >
+              {projectBhartiStates.map((state, index) => (
+                <span key={state.id} role="listitem" className="inline-flex items-center">
+                  {index > 0 ? (
+                    <span aria-hidden="true" className="mx-1 hidden text-slate-300/80 sm:inline">
+                      /
+                    </span>
+                  ) : null}
+                  <span className="inline-flex items-center gap-1.5 py-0.5 text-[10px] leading-none text-slate-500">
+                    <span
+                      className="h-[2px] w-3 shrink-0 rounded-full"
+                      style={{ backgroundColor: state.color }}
+                      aria-hidden="true"
+                    />
+                    <span className="font-medium tracking-[0.01em]">{state.stateName}</span>
+                  </span>
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <p className="mt-2 shrink-0 text-center text-[11px] font-medium leading-5 tracking-wide text-slate-600 lg:text-right">
+            Select a highlighted state
+            <span className="block sm:inline sm:before:content-['\00a0']">to explore field activity</span>
+          </p>
+
+          <div className="mt-3 flex shrink-0 justify-center lg:justify-end">
+            <Link
+              to="/about#india-map-title"
+              className="btn-secondary !min-h-0 gap-1.5 px-4 py-2 text-xs font-semibold"
+              aria-label="Explore the full interactive map in Geographic Coverage on the About page"
+            >
+              Explore Map
+              <ArrowRight size={14} aria-hidden="true" />
+            </Link>
+          </div>
+        </div>
         {statePanel}
       </>
     );
   }
 
   return (
-    <section aria-labelledby="india-map-title" className="interactive-india-map section bg-white">
+    <section
+      id="india-map-title"
+      aria-labelledby="india-map-title-heading"
+      className="interactive-india-map section scroll-mt-28 bg-white"
+    >
       <div className="site-container">
         <div className="grid gap-12 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
           <div>
             <SectionTitle
               eyebrow="Geographic Coverage"
-              id="india-map-title"
+              id="india-map-title-heading"
               description="State-wise profiles of Project Bharti field activity, media documentation, research outputs, and impact reporting."
             >
               Interactive map of project implementation.
@@ -927,10 +969,7 @@ export default function InteractiveIndiaMap({ variant = 'full' } = {}) {
                         : 'border-slate-200 bg-white'
                     }`}
                   >
-                    <div className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-bold text-red-900 shadow-sm">
-                      <StatusBadge status={state.status} className="inline-flex items-center uppercase tracking-[0.04em]" />
-                    </div>
-                    <h3 className="mt-4 text-lg font-semibold text-slate-950">{state.stateName}</h3>
+                    <h3 className="text-lg font-semibold text-slate-950">{state.stateName}</h3>
                     <p className="mt-2 text-sm leading-6 text-slate-600">{state.overview}</p>
                   </button>
                 );
