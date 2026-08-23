@@ -89,15 +89,15 @@ function DevelopmentMemberCard({ member, index }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-70px' }}
       transition={{ duration: 0.45, delay: index * 0.06 }}
-      className={`rounded-[1.5rem] border border-white/10 bg-white/[0.07] p-5 text-center transition duration-300 hover:bg-white/[0.11] ${
+      className={`rounded-[1.5rem] border border-slate-200 bg-white p-5 text-center shadow-sm shadow-slate-200/40 transition duration-300 hover:-translate-y-0.5 hover:border-red-100 hover:shadow-lg hover:shadow-slate-200/50 ${
         member.isActive ? '' : 'opacity-60'
       }`}
     >
       <div className="mx-auto w-full max-w-[11rem]">
-        <TeamPhotoSlot member={member} tone="dark" aspectRatio="aspect-square" compact />
+        <TeamPhotoSlot member={member} aspectRatio="aspect-square" compact />
       </div>
-      <h4 className="mt-4 text-xl font-semibold text-white">{member.fullName}</h4>
-      <p className="mt-1.5 text-sm font-semibold text-red-100">{member.designation}</p>
+      <h4 className="mt-4 text-xl font-semibold text-slate-950">{member.fullName}</h4>
+      <p className="mt-1.5 text-sm font-bold uppercase tracking-[0.16em] text-red-800">{member.designation}</p>
     </motion.article>
   );
 }
@@ -124,7 +124,7 @@ function DevelopmentTeamGroups({ category }) {
       {groups.map((group) => (
         <div key={group.id}>
           {group.title ? (
-            <h4 className="text-center text-lg font-semibold tracking-wide text-red-100 md:text-left">
+            <h4 className="text-center text-lg font-bold uppercase tracking-[0.16em] text-red-200 md:text-left">
               {group.title}
             </h4>
           ) : null}
@@ -170,18 +170,6 @@ function DarkCategory({ category }) {
       </div>
 
       {isDevelopmentTeam ? (
-        <PersistentImageSlot
-          ownerId="dev-team-group"
-          title="Official Project Photograph"
-          alt="Research and implementation team group photograph"
-          aspectRatio="aspect-[16/7]"
-          emptyClassName="bg-white/[0.07]"
-          emptyTextClassName="text-slate-200"
-          className="mt-8 w-full rounded-[1.5rem] border border-white/15 bg-white/[0.07]"
-        />
-      ) : null}
-
-      {isDevelopmentTeam ? (
         <DevelopmentTeamGroups category={category} />
       ) : (
         <div className="mt-6 grid gap-4 md:grid-cols-3">
@@ -193,13 +181,13 @@ function DarkCategory({ category }) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-70px' }}
                 transition={{ duration: 0.45, delay: index * 0.08 }}
-                className={`rounded-[1.5rem] border border-white/10 bg-white/[0.07] p-5 transition duration-300 hover:bg-white/[0.11] ${
+                className={`rounded-[1.5rem] border border-slate-200 bg-white p-5 transition duration-300 hover:-translate-y-0.5 hover:border-red-100 hover:shadow-lg hover:shadow-slate-200/50 ${
                   member.isActive ? '' : 'opacity-60'
                 }`}
               >
-                <TeamPhotoSlot member={member} tone="dark" />
-                <h4 className="mt-5 text-xl font-semibold text-white">{member.fullName}</h4>
-                <p className="mt-2 text-sm font-semibold text-red-100">{member.designation}</p>
+                <TeamPhotoSlot member={member} />
+                <h4 className="mt-5 text-xl font-semibold text-slate-950">{member.fullName}</h4>
+                <p className="mt-2 text-sm font-bold uppercase tracking-[0.16em] text-red-800">{member.designation}</p>
               </motion.article>
             ))
           ) : (
@@ -209,6 +197,18 @@ function DarkCategory({ category }) {
           )}
         </div>
       )}
+
+      {isDevelopmentTeam ? (
+        <PersistentImageSlot
+          ownerId="dev-team-group"
+          title="Official Project Photograph"
+          alt="Research and implementation team group photograph"
+          aspectRatio="aspect-[16/7]"
+          emptyClassName="bg-red-50"
+          emptyTextClassName="text-slate-800"
+          className="mt-8 w-full rounded-[1.5rem] border border-red-100 bg-red-50"
+        />
+      ) : null}
     </motion.div>
   );
 }

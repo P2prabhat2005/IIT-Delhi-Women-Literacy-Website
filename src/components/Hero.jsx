@@ -174,7 +174,9 @@ export default function Hero() {
                   <dd className="mt-3 text-3xl font-semibold tracking-[-0.03em] text-slate-950 md:text-4xl">
                     {metric.value}
                   </dd>
-                  <p className="mt-2 max-w-[16rem] text-sm leading-6 text-slate-500">{metric.detail}</p>
+                  {metric.detail ? (
+                    <p className="mt-2 max-w-[16rem] text-sm leading-6 text-slate-500">{metric.detail}</p>
+                  ) : null}
                 </div>
               ))}
             </dl>

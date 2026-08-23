@@ -92,14 +92,14 @@ export default function VoicesFromTheField() {
           <span className="h-px w-6 bg-red-800/50" />
         </div>
 
-        <div className="mx-auto mt-10 max-w-5xl lg:mt-12" aria-label="Participant testimonial videos">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5 lg:grid-cols-3">
+        <div className="mx-auto mt-8 max-w-[56rem] lg:mt-10" aria-label="Participant testimonial videos">
+          <div className="grid grid-cols-1 gap-3.5 md:grid-cols-2 md:gap-4 lg:grid-cols-3">
             {testimonialVideos.slice(0, 3).map((video) => (
               <VoiceCard key={video.id} video={video} onPlay={setActiveVideo} />
             ))}
           </div>
 
-          <div className="mt-4 grid grid-cols-1 gap-4 md:mt-5 md:grid-cols-2 md:gap-5 lg:grid-cols-6">
+          <div className="mt-3.5 grid grid-cols-1 gap-3.5 md:mt-4 md:grid-cols-2 md:gap-4 lg:grid-cols-6">
             {testimonialVideos.slice(3).map((video, index) => (
               <VoiceCard
                 key={video.id}

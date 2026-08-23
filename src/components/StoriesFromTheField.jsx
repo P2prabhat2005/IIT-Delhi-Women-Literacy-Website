@@ -22,7 +22,7 @@ function StoryPortrait({ study, className = '' }) {
         height={size?.height}
         loading="lazy"
         decoding="async"
-        className={`h-full w-full object-cover ${className}`}
+        className={`h-full w-full object-cover object-top ${className}`}
       />
     );
   }
@@ -60,23 +60,23 @@ function StoryCard({ study, index }) {
       whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
       viewport={viewportOnce}
       transition={reduceMotion ? { duration: 0 } : fadeUpTransition(staggerDelay(index), 0.4)}
-      className="group flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm shadow-slate-200/60"
+      className="group flex h-full min-w-0 flex-col overflow-hidden rounded-[1.35rem] border border-slate-200 bg-white shadow-sm shadow-slate-200/60"
     >
-      <div className="aspect-[4/3] overflow-hidden bg-slate-100">
+      <div className="aspect-[4/5] max-h-[17.5rem] shrink-0 overflow-hidden bg-slate-100">
         <StoryPortrait study={study} className="transition duration-500 motion-safe:group-hover:scale-[1.03]" />
       </div>
-      <div className="flex flex-1 flex-col p-5">
+      <div className="flex min-h-0 flex-1 flex-col p-4">
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-red-800">{study.name}</p>
-        <h3 className="mt-2 text-lg font-semibold leading-snug text-slate-950">{study.title}</h3>
-        <p className="mt-3 text-sm leading-7 text-slate-600">{study.teaser}</p>
-        <div className="mt-4 space-y-2 text-xs font-medium text-slate-500">
+        <h3 className="mt-2 text-base font-semibold leading-snug text-slate-950">{study.title}</h3>
+        <p className="mt-2 text-sm leading-6 text-slate-600">{study.teaser}</p>
+        <div className="mt-3 space-y-1.5 text-xs font-medium text-slate-500">
           <p className="inline-flex items-start gap-1.5">
             <MapPin size={13} className="mt-0.5 shrink-0 text-red-800" aria-hidden="true" />
             <span>{study.location.display}</span>
           </p>
           <p>{study.enterprise}</p>
         </div>
-        <div className="mt-5">
+        <div className="mt-auto pt-4">
           <Link
             to={`/stories/${study.slug}`}
             className="inline-flex items-center gap-2 text-sm font-semibold text-red-900 transition hover:text-red-800"
@@ -91,9 +91,9 @@ function StoryCard({ study, index }) {
 }
 
 export default function StoriesFromTheField() {
-  const reduceMotion = useReducedMotion();
   const featured = getFeaturedCaseStudy();
   const supporting = getHomepageSupportingCaseStudies();
+  const homepageStories = [featured, ...supporting.filter((study) => study.id !== featured.id)].slice(0, 3);
 
   return (
     <section id="stories-from-the-field" aria-labelledby="stories-from-the-field-title" className="section scroll-mt-24 bg-[#f7f4ef]">
@@ -107,55 +107,13 @@ export default function StoriesFromTheField() {
           {storiesFromTheFieldSection.title}
         </SectionTitle>
 
-        <motion.article
-          initial={reduceMotion ? false : { opacity: 0, y: 20 }}
-          whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-          viewport={viewportOnce}
-          transition={reduceMotion ? { duration: 0 } : fadeUpTransition(0, 0.45)}
-          className="mt-12 overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-xl shadow-slate-200/50"
-        >
-          <div className="grid lg:grid-cols-[1.05fr_0.95fr]">
-            <div className="min-h-[18rem] bg-slate-100 lg:min-h-[28rem]">
-              <StoryPortrait study={featured} />
-            </div>
-            <div className="flex flex-col justify-center p-6 sm:p-8 lg:p-10">
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-red-800">Featured case study</p>
-              <p className="mt-4 text-sm font-semibold text-slate-500">{featured.name}</p>
-              <h3 className="mt-2 text-2xl font-semibold leading-snug text-slate-950 md:text-3xl">{featured.title}</h3>
-              <p className="mt-4 text-base leading-8 text-slate-600">{featured.teaser}</p>
-              <div className="mt-5 space-y-2 border-t border-slate-100 pt-5 text-sm text-slate-600">
-                <p className="inline-flex items-start gap-2">
-                  <MapPin size={15} className="mt-0.5 shrink-0 text-red-800" aria-hidden="true" />
-                  <span>{featured.location.display}</span>
-                </p>
-                <p>
-                  <span className="font-semibold text-slate-800">Enterprise: </span>
-                  {featured.enterprise}
-                </p>
-              </div>
-              <div className="mt-8">
-                <Link
-                  to={`/stories/${featured.slug}`}
-                  className="inline-flex items-center gap-2 rounded-full bg-red-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-red-800"
-                >
-                  Read Story
-                  <ArrowRight size={16} aria-hidden="true" />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </motion.article>
-
-        <div className="mt-12">
-          <p className="text-center text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Other stories</p>
-          <div className="mt-6 grid gap-5 sm:grid-cols-2">
-            {supporting.map((study, index) => (
-              <StoryCard key={study.id} study={study} index={index} />
-            ))}
-          </div>
+        <div className="mx-auto mt-10 grid w-full max-w-[56rem] grid-cols-1 items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {homepageStories.map((study, index) => (
+            <StoryCard key={study.id} study={study} index={index} />
+          ))}
         </div>
 
-        <div className="mt-10 flex justify-center">
+        <div className="mt-8 flex justify-center">
           <Link className="link-pill" to="/stories">
             Explore all stories
             <ArrowRight size={16} aria-hidden="true" />

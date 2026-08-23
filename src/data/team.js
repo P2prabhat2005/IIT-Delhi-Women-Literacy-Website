@@ -9,7 +9,6 @@ import pranjaliSoniPhoto from '../assets/images/team/pranjali-soni.webp';
 import profGouravDwivediPhoto from '../assets/images/team/prof-gourav-dwivedi.png';
 import profSeemaSharmaPhoto from '../assets/images/team/prof-seema-sharma.png';
 import purariKumarPhoto from '../assets/images/team/purari-kumar.png';
-import shaliniShuklaPhoto from '../assets/images/team/shalini-shukla.png';
 import shashankKumarPhoto from '../assets/images/team/shashank-kumar.png';
 import uditMaheshwariPhoto from '../assets/images/team/udit-maheshwari.png';
 
@@ -54,7 +53,7 @@ const teamCategories = [
       {
         id: 'doctoral-scholars',
         title: 'Doctoral Scholars',
-        memberIds: ['purari-kumar', 'apporva', 'udit-maheshwari', 'akriti-chandra'],
+        memberIds: ['purari-kumar', 'apporva', 'udit-maheshwari'],
       },
       {
         id: 'research-associates',
@@ -91,18 +90,9 @@ const teamCategories = [
         categoryId: 'development-team',
       },
       {
-        id: 'akriti-chandra',
-        fullName: 'Akriti Chandra',
-        designation: 'Doctoral Scholar',
-        photo: { url: shaliniShuklaPhoto },
-        isActive: true,
-        displayOrder: 3,
-        categoryId: 'development-team',
-      },
-      {
         id: 'shashank-kumar',
         fullName: 'Shashank Kumar',
-        designation: 'Project Employee',
+        designation: 'Research Associate',
         photo: { url: shashankKumarPhoto },
         isActive: true,
         displayOrder: 4,
@@ -111,7 +101,7 @@ const teamCategories = [
       {
         id: 'pranjali-soni',
         fullName: 'Pranjali Soni',
-        designation: 'Project Employee',
+        designation: 'Research Associate',
         photo: { url: pranjaliSoniPhoto },
         isActive: true,
         displayOrder: 5,
@@ -120,7 +110,7 @@ const teamCategories = [
       {
         id: 'harshi-gupta',
         fullName: 'Harshi Gupta',
-        designation: 'Project Employee',
+        designation: 'Research Associate',
         photo: { url: harshiGuptaPhoto },
         isActive: true,
         displayOrder: 6,
@@ -129,7 +119,7 @@ const teamCategories = [
       {
         id: 'shalini-shukla',
         fullName: 'Shalini Shukla',
-        designation: 'Project Employee',
+        designation: 'Research Associate',
         photo: { url: akritiChandraPhoto },
         isActive: true,
         displayOrder: 7,

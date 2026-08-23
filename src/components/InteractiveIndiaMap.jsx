@@ -881,10 +881,10 @@ export default function InteractiveIndiaMap({ variant = 'full' } = {}) {
     return (
       <>
         <div className="flex h-full w-full flex-col lg:min-h-[inherit]">
-          <div className="relative min-h-[280px] flex-[0_0_72%] w-full lg:min-h-[340px]">
+          <div className="relative min-h-[280px] flex-[0_0_72%] w-full rounded-[1.35rem] border border-red-900/50 bg-[#fbfaf8]/70 p-2.5 shadow-sm shadow-red-950/[0.04] ring-1 ring-red-900/20 lg:min-h-[340px] lg:p-3">
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-[2%_4%_6%_8%] rounded-[38%] bg-[rgba(255,251,247,0.58)]"
+              className="pointer-events-none absolute inset-[8%_10%_12%_12%] rounded-[38%] bg-[rgba(255,251,247,0.32)]"
             />
             <div className="relative h-full w-full">{mapCanvas}</div>
           </div>
@@ -918,7 +918,7 @@ export default function InteractiveIndiaMap({ variant = 'full' } = {}) {
 
           <p className="mt-2 shrink-0 text-center text-[11px] font-medium leading-5 tracking-wide text-slate-600 lg:text-right">
             Select a highlighted state
-            <span className="block sm:inline sm:before:content-['\00a0']">to explore field activity</span>
+            <span className="block sm:ml-1 sm:inline">to explore field activity</span>
           </p>
 
           <div className="mt-3 flex shrink-0 justify-center lg:justify-end">
@@ -977,11 +977,7 @@ export default function InteractiveIndiaMap({ variant = 'full' } = {}) {
             </div>
           </div>
 
-          <div className="relative rounded-[2rem] border border-slate-200 bg-slate-50 p-4 shadow-xl shadow-slate-200/70 md:p-6">
-            <div className="absolute right-6 top-6 z-10 rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm">
-              Interactive Engine
-            </div>
-
+          <div className="rounded-[2rem] border border-slate-200 bg-slate-50 p-4 shadow-xl shadow-slate-200/70 md:p-6">
             {mapCanvas}
 
             <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-slate-600">
