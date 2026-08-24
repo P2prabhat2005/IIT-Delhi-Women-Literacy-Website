@@ -7,6 +7,7 @@
  */
 
 import campusProgrammeGathering from '../assets/images/partners/gallery/campus-programme-gathering.jpg';
+import collaborationSigning from '../assets/images/partners/gallery/collaboration-signing.jpg';
 import communityDigitalLiteracySession from '../assets/images/partners/gallery/community-digital-literacy-session.webp';
 import communityMarketShowcase from '../assets/images/partners/gallery/community-market-showcase.jpg';
 import communityProductShowcase from '../assets/images/partners/gallery/community-product-showcase.webp';
@@ -17,7 +18,10 @@ import fieldVisitTeam from '../assets/images/partners/gallery/field-visit-team.w
 import fieldWelcomeHandover from '../assets/images/partners/gallery/field-welcome-handover.webp';
 import mountainHandbookGroupB from '../assets/images/partners/gallery/mountain-handbook-group-b.png';
 import programmeHandbookRelease from '../assets/images/partners/gallery/programme-handbook-release.webp';
+import programmeStageSession from '../assets/images/partners/gallery/programme-stage-session.jpg';
+import researchCoordinationMeeting from '../assets/images/partners/gallery/research-coordination-meeting.png';
 import communityMobilization from '../assets/images/states/haryana/community-mobilization.png';
+import panelStageFull from '../assets/images/states/uttar-pradesh/panel-stage-full.png';
 import amarUjalaDelhi from '../assets/images/partners/newspapers/amar-ujala-delhi.png';
 import etGovernmentEmpower from '../assets/images/partners/newspapers/et-government-empower.png';
 import narsanFinancialTraining from '../assets/images/partners/newspapers/narsan-financial-training.png';
@@ -40,7 +44,39 @@ export const partnersMediaContent = {
           alt: 'Project participants and faculty gathered outside the Department of Management Studies, IIT Delhi',
           caption: 'Campus programme',
           kind: 'photo',
-          size: 'lg',
+          size: 'feature',
+        },
+        {
+          id: 'programme-stage-session',
+          src: programmeStageSession,
+          alt: 'Speakers and a seated panel on stage during a Project Bharti programme with the IIT Delhi and EXL literacy slide',
+          caption: 'Programme session',
+          kind: 'photo',
+          size: 'md',
+        },
+        {
+          id: 'collaboration-signing',
+          src: collaborationSigning,
+          alt: 'Representatives signing documents during a formal Project Bharti collaboration at IIT Delhi',
+          caption: 'Institutional collaboration',
+          kind: 'photo',
+          size: 'md',
+        },
+        {
+          id: 'research-coordination-meeting',
+          src: researchCoordinationMeeting,
+          alt: 'Project team and participants seated around a conference table during a research coordination meeting',
+          caption: 'Research coordination',
+          kind: 'photo',
+          size: 'md',
+        },
+        {
+          id: 'panel-stage-full',
+          src: panelStageFull,
+          alt: 'Panel session with an IIT Delhi and EXL financial and digital literacy presentation on screen',
+          caption: 'Programme panel',
+          kind: 'photo',
+          size: 'md',
         },
       ],
     },

@@ -12,6 +12,7 @@ export default function EditableImageSlot({
   compact = false,
   emptyClassName = '',
   emptyTextClassName = '',
+  fit = 'cover',
   image,
   title = 'Official Project Photograph',
   wrapperClassName = '',
@@ -26,27 +27,34 @@ export default function EditableImageSlot({
   }, [image]);
 
   const hasPreview = Boolean(previewUrl);
+  const contain = fit === 'contain';
+
+  const previewImage = (
+    <img
+      src={previewUrl}
+      alt={alt}
+      loading="lazy"
+      decoding="async"
+      onLoad={() => {
+        requestAnimationFrame(() => setIsPreviewVisible(true));
+      }}
+      onError={() => {
+        setPreviewUrl(null);
+        setIsPreviewVisible(false);
+      }}
+      className={`h-full w-full object-center ${
+        contain
+          ? 'object-contain transition-opacity duration-300 ease-out'
+          : 'object-cover motion-safe:group-hover:scale-[1.03] transition-[opacity,transform] duration-300 ease-out'
+      } ${isPreviewVisible ? 'opacity-100' : 'opacity-0'}`}
+    />
+  );
 
   return (
     <div className={wrapperClassName}>
       <div className={`group relative overflow-hidden ${aspectRatio} ${className}`}>
         {hasPreview ? (
-          <img
-            src={previewUrl}
-            alt={alt}
-            loading="lazy"
-            decoding="async"
-            onLoad={() => {
-              requestAnimationFrame(() => setIsPreviewVisible(true));
-            }}
-            onError={() => {
-              setPreviewUrl(null);
-              setIsPreviewVisible(false);
-            }}
-            className={`h-full w-full object-cover transition-[opacity,transform] duration-300 ease-out motion-safe:group-hover:scale-[1.03] ${
-              isPreviewVisible ? 'opacity-100' : 'opacity-0'
-            }`}
-          />
+          contain ? <div className="absolute inset-5">{previewImage}</div> : previewImage
         ) : (
           <div className={`flex h-full w-full flex-col items-center justify-center px-4 text-center ${emptyClassName}`}>
             <ImageUp size={compact ? 22 : 28} aria-hidden="true" className="text-slate-500" />

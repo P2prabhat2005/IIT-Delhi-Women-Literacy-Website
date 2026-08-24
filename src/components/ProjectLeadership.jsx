@@ -22,7 +22,7 @@ function EmptyState({ tone = 'light' }) {
   );
 }
 
-function TeamPhotoSlot({ member, tone = 'light', aspectRatio = 'aspect-[4/3]', compact = false }) {
+function TeamPhotoSlot({ member, tone = 'light', aspectRatio = 'aspect-[4/3]', compact = false, fit = 'cover' }) {
   return (
     <EditableImageSlot
       image={member.photo?.url || null}
@@ -30,6 +30,7 @@ function TeamPhotoSlot({ member, tone = 'light', aspectRatio = 'aspect-[4/3]', c
       alt={member.isPlaceholder ? `${member.designation} profile photograph placeholder` : `${member.fullName} profile photograph`}
       aspectRatio={aspectRatio}
       compact={compact}
+      fit={fit}
       emptyClassName={tone === 'dark' ? 'bg-white/[0.07]' : 'bg-red-50'}
       emptyTextClassName={tone === 'dark' ? 'text-slate-200' : ''}
       className={
@@ -66,7 +67,7 @@ function LeadershipCategory({ category }) {
                 member.isActive ? '' : 'opacity-60'
               }`}
             >
-              <TeamPhotoSlot member={member} />
+              <TeamPhotoSlot member={member} aspectRatio="aspect-square" fit="contain" />
               <p className="mt-6 text-sm font-bold uppercase tracking-[0.16em] text-red-800">{member.designation}</p>
               <h3 className="mt-2 text-2xl font-semibold text-slate-950">{member.fullName}</h3>
               <p className="mt-4 leading-7 text-slate-600">{category.description}</p>

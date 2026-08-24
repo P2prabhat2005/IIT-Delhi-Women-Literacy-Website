@@ -52,7 +52,7 @@ function leftoverCellClass(count) {
 
 const QUAD_COLLAGE_CHAPTERS = new Set(['field-workshops', 'community-outreach']);
 const PAIR_CHAPTERS = new Set(['impact-highlights']);
-const SINGLE_CHAPTERS = new Set(['institutional-leadership']);
+const SINGLE_CHAPTERS = new Set();
 
 const QUAD_COLLAGE_PLACEMENTS = [
   { cell: 'lg:col-span-7', frame: 'aspect-[4/3] lg:h-full' },
