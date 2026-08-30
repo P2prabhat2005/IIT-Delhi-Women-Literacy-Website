@@ -49,7 +49,7 @@ export function CaseStudyResourceCard({ index = 0, resource }) {
             height={thumbnailSize?.height}
             loading="lazy"
             decoding="async"
-            className="h-full w-full object-cover transition duration-500 motion-safe:group-hover:scale-[1.03]"
+            className="h-full w-full object-cover object-top transition duration-500 motion-safe:group-hover:scale-[1.03]"
             style={{ objectPosition: thumbnailObjectPosition }}
           />
         ) : (

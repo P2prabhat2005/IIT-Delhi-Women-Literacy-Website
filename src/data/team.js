@@ -3,8 +3,8 @@
  */
 
 import apporvaPhoto from '../assets/images/team/apporva.png';
-import akritiChandraPhoto from '../assets/images/team/akriti-chandra.png';
 import harshiGuptaPhoto from '../assets/images/team/harshi-gupta.png';
+import shaliniShuklaPhoto from '../assets/images/team/shalini-shukla.png';
 import pranjaliSoniPhoto from '../assets/images/team/pranjali-soni.webp';
 import profGouravDwivediPhoto from '../assets/images/team/prof-gourav-dwivedi.png';
 import profSeemaSharmaPhoto from '../assets/images/team/prof-seema-sharma.png';
@@ -120,7 +120,7 @@ const teamCategories = [
         id: 'shalini-shukla',
         fullName: 'Shalini Shukla',
         designation: 'Research Associate',
-        photo: { url: akritiChandraPhoto },
+        photo: { url: shaliniShuklaPhoto },
         isActive: true,
         displayOrder: 7,
         categoryId: 'development-team',

@@ -1,11 +1,10 @@
 /**
  * Additional Stories from the Field — sourced ONLY from the official PDFs
- * provided for Beena, Poonam, Bimla, Deepika, Shilpa, Happy, and Suman (Hamirpur).
+ * provided for Beena, Poonam, Deepika, Shilpa, Happy, and Suman (Hamirpur).
  * Do not add facts, locations, quotes, or details that are not supported by those documents.
  */
 
 import beenaCover from '../assets/images/case-studies/beena-cover.jpg';
-import bimlaCover from '../assets/images/case-studies/bimla-cover.jpg';
 import deepikaCover from '../assets/images/case-studies/deepika-cover.jpg';
 import happyCover from '../assets/images/case-studies/happy-cover.jpg';
 import poonamCover from '../assets/images/case-studies/poonam-cover.jpg';
@@ -153,73 +152,6 @@ export const additionalCaseStudies = [
     quotes: [],
     pdfUrl: '/case-studies/poonam.pdf',
     pdfFileName: 'poonam-case-study.pdf',
-  },
-  {
-    id: 'bimla',
-    slug: 'bimla',
-    name: 'Bimla',
-    title: 'From Household Enterprise to Business Confidence: A Journey of Learning and Growth',
-    teaser:
-      'From Shimla, Bimla started a ghee enterprise around 2020 with SHG savings and used literacy training to strengthen costing, records, and formalisation.',
-    summary:
-      'Bimla from Shimla, Himachal Pradesh started producing and selling ghee around 2020 with financial assistance from SHG savings. Financial and digital literacy training helped her include her own labour in production costs, keep systematic records, understand GST registration, and diversify into pickles. After returning from the training she shared the knowledge with other women in her village.',
-    enterprise: 'Ghee production and pickles, started with SHG savings around 2020',
-    location: {
-      district: 'Shimla',
-      state: 'Himachal Pradesh',
-      display: 'Shimla, Himachal Pradesh',
-    },
-    themes: [
-      'Household enterprise',
-      'Costing and pricing',
-      'Financial records',
-      'GST registration',
-    ],
-    featured: false,
-    homepageSupporting: false,
-    image: {
-      src: bimlaCover,
-      alt: 'Bimla seated indoors holding a jar of desi ghee from her household enterprise',
-    },
-    gallery: [
-      {
-        src: bimlaCover,
-        alt: 'Bimla seated indoors holding a jar of desi ghee from her household enterprise',
-      },
-    ],
-    sections: [
-      {
-        label: 'Background',
-        paragraphs: [
-          'Bimla lives in Shimla, Himachal Pradesh. She started her business to support her family and meet the financial needs of a stable livelihood.',
-          'Around 2020 she began producing and selling ghee with financial assistance from savings offered through her Self Help Group. In the mountain regions around her, ghee is an important and commonly sold product.',
-        ],
-      },
-      {
-        label: 'Learning Through Financial and Digital Literacy Training',
-        paragraphs: [
-          'The financial and digital literacy training was useful for her in several parts of the business. One was calculating the actual cost of production. Earlier she was not adding the cost of her own hard work and time; after the training she realised that production cost must include all relevant costs to arrive at an accurate price.',
-          'She also learned about cost effectiveness—what quantity must be offered at what price so that both customer and seller benefit. This understanding helped her calculate business costs and profits more accurately.',
-          'Earlier she had an understanding of cashbook and balance sheet but was not maintaining systematic financial records. After the training she realised the importance of clear, detailed records so that business activity can be tracked and improved where needed.',
-        ],
-      },
-      {
-        label: 'Formalisation, Online Reach and Diversification',
-        paragraphs: [
-          'She also understood the value of taking the business online beyond the local area and reaching a wider customer base. She applied for GST registration and learned about the registration compliances associated with it, including the dos and don’ts of formal registration processes.',
-          'She diversified into pickles as another source of income. During the training she also learned about packaging, labelling and marketing. Having begun to implement what she learned, she aspires to learn more through advanced training on business practices.',
-        ],
-      },
-      {
-        label: 'Sharing Knowledge',
-        paragraphs: [
-          'After returning to the village from the training, Bimla shared the knowledge with other women so that they could also benefit. Her journey represents that women can become strong entrepreneurs when they are provided with opportunities to learn and grow.',
-        ],
-      },
-    ],
-    quotes: [],
-    pdfUrl: '/case-studies/bimla.pdf',
-    pdfFileName: 'bimla-case-study.pdf',
   },
   {
     id: 'deepika',

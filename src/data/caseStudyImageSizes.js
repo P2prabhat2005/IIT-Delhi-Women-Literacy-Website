@@ -19,20 +19,20 @@ import sumanCover from '../assets/images/case-studies/suman-cover.jpg';
 import sumanHamirpurCover from '../assets/images/case-studies/suman-hamirpur-cover.jpg';
 
 const CASE_STUDY_IMAGE_SIZES = new Map([
-  [beenaCover, { width: 720, height: 1255, thumbnailPosition: '50% 11%' }],
-  [bimlaCover, { width: 720, height: 1600, thumbnailPosition: '50% 6%' }],
-  [deepikaCover, { width: 960, height: 1280, thumbnailPosition: '50% 16%' }],
-  [happyCover, { width: 1200, height: 1600, thumbnailPosition: '50% 14%' }],
-  [lalitaCover, { width: 807, height: 1064, thumbnailPosition: '50% 10%' }],
+  [beenaCover, { width: 720, height: 1255, thumbnailPosition: '50% 0%' }],
+  [bimlaCover, { width: 720, height: 1600, thumbnailPosition: '50% 0%' }],
+  [deepikaCover, { width: 960, height: 1280, thumbnailPosition: '50% 10%' }],
+  [happyCover, { width: 1200, height: 1600, thumbnailPosition: '50% 8%' }],
+  [lalitaCover, { width: 807, height: 1064, thumbnailPosition: '50% 0%' }],
   [lalitaDetail, { width: 921, height: 736 }],
-  [manishaCover, { width: 507, height: 857, thumbnailPosition: '50% 9%' }],
+  [manishaCover, { width: 507, height: 857, thumbnailPosition: '50% 0%' }],
   [manishaDetail, { width: 800, height: 600 }],
-  [poojaCover, { width: 714, height: 951, thumbnailPosition: '50% 11%' }],
+  [poojaCover, { width: 714, height: 951, thumbnailPosition: '72% 8%' }],
   [poojaDetail, { width: 960, height: 873 }],
-  [poonamCover, { width: 869, height: 1230, thumbnailPosition: '50% 8%' }],
-  [shilpaCover, { width: 738, height: 1600, thumbnailPosition: '50% 24%' }],
+  [poonamCover, { width: 869, height: 1230, thumbnailPosition: '50% 20%' }],
+  [shilpaCover, { width: 738, height: 1600, thumbnailPosition: '50% 45%' }],
   [sumanCover, { width: 549, height: 640, thumbnailPosition: '50% 38%' }],
-  [sumanHamirpurCover, { width: 899, height: 1599, thumbnailPosition: '50% 14%' }],
+  [sumanHamirpurCover, { width: 899, height: 1599, thumbnailPosition: '50% 6%' }],
 ]);
 
 export function getCaseStudyImageSize(src) {
