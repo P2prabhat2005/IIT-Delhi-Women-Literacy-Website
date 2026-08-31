@@ -19,19 +19,6 @@
   </head>
   <body>
     <div id="root"></div>
-    <!-- Early media buffer via a real <video> element (Chromium ignores as="video" link preload). -->
-    <video
-      id="project-bharti-intro-preload"
-      class="intro-preload-video"
-      muted
-      playsinline
-      preload="auto"
-      poster="/videos/project-bharti-opening-poster.jpg"
-      aria-hidden="true"
-      tabindex="-1"
-      style="position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;left:-9999px;top:0"
-    ></video>
-    <script src="/intro-preload.js"></script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

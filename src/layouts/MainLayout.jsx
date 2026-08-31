@@ -3,7 +3,6 @@ import { Outlet, useLocation } from 'react-router-dom';
 import Footer from '../components/Footer.jsx';
 import Navbar from '../components/Navbar.jsx';
 import PageTransition from '../components/PageTransition.jsx';
-import SessionIntroVideo from '../components/SessionIntroVideo.jsx';
 import { sanitizeHashTargetId } from '../utils/safeUrl.js';
 
 function getStickyHeaderOffset() {
@@ -30,7 +29,6 @@ function scrollToPageTop() {
 
 export default function MainLayout() {
   const location = useLocation();
-  const isHomeRoute = location.pathname === '/';
 
   useEffect(() => {
     if (!location.hash) {
@@ -63,7 +61,6 @@ export default function MainLayout() {
 
   return (
     <div className="app-shell">
-      {isHomeRoute ? <SessionIntroVideo /> : null}
       <Navbar />
       <main>
         <PageTransition>
