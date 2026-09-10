@@ -11,6 +11,8 @@ import lalitaCover from '../assets/images/case-studies/lalita-devi-cover.jpg';
 import lalitaDetail from '../assets/images/case-studies/lalita-devi-detail.jpg';
 import manishaCover from '../assets/images/case-studies/manisha-cover.jpg';
 import manishaDetail from '../assets/images/case-studies/manisha-detail.jpg';
+import nishiCover from '../assets/images/case-studies/nishi-cover.jpg';
+import nishiDetail from '../assets/images/case-studies/nishi-detail.jpg';
 import poojaCover from '../assets/images/case-studies/pooja-cover.jpg';
 import poojaDetail from '../assets/images/case-studies/pooja-detail.jpg';
 import poonamCover from '../assets/images/case-studies/poonam-cover.jpg';
@@ -27,6 +29,8 @@ const CASE_STUDY_IMAGE_SIZES = new Map([
   [lalitaDetail, { width: 921, height: 736 }],
   [manishaCover, { width: 507, height: 857, thumbnailPosition: '50% 0%' }],
   [manishaDetail, { width: 800, height: 600 }],
+  [nishiCover, { width: 801, height: 860, thumbnailPosition: '50% 42%' }],
+  [nishiDetail, { width: 769, height: 746 }],
   [poojaCover, { width: 714, height: 951, thumbnailPosition: '72% 8%' }],
   [poojaDetail, { width: 960, height: 873 }],
   [poonamCover, { width: 869, height: 1230, thumbnailPosition: '50% 20%' }],

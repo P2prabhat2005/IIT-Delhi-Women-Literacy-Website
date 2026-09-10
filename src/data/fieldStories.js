@@ -1,12 +1,14 @@
 /**
  * Additional Stories from the Field — sourced ONLY from the official PDFs
- * provided for Beena, Poonam, Deepika, Shilpa, Happy, and Suman (Hamirpur).
+ * provided for Beena, Poonam, Deepika, Shilpa, Happy, Suman (Hamirpur), and Nishi.
  * Do not add facts, locations, quotes, or details that are not supported by those documents.
  */
 
 import beenaCover from '../assets/images/case-studies/beena-cover.jpg';
 import deepikaCover from '../assets/images/case-studies/deepika-cover.jpg';
 import happyCover from '../assets/images/case-studies/happy-cover.jpg';
+import nishiCover from '../assets/images/case-studies/nishi-cover.jpg';
+import nishiDetail from '../assets/images/case-studies/nishi-detail.jpg';
 import poonamCover from '../assets/images/case-studies/poonam-cover.jpg';
 import shilpaCover from '../assets/images/case-studies/shilpa-cover.jpg';
 import sumanHamirpurCover from '../assets/images/case-studies/suman-hamirpur-cover.jpg';
@@ -424,5 +426,107 @@ export const additionalCaseStudies = [
     quotes: [],
     pdfUrl: '/case-studies/suman-hamirpur.pdf',
     pdfFileName: 'suman-hamirpur-case-study.pdf',
+  },
+  {
+    id: 'nishi',
+    slug: 'nishi',
+    name: 'Nishi',
+    title: 'From a Skill in Her Hands to a Business of Her Own',
+    teaser:
+      'Nishi’s journey from teacher to trainer, entrepreneur and mentor to other women—building a home bakery in Dariaganj, New Delhi with Golden Future Self Help Group.',
+    summary:
+      'Nishi was 51 years old and had years of experience learning, teaching and working with women. She had worked as a school teacher at Happy School in Dariaganj, later trained women in bakery at the KVIC Gandhi Darshan centre, and is now part of Golden Future Self Help Group. She has established a bakery business at home with a steadily increasing customer base. Women she trained have established their own shops and bakeries in Delhi, Bihar and other locations. Her career is no longer limited to baking: it is about making knowledge earn money, financial independence, and skills and opportunities for other women.',
+    enterprise:
+      'Home bakery: millet cookies, bread, pizza buns and pizza (Golden Future Self Help Group, Dariaganj)',
+    location: {
+      village: 'Dariaganj',
+      state: 'New Delhi',
+      display: 'Dariaganj, New Delhi',
+    },
+    themes: [
+      'Teacher to entrepreneur',
+      'Bakery enterprise',
+      'Digital marketing and payments',
+      'Mentoring other women',
+    ],
+    featured: false,
+    homepageSupporting: false,
+    image: {
+      src: nishiCover,
+      alt: 'Nishi selling bakery products, including cookies, at a stall',
+    },
+    gallery: [
+      {
+        src: nishiCover,
+        alt: 'Nishi selling bakery products, including cookies, at a stall',
+      },
+      {
+        src: nishiDetail,
+        alt: 'Nishi preparing bakery dough at a training kitchen',
+      },
+    ],
+    sections: [
+      {
+        label: 'A Time When Family Responsibilities Changed Her Path',
+        paragraphs: [
+          'Nishi is a resident of Dariaganj, close to the Crime Branch office, along with her husband and two daughters. She used to be a teacher at Happy School, Dariaganj. Her job as a teacher was a significant aspect of her life, but with the added burden of family responsibilities, she found it challenging to balance work and family. She decided to quit her job, but her need for work did not go away.',
+          'She enrolled at the Multi-Disciplinary Training Centre of KVIC Gandhi Darshan, Raj Ghat, New Delhi, and started to train. Here she taught women to make bakery products such as bread, biscuits, cookies and pizza. Women affiliated with Self Help Groups also visited the centre, and it was there that Nishi was introduced to the SHG network. She joined Golden Future SHG two and a half years ago. She could design and instruct a variety of products, but she knew production and was inexperienced in business.',
+          'Her own children were her inspiration to begin something of her own. Their message was: if you can train others, why can’t you build something yourself? Nishi began making bakery items at home. Initially it was not a big business. Gradually customers started to arrive. Repeat customers followed, then larger orders, and something started inside the home was becoming a real business.',
+        ],
+      },
+      {
+        label: 'From “I Can Make It” to “I Can Sell It”',
+        paragraphs: [
+          'One of the most important milestones in her entrepreneurial career was when Deepti Madam, DPM, New Delhi, invited her to the IIT Delhi Entrepreneurship Development Programme on Financial and Digital Literacy for the SHG Women Entrepreneurs, scheduled at Vikas Bhawan. Nishi chose to join.',
+          'Prior to the programme, she did not know much about digital marketing, social media marketing, or the wide variety of business activities that could be handled with digital platforms. The training opened that door. She learned about digital tools and online business practices, digital payments, and started transacting business through Paytm. Interviews with other women entrepreneurs gave her insights into marketing methods, access to customers and business thinking. She also developed an understanding of presentation and packaging, which becomes significant when a product is sold beyond the neighbourhood. She knew how to bake. Now she knew how to think about the business side of baking.',
+        ],
+      },
+      {
+        label: 'A Business Measured Not Only in Sales, but in Trust',
+        paragraphs: [
+          'Nishi produces several bakery items today, such as millet cookies, bread, pizza buns and pizza. Her millet cookies are sold at about ₹1,000 per kg, and she has acquired over 100 loyal customers. Some customers come from as far as 50–60 kilometres away to purchase her products. For Nishi, that distance is proof that customers are coming back for her product, not only purchasing a cookie.',
+          'She has purchased a commercial oven to make goods at a larger scale. She sold cookies in excess of a lakh in one year. Her husband, children and family have assisted her in selling and marketing the products as the business has expanded.',
+        ],
+      },
+      {
+        label: 'From Her Home to the President’s House',
+        paragraphs: [
+          'From her kitchen, Nishi has set up stalls at various events and also sold her products at the President’s House. She has sold about ₹5,000–₹10,000 at such stalls in a day. Being at a stall and selling products she made herself to officials and visitors is a transformation for a woman who used to have no idea how digital marketing could be used for business.',
+          'She is proud if her products reach officials and other distinguished customers. The most important acknowledgment, however, is simpler: her work remains in people’s minds when they see the cookies at stalls. Her cookie is no longer simply a product. It has become associated with her name.',
+        ],
+      },
+      {
+        label: 'The Business Gave Her Something More Than Income',
+        paragraphs: [
+          'The bakery has affected her independence. She now makes a living from her own business. She can be generous with herself, her daughters and her family without asking for money. It has given them confidence because they are now financially independent. She is appreciated by her family, and she has proved she can build something of her own.',
+          'Her goal is to grow the bakery business, educate more women, and eventually offer jobs through her bakery. Women under her training and association have already started setting up shops and bakeries in places such as Delhi and Bihar. One woman acquired a skill. She trained another. That woman began to work. Another business came into being.',
+        ],
+      },
+      {
+        label: 'The Next Challenge: Taking the Enterprise Further',
+        paragraphs: [
+          'Nishi would like to be exposed to more value-chain development and packaging opportunities to take the business to the next level. She also acknowledges that digital knowledge is one of the obstacles for many women who have entrepreneurial potential. As she has seen, numerous women have what it takes and are willing, but they typically do not have digital knowledge or the confidence to apply it to business. This is where she believes a continued role for training schemes such as the one created at IIT Delhi. The first training was not the last of Nishi’s learning. It made her want to do more.',
+        ],
+      },
+      {
+        label: 'A Bakery Today—A Larger Enterprise Tomorrow',
+        paragraphs: [
+          'Nishi’s story is still a work in progress. She believes her bakery needs to be expanded, reach people more widely, enhance packaging and the value chain, and use digital platforms to grow her market. Her dream is no longer limited to selling more cookies. It is about creating an enterprise that creates opportunities for others.',
+          'The IIT Delhi project—Empowering Micro-Level Women Entrepreneurship Through Financial & Digital Literacy—is reflected in her story. The training did not make her skilful; she already had the skill. What it provided was exposure to another part of entrepreneurship: digital tools, marketing, online transactions, formalisation of business, and different ways to access customers. It also strengthened her confidence to see her existing ability as something that could become bigger. At times, entrepreneurship is not only about teaching a woman something new. It involves helping her see the economic value of knowledge she already has.',
+        ],
+      },
+    ],
+    quotes: [
+      {
+        language: 'en',
+        text: 'The happiness of selling something that you have made yourself cannot be found anywhere else.',
+      },
+      {
+        language: 'en',
+        text: 'Every woman does so much for her home and family. But if, while fulfilling those responsibilities, she also starts doing something for herself, that small beginning can gradually create a larger change for society. And there is no fixed age to begin. We can start at any age.',
+      },
+    ],
+    pdfUrl: '/case-studies/nishi.pdf',
+    pdfFileName: 'nishi-case-study.pdf',
   },
 ];

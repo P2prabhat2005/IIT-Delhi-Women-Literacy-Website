@@ -1,12 +1,13 @@
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import { lazy, Suspense, useRef } from 'react';
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
+import heroGroupPhotograph from '../assets/images/hero/hero-group-photograph.jpg';
+import exlLogo from '../assets/images/logos/exl-logo.png';
+import iitDelhiLogo from '../assets/images/logos/iit-delhi-logo.png';
 import { heroContent } from '../data/homepage.js';
 import { useIntroSplashActive } from '../utils/introSplash.js';
 import { fadeUpTransition } from '../utils/motion.js';
-
-const InteractiveIndiaMap = lazy(() => import('./InteractiveIndiaMap.jsx'));
 
 const heroBackgroundAssets = import.meta.glob('../assets/images/hero/*.{png,jpg,jpeg,webp,avif}', {
   eager: true,
@@ -38,19 +39,6 @@ const heroBackgroundImage =
   (heroArtworkImage ? null : findAsset(heroBackgroundAssets, ['hero'])) ||
   (heroArtworkImage ? null : firstAsset(heroBackgroundAssets));
 const heroSectionBackgroundImage = heroBackgroundImage || heroArtworkImage;
-
-function ProjectReachFallback() {
-  return (
-    <div
-      className="flex min-h-[420px] w-full animate-pulse flex-col lg:min-h-[480px]"
-      aria-hidden="true"
-    >
-      <div className="min-h-[300px] flex-[0_0_72%] rounded-[28%] bg-slate-200/12 lg:min-h-[340px]" />
-      <div className="mt-4 h-3 w-3/4 rounded-full bg-slate-200/15" />
-      <div className="mt-3 h-2.5 w-1/2 rounded-full bg-slate-200/10" />
-    </div>
-  );
-}
 
 export default function Hero() {
   const sectionRef = useRef(null);
@@ -95,6 +83,32 @@ export default function Hero() {
               transition={reduceMotion ? { duration: 0 } : fadeUpTransition(0, 0.45)}
               className="min-w-0"
             >
+              <div
+                className="mb-6 flex flex-wrap items-center gap-3 md:mb-7"
+                aria-label="Project Bharti institutional and partner logos"
+              >
+                <div className="flex min-h-14 items-center rounded-2xl border border-[#E8E4DD] bg-[#F7F4EF] px-4 py-2.5 shadow-[0_8px_24px_rgba(15,23,42,0.06)] sm:min-h-16 sm:px-4 sm:py-3">
+                  <img
+                    src={iitDelhiLogo}
+                    alt="IIT Delhi logo"
+                    width="1024"
+                    height="1024"
+                    decoding="async"
+                    className="h-8 w-auto object-contain sm:h-9"
+                  />
+                </div>
+                <div className="flex min-h-14 items-center rounded-2xl border border-[#E8E4DD] bg-[#F7F4EF] px-4 py-2.5 shadow-[0_8px_24px_rgba(15,23,42,0.06)] sm:min-h-16 sm:px-4 sm:py-3">
+                  <img
+                    src={exlLogo}
+                    alt="EXL logo"
+                    width="94"
+                    height="56"
+                    decoding="async"
+                    className="h-7 w-auto object-contain sm:h-8"
+                  />
+                </div>
+              </div>
+
               <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-red-900/90 md:text-xs">
                 {heroContent.eyebrow}
               </p>
@@ -137,16 +151,19 @@ export default function Hero() {
               initial={reduceMotion ? false : { opacity: 0, y: 12 }}
               animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
               transition={reduceMotion ? { duration: 0 } : fadeUpTransition(0.08, 0.5)}
-              className="mx-auto flex w-full min-w-0 max-w-md flex-col self-start lg:mx-0 lg:ml-auto lg:min-h-[min(52vh,500px)] lg:max-w-[34rem] lg:pt-0"
-              aria-label="Project Bharti geographic reach"
+              className="mx-auto flex w-full min-w-0 max-w-md self-start lg:mx-0 lg:ml-auto lg:max-w-[34rem] lg:pt-0"
             >
-              {deferHeavyVisuals ? (
-                <ProjectReachFallback />
-              ) : (
-                <Suspense fallback={<ProjectReachFallback />}>
-                  <InteractiveIndiaMap variant="compact" />
-                </Suspense>
-              )}
+              <figure className="w-full overflow-hidden rounded-[1.75rem] border border-slate-200/90 bg-white shadow-sm shadow-slate-200/60 md:rounded-[2rem]">
+                <img
+                  src={heroGroupPhotograph}
+                  alt="Project Bharti team and partners standing together at a formal meeting"
+                  width="1024"
+                  height="682"
+                  decoding="async"
+                  fetchPriority="high"
+                  className="aspect-[3/2] h-full w-full object-cover object-[center_46%]"
+                />
+              </figure>
             </motion.aside>
           </div>
 

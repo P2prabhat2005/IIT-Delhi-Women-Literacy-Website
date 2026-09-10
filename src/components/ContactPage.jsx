@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { ArrowUpRight, ChevronDown, Mail, MapPin, Send, Sparkles, UserRound } from 'lucide-react';
-import { contactFaqItems, contactHighlights, contactInfoCards } from '../data/contact.js';
+import { contactFaqItems, contactFeedbackEmail, contactHighlights, contactInfoCards } from '../data/contact.js';
 import { isSafeMailtoAddress, isSafeNavigationUrl } from '../utils/safeUrl.js';
 
 function ContactCard({ card }) {
-  const { Icon, detail, isAddress, title, value } = card;
+  const { Icon, detail, isAddress, isEmail, title, value } = card;
+  const emailHref = isEmail && isSafeMailtoAddress(value) ? `mailto:${value}` : null;
 
   return (
     <div className="rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/70">
@@ -14,6 +15,12 @@ function ContactCard({ card }) {
       <h3 className="mt-5 text-lg font-semibold text-slate-950">{title}</h3>
       {isAddress ? (
         <address className="mt-3 whitespace-pre-line text-sm font-semibold not-italic leading-6 text-slate-800">{value}</address>
+      ) : emailHref ? (
+        <p className="mt-3 text-sm font-semibold text-slate-800">
+          <a href={emailHref} className="break-all text-red-900 underline-offset-2 hover:underline">
+            {value}
+          </a>
+        </p>
       ) : value ? (
         <p className="mt-3 text-sm font-semibold text-slate-800">{value}</p>
       ) : null}
@@ -37,6 +44,7 @@ export default function ContactPage() {
     subject: '',
     message: '',
   });
+  const [enquiryNotice, setEnquiryNotice] = useState('');
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -45,21 +53,38 @@ export default function ContactPage() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const email = contactInfoCards.find((card) => card.title === 'Email')?.value;
-    if (!isSafeMailtoAddress(email)) {
+
+    const name = formState.name.trim();
+    const email = formState.email.trim();
+    const phone = formState.phone.trim();
+    const organization = formState.organization.trim();
+    const subject = formState.subject.trim();
+    const message = formState.message.trim();
+
+    if (!name || !email || !subject || !message) {
+      return;
+    }
+
+    if (!isSafeMailtoAddress(contactFeedbackEmail) || !isSafeMailtoAddress(email)) {
       return;
     }
 
     const body = [
-      `Name: ${formState.name}`,
-      `Email: ${formState.email}`,
-      `Phone: ${formState.phone}`,
-      `Organization: ${formState.organization}`,
+      `Name: ${name}`,
+      `Email: ${email}`,
+      `Phone: ${phone}`,
+      `Organization: ${organization}`,
       '',
-      formState.message,
+      'Message:',
+      message,
     ].join('\n');
 
-    window.location.href = `mailto:${email}?subject=${encodeURIComponent(formState.subject)}&body=${encodeURIComponent(body)}`;
+    // mailto: opens the visitor's configured email client with a draft.
+    // This static site does not send the email from the website itself.
+    window.location.href = `mailto:${contactFeedbackEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setEnquiryNotice(
+      'Your email app has been opened with the enquiry details. Please press Send to complete your message.',
+    );
   };
 
   return (
@@ -106,6 +131,20 @@ export default function ContactPage() {
               <h2 className="text-2xl font-semibold text-slate-950">Submit an enquiry</h2>
             </div>
           </div>
+          <p className="mt-4 text-sm leading-7 text-slate-600">
+            Feedback destination:{' '}
+            {isSafeMailtoAddress(contactFeedbackEmail) ? (
+              <a
+                href={`mailto:${contactFeedbackEmail}`}
+                className="font-semibold break-all text-red-900 underline-offset-2 hover:underline"
+              >
+                {contactFeedbackEmail}
+              </a>
+            ) : (
+              <span className="font-semibold text-slate-800">{contactFeedbackEmail}</span>
+            )}
+            . Submitting this form opens your default email client with a draft. The website does not send the email automatically.
+          </p>
 
           <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
             <div className="grid gap-4 md:grid-cols-2">
@@ -195,6 +234,11 @@ export default function ContactPage() {
               <Send size={16} aria-hidden="true" />
               Submit
             </button>
+            {enquiryNotice ? (
+              <p className="text-sm leading-7 text-slate-600" role="status">
+                {enquiryNotice}
+              </p>
+            ) : null}
           </form>
         </div>
 

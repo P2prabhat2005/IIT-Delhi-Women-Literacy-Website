@@ -1,11 +1,14 @@
 import { Building2, Handshake, Mail, MapPin, Phone, UsersRound } from 'lucide-react';
 
+export const contactFeedbackEmail = 'Kshashank981@gmail.com';
+
 export const contactInfoCards = [
   {
     title: 'Email',
-    value: 'contact@projectbharti.org',
-    detail: 'Primary channel for collaboration and general enquiries.',
+    value: contactFeedbackEmail,
+    detail: 'Feedback and contact destination for collaboration and general enquiries.',
     Icon: Mail,
+    isEmail: true,
   },
   {
     title: 'Phone',

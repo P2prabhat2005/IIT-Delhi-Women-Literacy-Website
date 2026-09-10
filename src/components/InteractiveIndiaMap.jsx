@@ -77,6 +77,17 @@ const brightenHexColor = (color, amount = 0.12) => {
   return `#${brightened.map((channel) => channel.toString(16).padStart(2, '0')).join('')}`;
 };
 
+// Framing is derived from the projected bounds of the five active project states
+// (d3 fitExtent against india-states.geojson). The SVG viewBox is sized to that
+// crop, so non-project India falls outside the viewport instead of being drawn
+// inside a full-country window. Scale is paired with its own width/height and
+// must be recomputed if either changes.
+const PROJECT_MAP_CENTER = [79.56, 28.67];
+const PROJECT_MAP_FRAME = {
+  compact: { width: 800, height: 600, scale: 2828 },
+  full: { width: 800, height: 800, scale: 3771 },
+};
+
 let mediaEntrySequence = 0;
 
 const createEntryId = (groupKey) => `${groupKey}-${Date.now()}-${mediaEntrySequence++}`;
@@ -705,7 +716,7 @@ function IndiaMapCanvas({
   onStateSelect,
   shouldReduceMotion,
 }) {
-  const mapScale = compact ? 905 : 980;
+  const mapFrame = compact ? PROJECT_MAP_FRAME.compact : PROJECT_MAP_FRAME.full;
   const inactiveFill = compact ? '#d8e0e8' : '#e2e8f0';
   const inactiveFillHover = compact ? '#ccd6e0' : '#cbd5e1';
   const boundaryStroke = compact ? '#eef2f6' : '#ffffff';
@@ -736,7 +747,9 @@ function IndiaMapCanvas({
       ) : (
         <ComposableMap
           projection="geoMercator"
-          projectionConfig={{ center: [82.8, 23.5], scale: mapScale }}
+          width={mapFrame.width}
+          height={mapFrame.height}
+          projectionConfig={{ center: PROJECT_MAP_CENTER, scale: mapFrame.scale }}
           className={mapClassName}
           role="img"
           aria-label="Interactive India map showing Project Bharti states"
