@@ -16,7 +16,8 @@ import {
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createPortal } from 'react-dom';
-import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
+import { ComposableMap, Geographies, Geography, Marker } from 'react-simple-maps';
+import { geoCentroid } from 'd3-geo';
 import indiaGeographyUrl from '../assets/maps/india-states.geojson?url';
 import {
   projectBhartiStateByMapName,
@@ -87,6 +88,43 @@ const PROJECT_MAP_FRAME = {
   compact: { width: 800, height: 600, scale: 2828 },
   full: { width: 800, height: 800, scale: 3771 },
 };
+
+// Lon/lat nudges from geoCentroid for awkward or small shapes so labels stay
+// inside the state region under the current projection (framing unchanged).
+const STATE_LABEL_OFFSETS = {
+  Delhi: [0.08, 0.05],
+  Chandigarh: [0.18, 0.05],
+  Goa: [0.05, 0],
+  Sikkim: [0.12, 0],
+  'Himachal Pradesh': [0.15, -0.2],
+  Haryana: [0.05, 0.1],
+  Punjab: [0.05, 0],
+  Uttarakhand: [0.15, -0.15],
+  Kerala: [-0.05, 0.15],
+  'West Bengal': [0.25, 0.2],
+  'Jammu and Kashmir': [0.2, -0.35],
+  'Andaman and Nicobar': [0.4, 0.6],
+  Puducherry: [0.35, 0.15],
+  'Dadra and Nagar Haveli': [0.15, 0],
+  'Daman and Diu': [0.9, -0.15],
+};
+
+const STATE_LABEL_DISPLAY = {
+  'Andaman and Nicobar': 'A & N Islands',
+  'Dadra and Nagar Haveli': 'Dadra & NH',
+  'Daman and Diu': 'Daman & Diu',
+  'Jammu and Kashmir': 'J & K',
+};
+
+function getStateLabelCoordinates(geo) {
+  const [longitude, latitude] = geoCentroid(geo);
+  const [dx = 0, dy = 0] = STATE_LABEL_OFFSETS[geo.properties.name] || [];
+  return [longitude + dx, latitude + dy];
+}
+
+function getStateLabelText(stateName) {
+  return STATE_LABEL_DISPLAY[stateName] || stateName;
+}
 
 let mediaEntrySequence = 0;
 
@@ -755,61 +793,97 @@ function IndiaMapCanvas({
           aria-label="Interactive India map showing Project Bharti states"
         >
           <Geographies geography={indiaGeography}>
-            {({ geographies }) =>
-              geographies.map((geo) => {
-                const stateName = geo.properties.name;
-                const state = projectBhartiStateByMapName[stateName];
-                const isHighlighted = Boolean(state);
-                const isActive = activeStateName === stateName;
+            {({ geographies }) => (
+              <>
+                {geographies.map((geo) => {
+                  const stateName = geo.properties.name;
+                  const state = projectBhartiStateByMapName[stateName];
+                  const isHighlighted = Boolean(state);
+                  const isActive = activeStateName === stateName;
 
-                return (
-                  <Geography
-                    key={geo.rsmKey}
-                    geography={geo}
-                    role={isHighlighted ? 'button' : 'img'}
-                    tabIndex={isHighlighted ? 0 : -1}
-                    aria-label={stateName}
-                    onClick={(event) => onStateSelect(stateName, event.currentTarget)}
-                    onKeyDown={(event) => {
-                      if (event.key === 'Enter' || event.key === ' ') {
-                        event.preventDefault();
-                        onStateSelect(stateName, event.currentTarget);
-                      }
-                    }}
-                    style={{
-                      default: {
-                        fill: isHighlighted ? state.color : inactiveFill,
-                        stroke: isHighlighted ? boundaryStrokeHighlighted : boundaryStroke,
-                        strokeWidth: compact
-                          ? isActive
-                            ? 1.15
-                            : isHighlighted
-                              ? 0.9
-                              : 0.42
-                          : isActive
-                            ? 1.15
-                            : isHighlighted
-                              ? 0.8
-                              : 0.45,
-                        outline: 'none',
-                        transition: shouldReduceMotion ? 'none' : 'fill 180ms ease, transform 180ms ease',
-                      },
-                      hover: {
-                        fill: isHighlighted ? brightenHexColor(state.color) : inactiveFillHover,
-                        stroke: isHighlighted ? boundaryStrokeHighlighted : boundaryStroke,
-                        strokeWidth: compact ? (isHighlighted ? 1 : 0.42) : isHighlighted ? 1.1 : 0.45,
-                        outline: 'none',
-                        cursor: isHighlighted ? 'pointer' : 'default',
-                      },
-                      pressed: {
-                        fill: isHighlighted ? state.color : '#cbd5e1',
-                        outline: 'none',
-                      },
-                    }}
-                  />
-                );
-              })
-            }
+                  return (
+                    <Geography
+                      key={geo.rsmKey}
+                      geography={geo}
+                      role={isHighlighted ? 'button' : 'img'}
+                      tabIndex={isHighlighted ? 0 : -1}
+                      aria-label={stateName}
+                      onClick={(event) => onStateSelect(stateName, event.currentTarget)}
+                      onKeyDown={(event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                          event.preventDefault();
+                          onStateSelect(stateName, event.currentTarget);
+                        }
+                      }}
+                      style={{
+                        default: {
+                          fill: isHighlighted ? state.color : inactiveFill,
+                          stroke: isHighlighted ? boundaryStrokeHighlighted : boundaryStroke,
+                          strokeWidth: compact
+                            ? isActive
+                              ? 1.15
+                              : isHighlighted
+                                ? 0.9
+                                : 0.42
+                            : isActive
+                              ? 1.15
+                              : isHighlighted
+                                ? 0.8
+                                : 0.45,
+                          outline: 'none',
+                          transition: shouldReduceMotion ? 'none' : 'fill 180ms ease, transform 180ms ease',
+                        },
+                        hover: {
+                          fill: isHighlighted ? brightenHexColor(state.color) : inactiveFillHover,
+                          stroke: isHighlighted ? boundaryStrokeHighlighted : boundaryStroke,
+                          strokeWidth: compact ? (isHighlighted ? 1 : 0.42) : isHighlighted ? 1.1 : 0.45,
+                          outline: 'none',
+                          cursor: isHighlighted ? 'pointer' : 'default',
+                        },
+                        pressed: {
+                          fill: isHighlighted ? state.color : '#cbd5e1',
+                          outline: 'none',
+                        },
+                      }}
+                    />
+                  );
+                })}
+
+                {geographies.map((geo) => {
+                  const stateName = geo.properties.name;
+                  const isHighlighted = Boolean(projectBhartiStateByMapName[stateName]);
+                  const label = getStateLabelText(stateName);
+                  const isLongLabel = label.length > 12;
+
+                  return (
+                    <Marker key={`label-${geo.rsmKey}`} coordinates={getStateLabelCoordinates(geo)}>
+                      <text
+                        textAnchor="middle"
+                        dominantBaseline="central"
+                        style={{
+                          fontFamily: 'inherit',
+                          fontSize: compact
+                            ? isLongLabel
+                              ? 11
+                              : 12.5
+                            : isLongLabel
+                              ? 13.5
+                              : 15.5,
+                          fontWeight: 500,
+                          letterSpacing: '0.02em',
+                          fill: '#1e293b',
+                          opacity: isHighlighted ? 0.4 : 0.48,
+                          pointerEvents: 'none',
+                          userSelect: 'none',
+                        }}
+                      >
+                        {label}
+                      </text>
+                    </Marker>
+                  );
+                })}
+              </>
+            )}
           </Geographies>
         </ComposableMap>
       )}

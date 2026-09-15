@@ -1,4 +1,4 @@
-import { Building2, Handshake, Mail, MapPin, Phone, UsersRound } from 'lucide-react';
+import { Building2, Mail, MapPin, Phone, UsersRound } from 'lucide-react';
 
 export const contactFeedbackEmail = 'Kshashank981@gmail.com';
 
@@ -12,8 +12,7 @@ export const contactInfoCards = [
   },
   {
     title: 'Phone',
-    value: '+91 XXXXX XXXXX',
-    detail: 'Available for project coordination by appointment.',
+    value: '+91 97735 02056',
     Icon: Phone,
   },
   {
@@ -28,12 +27,6 @@ India`,
     detail: 'Institutional base for academic coordination and project administration.',
     Icon: MapPin,
     isAddress: true,
-  },
-  {
-    title: 'Research Collaboration',
-    value: '[Official research email — to be confirmed by Project Bharti]',
-    detail: 'For academic collaboration, research partnerships, institutional engagement, and project-related enquiries.',
-    Icon: Handshake,
   },
 ];
 

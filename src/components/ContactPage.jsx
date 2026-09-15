@@ -24,7 +24,9 @@ function ContactCard({ card }) {
       ) : value ? (
         <p className="mt-3 text-sm font-semibold text-slate-800">{value}</p>
       ) : null}
-      <p className={`${value ? 'mt-2' : 'mt-3'} text-sm leading-7 text-slate-600`}>{detail}</p>
+      {detail ? (
+        <p className={`${value ? 'mt-2' : 'mt-3'} text-sm leading-7 text-slate-600`}>{detail}</p>
+      ) : null}
     </div>
   );
 }
@@ -113,7 +115,7 @@ export default function ContactPage() {
       </section>
 
       <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/70 md:p-8">
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-3">
           {contactInfoCards.map((card) => (
             <ContactCard key={card.title} card={card} />
           ))}

@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react';
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import heroGroupPhotograph from '../assets/images/hero/hero-group-photograph.jpg';
+import heroGroupPhotographWebp from '../assets/images/hero/hero-group-photograph.webp';
 import exlLogo from '../assets/images/logos/exl-logo.png';
 import iitDelhiLogo from '../assets/images/logos/iit-delhi-logo.png';
 import { heroContent } from '../data/homepage.js';
@@ -75,8 +76,8 @@ export default function Hero() {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(153,27,27,0.10),transparent_32%),radial-gradient(circle_at_82%_16%,rgba(15,118,110,0.06),transparent_30%),linear-gradient(135deg,rgba(255,250,247,0.72)_0%,rgba(255,255,255,0.58)_48%,rgba(246,248,251,0.68)_100%)]" />
         </motion.div>
 
-        <div className="site-container relative flex flex-col justify-center gap-10 pb-12 pt-20 md:gap-12 md:pb-16 md:pt-24 lg:gap-14 lg:pb-16 lg:pt-24">
-          <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:items-start lg:gap-14 xl:gap-16">
+        <div className="site-container relative flex flex-col justify-center gap-10 pb-12 pt-20 md:gap-12 md:pb-16 md:pt-24 lg:gap-12 lg:pb-16 lg:pt-24">
+          <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)] lg:gap-x-12 lg:gap-y-0 xl:gap-x-14">
             <motion.div
               initial={reduceMotion ? false : { opacity: 0, y: 14 }}
               animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
@@ -84,7 +85,7 @@ export default function Hero() {
               className="min-w-0"
             >
               <div
-                className="mb-6 flex flex-wrap items-center gap-3 md:mb-7"
+                className="mb-5 flex flex-wrap items-center gap-3 md:mb-6"
                 aria-label="Project Bharti institutional and partner logos"
               >
                 <div className="flex min-h-14 items-center rounded-2xl border border-[#E8E4DD] bg-[#F7F4EF] px-4 py-2.5 shadow-[0_8px_24px_rgba(15,23,42,0.06)] sm:min-h-16 sm:px-4 sm:py-3">
@@ -109,41 +110,43 @@ export default function Hero() {
                 </div>
               </div>
 
-              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-red-900/90 md:text-xs">
-                {heroContent.eyebrow}
-              </p>
+              <div className="max-w-xl">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-red-900/90 md:text-xs">
+                  {heroContent.eyebrow}
+                </p>
 
-              <h1
-                id="hero-title"
-                className="scroll-mt-28 mt-5 max-w-xl text-[2.75rem] font-semibold leading-[1.05] tracking-[-0.02em] text-slate-950 md:mt-6 md:text-6xl lg:text-[4.25rem]"
-              >
-                {heroContent.title}
-              </h1>
-
-              <p className="mt-5 max-w-xl border-l border-red-900/25 pl-4 text-lg font-medium leading-snug text-slate-800 md:mt-6 md:pl-5 md:text-xl md:leading-relaxed">
-                {heroContent.subtitle}
-              </p>
-
-              <p className="mt-6 max-w-xl text-base leading-8 text-slate-600 md:mt-7 md:text-[1.05rem] md:leading-8">
-                {heroContent.description}
-              </p>
-
-              <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
-                <Link
-                  className="btn-primary"
-                  to={heroContent.primaryCta.to}
-                  aria-label={`${heroContent.primaryCta.label} about Project Bharti`}
+                <h1
+                  id="hero-title"
+                  className="scroll-mt-28 mt-4 text-[2.75rem] font-semibold leading-[1.05] tracking-[-0.02em] text-slate-950 md:mt-5 md:text-6xl lg:text-[4.25rem]"
                 >
-                  {heroContent.primaryCta.label}
-                  <ArrowRight size={18} aria-hidden="true" />
-                </Link>
-                <Link
-                  className="btn-secondary"
-                  to={heroContent.secondaryCta.to}
-                  aria-label={`${heroContent.secondaryCta.label} for Project Bharti`}
-                >
-                  {heroContent.secondaryCta.label}
-                </Link>
+                  {heroContent.title}
+                </h1>
+
+                <p className="mt-4 border-l border-red-900/25 pl-4 text-lg font-medium leading-snug text-slate-800 md:mt-5 md:pl-5 md:text-xl md:leading-relaxed">
+                  {heroContent.subtitle}
+                </p>
+
+                <p className="mt-5 text-base leading-8 text-slate-600 md:mt-5 md:text-[1.05rem] md:leading-8">
+                  {heroContent.description}
+                </p>
+
+                <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center md:mt-8">
+                  <Link
+                    className="btn-primary"
+                    to={heroContent.primaryCta.to}
+                    aria-label={`${heroContent.primaryCta.label} about Project Bharti`}
+                  >
+                    {heroContent.primaryCta.label}
+                    <ArrowRight size={18} aria-hidden="true" />
+                  </Link>
+                  <Link
+                    className="btn-secondary"
+                    to={heroContent.secondaryCta.to}
+                    aria-label={`${heroContent.secondaryCta.label} for Project Bharti`}
+                  >
+                    {heroContent.secondaryCta.label}
+                  </Link>
+                </div>
               </div>
             </motion.div>
 
@@ -151,18 +154,22 @@ export default function Hero() {
               initial={reduceMotion ? false : { opacity: 0, y: 12 }}
               animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
               transition={reduceMotion ? { duration: 0 } : fadeUpTransition(0.08, 0.5)}
-              className="mx-auto flex w-full min-w-0 max-w-md self-start lg:mx-0 lg:ml-auto lg:max-w-[34rem] lg:pt-0"
+              className="mx-auto flex w-full min-w-0 max-w-md self-center lg:mx-0 lg:ml-auto lg:mt-[7.5rem] lg:max-w-[32rem] lg:self-start"
             >
               <figure className="w-full overflow-hidden rounded-[1.75rem] border border-slate-200/90 bg-white shadow-sm shadow-slate-200/60 md:rounded-[2rem]">
-                <img
-                  src={heroGroupPhotograph}
-                  alt="Project Bharti team and partners standing together at a formal meeting"
-                  width="1024"
-                  height="682"
-                  decoding="async"
-                  fetchPriority="high"
-                  className="aspect-[3/2] h-full w-full object-cover object-[center_46%]"
-                />
+                <picture>
+                  <source srcSet={heroGroupPhotographWebp} type="image/webp" />
+                  <img
+                    src={heroGroupPhotograph}
+                    alt="Project Bharti team and partners standing together at a formal meeting"
+                    width="1024"
+                    height="682"
+                    decoding="async"
+                    fetchPriority="high"
+                    sizes="(min-width: 1024px) 32rem, (min-width: 640px) 28rem, calc(100vw - 2rem)"
+                    className="block h-auto w-full max-w-full"
+                  />
+                </picture>
               </figure>
             </motion.aside>
           </div>

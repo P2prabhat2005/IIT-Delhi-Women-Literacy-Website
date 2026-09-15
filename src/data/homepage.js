@@ -34,7 +34,7 @@ export const heroContent = {
   },
   stats: [
     { value: projectBhartiTotals.stateCount.toLocaleString('en-IN'), label: 'Project states', detail: projectBhartiStateNames.join(', ') },
-    { value: projectBhartiTotals.totalDistricts.toLocaleString('en-IN'), label: 'Districts covered' },
+    { value: '15', label: 'Districts covered' },
     { value: womenTrainedDisplay.formatted, label: womenTrainedDisplay.label },
   ],
   visual: {
