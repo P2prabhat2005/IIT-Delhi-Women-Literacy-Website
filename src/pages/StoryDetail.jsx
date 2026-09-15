@@ -145,7 +145,7 @@ export default function StoryDetail() {
                   href={study.pdfUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-red-50"
+                  className="link-pill mt-6"
                 >
                   Open PDF
                   <ArrowUpRight size={16} aria-hidden="true" />
