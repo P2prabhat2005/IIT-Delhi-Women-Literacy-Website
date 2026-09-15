@@ -6,6 +6,7 @@
  * size: 'feature' | 'wide' | 'lg' | 'md' | 'sm'
  */
 
+import inauguralFormalLaunch from '../assets/images/activities/inaugural-formal-launch.jpg';
 import campusProgrammeGathering from '../assets/images/partners/gallery/campus-programme-gathering.jpg';
 import collaborationSigning from '../assets/images/partners/gallery/collaboration-signing.jpg';
 import communityDigitalLiteracySession from '../assets/images/partners/gallery/community-digital-literacy-session.webp';
@@ -47,6 +48,14 @@ export const partnersMediaContent = {
           size: 'feature',
         },
         {
+          id: 'inaugural-formal-launch',
+          src: inauguralFormalLaunch,
+          alt: 'Formal launch of the Project Bharti research-led initiative with institutional partners on stage',
+          caption: 'Formal launch',
+          kind: 'photo',
+          size: 'md',
+        },
+        {
           id: 'programme-stage-session',
           src: programmeStageSession,
           alt: 'Speakers and a seated panel on stage during a Project Bharti programme with the IIT Delhi and EXL literacy slide',
@@ -75,6 +84,46 @@ export const partnersMediaContent = {
           src: panelStageFull,
           alt: 'Panel session with an IIT Delhi and EXL financial and digital literacy presentation on screen',
           caption: 'Programme panel',
+          kind: 'photo',
+          size: 'md',
+        },
+      ],
+    },
+    {
+      id: 'community-outreach',
+      title: 'Community Outreach',
+      description:
+        'Field visits and market engagements connecting Project Bharti with local enterprises, SHG networks, and community spaces.',
+      items: [
+        {
+          id: 'field-visit-team',
+          src: fieldVisitTeam,
+          alt: 'Project team with women entrepreneurs outside a community centre during a field visit',
+          caption: 'Community visit',
+          kind: 'photo',
+          size: 'md',
+        },
+        {
+          id: 'community-market-showcase',
+          src: communityMarketShowcase,
+          alt: 'A project representative and producer at a community market display',
+          caption: 'Enterprise showcase',
+          kind: 'photo',
+          size: 'md',
+        },
+        {
+          id: 'community-digital-literacy-session',
+          src: communityDigitalLiteracySession,
+          alt: 'A facilitator presenting a digital literacy session to women participants around a conference table',
+          caption: 'Digital literacy session',
+          kind: 'photo',
+          size: 'md',
+        },
+        {
+          id: 'community-standee-discussion',
+          src: communityStandeeDiscussion,
+          alt: 'Participants in discussion around a conference table with an IIT Delhi and EXL programme standee',
+          caption: 'Programme discussion',
           kind: 'photo',
           size: 'md',
         },
@@ -123,40 +172,24 @@ export const partnersMediaContent = {
       ],
     },
     {
-      id: 'community-outreach',
-      title: 'Community Outreach',
+      id: 'impact-highlights',
+      title: 'Impact Highlights',
       description:
-        'Field visits and market engagements connecting Project Bharti with local enterprises, SHG networks, and community spaces.',
+        'Recognition and participation milestones documenting outcomes from Project Bharti’s field engagement.',
       items: [
         {
-          id: 'field-visit-team',
-          src: fieldVisitTeam,
-          alt: 'Project team with women entrepreneurs outside a community centre during a field visit',
-          caption: 'Community visit',
+          id: 'community-training-centre-group',
+          src: communityTrainingCentreGroup,
+          alt: 'Project participants gathered outside a Community Managed Training Centre',
+          caption: 'Training centre',
           kind: 'photo',
           size: 'md',
         },
         {
-          id: 'community-market-showcase',
-          src: communityMarketShowcase,
-          alt: 'A project representative and producer at a community market display',
-          caption: 'Enterprise showcase',
-          kind: 'photo',
-          size: 'md',
-        },
-        {
-          id: 'community-digital-literacy-session',
-          src: communityDigitalLiteracySession,
-          alt: 'A facilitator presenting a digital literacy session to women participants around a conference table',
-          caption: 'Digital literacy session',
-          kind: 'photo',
-          size: 'md',
-        },
-        {
-          id: 'community-standee-discussion',
-          src: communityStandeeDiscussion,
-          alt: 'Participants in discussion around a conference table with an IIT Delhi and EXL programme standee',
-          caption: 'Programme discussion',
+          id: 'mountain-handbook-group-b',
+          src: mountainHandbookGroupB,
+          alt: 'Women participants holding financial and digital literacy handbooks outdoors in a mountain setting',
+          caption: 'Community materials',
           kind: 'photo',
           size: 'md',
         },
@@ -224,30 +257,6 @@ export const partnersMediaContent = {
           caption: 'Regional Press',
           kind: 'press',
           size: 'sm',
-        },
-      ],
-    },
-    {
-      id: 'impact-highlights',
-      title: 'Impact Highlights',
-      description:
-        'Recognition and participation milestones documenting outcomes from Project Bharti’s field engagement.',
-      items: [
-        {
-          id: 'community-training-centre-group',
-          src: communityTrainingCentreGroup,
-          alt: 'Project participants gathered outside a Community Managed Training Centre',
-          caption: 'Training centre',
-          kind: 'photo',
-          size: 'md',
-        },
-        {
-          id: 'mountain-handbook-group-b',
-          src: mountainHandbookGroupB,
-          alt: 'Women participants holding financial and digital literacy handbooks outdoors in a mountain setting',
-          caption: 'Community materials',
-          kind: 'photo',
-          size: 'md',
         },
       ],
     },
